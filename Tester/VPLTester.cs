@@ -380,7 +380,7 @@ namespace PETEL_VPL
 
         private object InvokeMethod(string namespaceName, string className, string methodName, object[] parameters, string consoleInput)
         {
-            Type type = Type.GetType($"{namespaceName}.{className}");
+            Type type = ResolveType(namespaceName, className);
             if (type == null)
                 throw new TestAssertionException($"Class '{className}' not found in namespace '{namespaceName}'");
 
@@ -459,6 +459,33 @@ namespace PETEL_VPL
             {
                 Console.SetIn(originalIn);
             }
+        }
+
+        private Type ResolveType(string namespaceName, string className)
+        {
+            string qualifiedName = string.IsNullOrWhiteSpace(namespaceName)
+                ? className
+                : $"{namespaceName}.{className}";
+
+            var type = Type.GetType(qualifiedName, throwOnError: false);
+            if (type != null)
+                return type;
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                try
+                {
+                    type = assembly.GetType(qualifiedName, throwOnError: false, ignoreCase: false);
+                    if (type != null)
+                        return type;
+                }
+                catch
+                {
+                    // Ignore and continue searching other assemblies
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

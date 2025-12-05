@@ -11,6 +11,10 @@
 check_program mono
 check_program mcs csc
 
+# Pull student-submitted C# files from the Moodle sandbox
+get_source_files cs
+generate_file_of_files .vpl_source_files
+
 # Decode a single Base64 artifact and abort with a clear message on failure
 decode_b64_or_exit() {
     local src="$1"
@@ -65,14 +69,13 @@ for DLL_B64 in *.dll.b64; do
 done
 
 # --- Collect C# source files -------------------------------------------------
-CS_FILES=$(ls *.cs 2>/dev/null)
-
-if [ -z "$CS_FILES" ]; then
+if [ ! -s .vpl_source_files ]; then
     echo "#!/bin/bash" > vpl_execution
     echo 'echo "### ERROR: No .cs files found (MainTester.cs / StudentAnswer.cs / TeacherAnswer.cs missing?)"' >> vpl_execution
     chmod +x vpl_execution
     exit 1
 fi
+cp .vpl_source_files vpl_sources.list
 
 # --- Choose compiler: prefer mcs, fallback to csc ---------------------------
 if command -v mcs >/dev/null 2>&1 ; then
@@ -89,7 +92,7 @@ fi
 # --- Compile MainTester + student code, referencing Tester.exe ---------------
 # -out:output.exe : compiled program with Main in MainTester.cs
 # -r:Tester.exe   : reference to your tester library (no Main)
-$CSCOMPILER -out:output.exe -r:Tester.exe $CS_FILES > compile.out 2>&1
+$CSCOMPILER -out:output.exe -r:Tester.exe @.vpl_source_files > compile.out 2>&1
 COMPILE_STATUS=$?
 
 if [ $COMPILE_STATUS -ne 0 ] ; then
