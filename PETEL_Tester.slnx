@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="PETEL_Tester/PETEL_Tester.csproj" />
+  <Project Path="Tester/Tester.csproj" />
+</Solution>
