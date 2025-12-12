@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Reflection;
 
 namespace PETEL_VPL
 {
@@ -31,7 +32,9 @@ namespace PETEL_VPL
         IsPublic,
         IsPrivate,
         IsProtected,
-        IsInternal
+        IsInternal,
+        CheckParams,
+        CheckReturnType
     }
 
     /// <summary>
@@ -216,9 +219,66 @@ namespace PETEL_VPL
                     int recCount = analyzer.CountRecursiveCalls();
                     return new CodeCheckResult(!expectedCount.HasValue || recCount == expectedCount.Value, recCount, $"Recursive call count: {recCount}");
 
+                case CodeStructureCheck.CheckParams:
+                    // Compare student method param types with teacher method (PETEL_VPL.TeacherAnswer)
+                    string[] studentParamTypes = analyzer.GetParameterTypes();
+
+                    var teacherType = Type.GetType("PETEL_VPL.TeacherAnswer");
+                    if (teacherType == null)
+                        return new CodeCheckResult(false, 0, "Teacher type 'PETEL_VPL.TeacherAnswer' not found.");
+
+                    var teacherMethod = teacherType.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
+                                                   .FirstOrDefault(m => m.Name == analyzer.GetMethodName());
+                    if (teacherMethod == null)
+                        return new CodeCheckResult(false, 0, "Teacher method not found on TeacherAnswer.");
+
+                    var teacherParamTypes = teacherMethod.GetParameters().Select(p => FormatTypeName(p.ParameterType)).ToArray();
+
+                    bool countMatches = studentParamTypes.Length == teacherParamTypes.Length;
+                    bool typesMatch = countMatches && studentParamTypes.SequenceEqual(teacherParamTypes);
+
+                    string expectedSig = $"({string.Join(", ", teacherParamTypes)})";
+                    string actualSig = $"({string.Join(", ", studentParamTypes)})";
+
+                    return new CodeCheckResult(typesMatch, studentParamTypes.Length,
+                        typesMatch ? $"Parameter list matches {actualSig}" : $"Wrong parameter list. Expected: {expectedSig}. Actual: {actualSig}.");
+
+                case CodeStructureCheck.CheckReturnType:
+                    // Compare student method return type with teacher method return type
+                    string studentReturn = analyzer.GetReturnType();
+
+                    var tType = Type.GetType("PETEL_VPL.TeacherAnswer");
+                    if (tType == null)
+                        return new CodeCheckResult(false, 0, "Teacher type 'PETEL_VPL.TeacherAnswer' not found.");
+
+                    var tMethod = tType.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
+                                       .FirstOrDefault(m => m.Name == analyzer.GetMethodName());
+                    if (tMethod == null)
+                        return new CodeCheckResult(false, 0, "Teacher method not found on TeacherAnswer.");
+
+                    string teacherReturn = FormatTypeName(tMethod.ReturnType);
+
+                    bool returnMatches = string.Equals(studentReturn, teacherReturn, StringComparison.Ordinal);
+                    string expectedRet = teacherReturn;
+                    string actualRet = studentReturn;
+
+                    return new CodeCheckResult(returnMatches, returnMatches ? 1 : 0,
+                        returnMatches ? $"Return type matches: {actualRet}" : $"Wrong return type. Expected: {expectedRet}. Actual: {actualRet}.");
+
                 default:
                     throw new ArgumentException($"Unknown check type: {checkType}");
             }
+        }
+
+        private static string FormatTypeName(Type t)
+        {
+            if (!t.IsGenericType)
+                return t.Name == "Int32" ? "int" : t.Name;
+
+            var genericTypeName = t.Name.Substring(0, t.Name.IndexOf('`'));
+            var args = t.GetGenericArguments().Select(FormatTypeName);
+            // FIX: remove stray space before '>' to avoid mismatches
+            return $"{genericTypeName}<{string.Join(", ", args)}>";
         }
 
         /// <summary>
@@ -261,6 +321,11 @@ namespace PETEL_VPL
         {
             method = methodSyntax ?? throw new ArgumentNullException(nameof(methodSyntax));
         }
+
+        /// <summary>
+        /// Expose method name for external comparison
+        /// </summary>
+        public string GetMethodName() => method.Identifier.Text;
 
         /// <summary>
         /// Check if method is recursive (calls itself)
@@ -486,6 +551,16 @@ namespace PETEL_VPL
         public int GetParameterCount()
         {
             return method.ParameterList.Parameters.Count;
+        }
+
+        /// <summary>
+        /// Get parameter type names as they appear in source (e.g., "Queue<int>").
+        /// </summary>
+        public string[] GetParameterTypes()
+        {
+            return method.ParameterList.Parameters
+                         .Select(p => p.Type?.ToString() ?? string.Empty)
+                         .ToArray();
         }
 
         /// <summary>

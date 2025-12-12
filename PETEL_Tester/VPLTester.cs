@@ -121,7 +121,40 @@ namespace PETEL_VPL
 
                 if (!actualPassed)
                 {
-                    string message = failureMessage ?? $"Code structure requirement not met: {result.Description}";
+                    string message;
+                    if (!string.IsNullOrEmpty(failureMessage))
+                    {
+                        // Append analyzer description (e.g., expected vs actual) to custom message
+                        string desc = result.Description ?? string.Empty;
+                        if (!string.IsNullOrEmpty(desc))
+                        {
+                            // Avoid duplicate phrasing like "Wrong parameter list" twice
+                            var fm = failureMessage.Trim();
+                            var dd = desc.Trim();
+                            if (fm.StartsWith("Wrong parameter list", StringComparison.OrdinalIgnoreCase) && dd.StartsWith("Wrong parameter list", StringComparison.OrdinalIgnoreCase))
+                            {
+                                // Preserve the 'Expected:' label when trimming
+                                int expectedIdx = dd.IndexOf("Expected:", StringComparison.OrdinalIgnoreCase);
+                                if (expectedIdx >= 0)
+                                    dd = dd.Substring(expectedIdx).Trim();
+                                else
+                                {
+                                    // Fallback: remove the duplicate prefix phrase
+                                    dd = dd.Replace("Wrong parameter list.", string.Empty).Trim();
+                                }
+                            }
+                            message = string.IsNullOrEmpty(dd) ? fm : fm + ": " + dd;
+                        }
+                        else
+                        {
+                            message = failureMessage;
+                        }
+                    }
+                    else
+                    {
+                        message = $"Code structure requirement not met: {result.Description}";
+                    }
+
                     if (expectedCount.HasValue && result.Count != expectedCount.Value)
                     {
                         message += $" (Expected: {expectedCount.Value}, Actual: {result.Count})";
