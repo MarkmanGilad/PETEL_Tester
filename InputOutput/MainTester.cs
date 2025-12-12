@@ -14,10 +14,10 @@ namespace PETEL_VPL
                 studentFile: "StudentAnswer.cs",
                 studentNamespace: "",
                 studentClassName: "StudentAnswer",
-                studentMethodName: "Copy",
-                teacherNamespace: "PETEL_VPL",
+                studentMethodName: "InputOutput",
+                teacherNamespace: "",
                 teacherClassName: "TeacherAnswer",
-                teacherMethodName: "Copy",
+                teacherMethodName: "InputOutput",
                 showDetails: true
             );
 
@@ -28,15 +28,28 @@ namespace PETEL_VPL
             // Display results (VPL parses this output)
             Console.WriteLine("\n" + tester.FormatResponse());
             Console.WriteLine($"Grade :=>> {tester.GetGrade()}");
+
         }
 
         private static void CaseTester(VPLTester tester)
         {
-            Queue<int> q1 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
+            
             tester.TestMethod(
-                testName: "Test 1: check the correct return",
+                testName: "Test 1: 3 numbers",
                 points: 10,
-                parameters: new object[] { q1 }
+                parameters: new object[] { 3 },
+                compareParams: false, 
+                consoleInput: new string[] {"5", "3", "1"},
+                captureConsoleOutput: true
+            );
+
+            tester.TestMethod(
+                testName: "Test 2: 1 numbers",
+                points: 10,
+                parameters: new object[] { 1 },
+                compareParams: false,
+                consoleInput: "3",
+                captureConsoleOutput: true
             );
         }
 
@@ -46,23 +59,6 @@ namespace PETEL_VPL
             // Initialize code analyzer (handles errors internally)
             tester.InitializeCodeAnalyzer();
 
-            // NEW: Check student method parameter list matches teacher method
-            tester.TestCodeStructure(
-                testName: "Test Params: method signature matches teacher",
-                points: 5,
-                checkType: CodeStructureCheck.CheckParams,
-                shouldPass: true,
-                failureMessage: "Wrong parameter list. Ensure the method has the same parameters as the teacher (name, count, and types)."
-            );
-
-            // NEW: Check return type matches teacher method
-            tester.TestCodeStructure(
-                testName: "Test Return Type: matches teacher",
-                points: 5,
-                checkType: CodeStructureCheck.CheckReturnType,
-                shouldPass: true,
-                failureMessage: "Wrong return type. Ensure the method returns the same type as the teacher."
-            );
 
             // Test 11: Check that the method uses exactly one loop (O(n) complexity)
             tester.TestCodeStructure(

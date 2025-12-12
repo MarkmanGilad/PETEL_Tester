@@ -82,21 +82,24 @@ namespace PETEL_VPL
         /// <param name="captureConsoleOutput">Whether to capture and compare console output instead of return values</param>
         /// <param name="compareParams">Whether to verify that student and teacher produce the same parameter modifications (default: true)</param>
         /// <param name="exceptionComments">Optional mapping from exception type to teacher comment for this test</param>
+        /// <param name="compareReturn">Whether to compare return values (default: true)</param>
         public void TestMethod(string testName, int points,
             object[] parameters = null, object consoleInput = null,
             bool captureConsoleOutput = false, bool compareParams = true,
-            Dictionary<Type, string> exceptionComments = null)
+            Dictionary<Type, string> exceptionComments = null,
+            bool compareReturn = true)
         {
             object[] originalParams = parameters ?? new object[] { };
 
             var config = new TestExecutionConfig(testName, points)
             {
                 Parameters = originalParams,
-                OriginalParameters = ObjectCloning.DeepCloneArray(originalParams),  // ✅ Clone for display
+                OriginalParameters = ObjectCloning.DeepCloneArray(originalParams),
                 ConsoleInput = ProcessConsoleInput(consoleInput),
                 CaptureOutput = captureConsoleOutput,
                 CompareParams = compareParams,
-                ExceptionComments = exceptionComments
+                ExceptionComments = exceptionComments,
+                CompareReturn = compareReturn
             };
             ExecuteTest(config);
         }
@@ -242,10 +245,33 @@ namespace PETEL_VPL
 
             try
             {
+                // When capturing output, suppress console during return comparison to avoid extra prints
+                if (config.CompareReturn)
+                {
+                    TextWriter originalOut = null;
+                    StringWriter suppress = null;
+                    try
+                    {
+                        if (config.CaptureOutput)
+                        {
+                            originalOut = Console.Out;
+                            suppress = new StringWriter();
+                            Console.SetOut(suppress);
+                        }
+                        (studentResult, teacherResult) = CompareReturnValues(config);
+                    }
+                    finally
+                    {
+                        if (originalOut != null)
+                        {
+                            Console.SetOut(originalOut);
+                            suppress?.Dispose();
+                        }
+                    }
+                }
+
                 if (config.CaptureOutput)
                     (studentOutput, teacherOutput) = CompareConsoleOutputs(config);
-                else
-                    (studentResult, teacherResult) = CompareReturnValues(config);
 
                 // Test passed - add points
                 grade += config.Points;
@@ -272,16 +298,20 @@ namespace PETEL_VPL
                 TeacherNamespace, TeacherClassName, TeacherMethodName,
                 teacherParams, config.ConsoleInput);
 
-            // Compare return values
-            if (!comparer.AreEqual(teacherResult, studentResult))
+            // If both are null (e.g., void), treat as equal
+            if (!(teacherResult == null && studentResult == null))
             {
-                string expected = Snapshot(teacherResult);
-                string actual = Snapshot(studentResult);
-                throw new TestAssertionException(
-                    "Return value check:\n" +
-                    "Expected: " + expected + "\n" +
-                    "Actual:   " + actual + "\n" +
-                    "Explanation: Returned value differs from the expected result.");
+                // Compare return values
+                if (!comparer.AreEqual(teacherResult, studentResult))
+                {
+                    string expected = Snapshot(teacherResult);
+                    string actual = Snapshot(studentResult);
+                    throw new TestAssertionException(
+                        "Return value check:\n" +
+                        "Expected: " + expected + "\n" +
+                        "Actual:   " + actual + "\n" +
+                        "Explanation: Returned value differs from the expected result.");
+                }
             }
 
             // Compare parameter modifications if requested
@@ -629,7 +659,8 @@ namespace PETEL_VPL
                 sb.AppendLine("<|--");
                 if (config.CaptureOutput && studentOutput != null)
                     sb.AppendLine("output: \"" + NormalizeForDisplay(studentOutput) + "\"");
-                else if (studentResult != null)
+                // Also show return when available, even if output is captured
+                if (studentResult != null)
                     sb.AppendLine("return: " + Snapshot(studentResult));
                 sb.AppendLine("--|>");
             }
@@ -743,6 +774,7 @@ namespace PETEL_VPL
                     sbArr.Append(Snapshot(arr.GetValue(i)));
                 }
                 sbArr.Append("]");
+
                 return sbArr.ToString();
             }
 
@@ -904,27 +936,20 @@ namespace PETEL_VPL
     // DTO to encapsulate test execution configuration
     public class TestExecutionConfig
     {
+        public string TestName { get; }
+        public int Points { get; }
         public object[] Parameters { get; set; }
-        public object[] OriginalParameters { get; set; }  // ✅ Added for display
+        public object[] OriginalParameters { get; set; }
         public string ConsoleInput { get; set; }
         public bool CaptureOutput { get; set; }
         public bool CompareParams { get; set; }
-        public string TestName { get; set; }
-        public int Points { get; set; }
-
-        // NEW: Optional per-test exception comment mapping
         public Dictionary<Type, string> ExceptionComments { get; set; }
+        public bool CompareReturn { get; set; }
 
         public TestExecutionConfig(string testName, int points)
         {
             TestName = testName;
             Points = points;
-            Parameters = new object[] { };
-            OriginalParameters = new object[] { };  // ✅ Initialize
-            ConsoleInput = null;
-            CaptureOutput = false;
-            CompareParams = true;  // Default to true
-            ExceptionComments = null; // Optional
         }
     }
 }
