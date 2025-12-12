@@ -68,6 +68,33 @@ for DLL_B64 in *.dll.b64; do
     decode_b64_or_exit "$DLL_B64" "$DLL_NAME" "$DLL_NAME"
 done
 
+# --- Pull preinstalled DLLs from the VPL host if available --------------------
+SERVER_DLL_DIR="/usr/lib/DLL"
+copy_server_dll_if_missing() {
+    local dll_name="$1"
+    if [ ! -f "$dll_name" ] && [ -f "$SERVER_DLL_DIR/$dll_name" ]; then
+        cp "$SERVER_DLL_DIR/$dll_name" "$dll_name"
+    fi
+}
+
+if [ -d "$SERVER_DLL_DIR" ]; then
+    for REQUIRED_DLL in \
+        Microsoft.CodeAnalysis.dll \
+        Microsoft.CodeAnalysis.CSharp.dll \
+        System.Buffers.dll \
+        System.Collections.Immutable.dll \
+        System.Memory.dll \
+        System.Numerics.Vectors.dll \
+        System.Reflection.Metadata.dll \
+        System.Runtime.CompilerServices.Unsafe.dll \
+        System.Threading.Tasks.Extensions.dll \
+        NUnit.Framework.dll
+    do
+        copy_server_dll_if_missing "$REQUIRED_DLL"
+    done
+    export MONO_PATH="$(pwd):$SERVER_DLL_DIR:${MONO_PATH:-}"
+fi
+
 # --- Collect C# source files -------------------------------------------------
 if [ ! -s .vpl_source_files ]; then
     echo "#!/bin/bash" > vpl_execution
