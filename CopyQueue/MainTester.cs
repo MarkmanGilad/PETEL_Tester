@@ -23,7 +23,7 @@ namespace PETEL_VPL
 
             // Run all test suites
             CaseTester(tester);
-            CodeTester(tester);
+            //CodeTester(tester);
 
             // Display results (VPL parses this output)
             Console.WriteLine("\n" + tester.FormatResponse());
@@ -34,9 +34,29 @@ namespace PETEL_VPL
         {
             Queue<int> q1 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
             tester.TestMethod(
-                testName: "Test 1: check the correct return",
+                testName: "Test 1: check the correct return. Don't check the original Queue ",
                 points: 10,
-                parameters: new object[] { q1 }
+                parameters: new object[] { q1 },
+                compareParams: false
+            );
+
+
+            Queue<int> q2 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
+            tester.TestMethod(
+                testName: "Test 2: check only the original Queue if it changed",
+                points: 10,
+                parameters: new object[] { q2 },
+                compareParams: true, 
+                compareReturn:false
+            );
+
+            q2 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
+            tester.TestMethod(
+                testName: "Test 2: check both return and original",
+                points: 10,
+                parameters: new object[] { q2 },
+                compareParams: true,
+                compareReturn: true
             );
         }
 

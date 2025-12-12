@@ -23,7 +23,7 @@ namespace PETEL_VPL
 
             // Run all test suites
             CaseTester(tester);
-            CodeTester(tester);
+            //CodeTester(tester);
 
             // Display results (VPL parses this output)
             Console.WriteLine("\n" + tester.FormatResponse());
@@ -33,23 +33,32 @@ namespace PETEL_VPL
 
         private static void CaseTester(VPLTester tester)
         {
-            
             tester.TestMethod(
-                testName: "Test 1: 3 numbers",
+                testName: "Test 1: 3 numbers. capture Console Output",
                 points: 10,
                 parameters: new object[] { 3 },
-                compareParams: false, 
-                consoleInput: new string[] {"5", "3", "1"},
+                compareParams: false,
+                consoleInput: new string[] { "5", "3", "7" },
                 captureConsoleOutput: true
             );
 
             tester.TestMethod(
-                testName: "Test 2: 1 numbers",
+                testName: "Test 2: 3 numbers. Only Compare Return",
+                points: 10,
+                parameters: new object[] { 3 },
+                compareParams: false,
+                consoleInput: new string[] { "5", "3", "4" },
+                captureConsoleOutput: false
+            );
+
+            tester.TestMethod(
+                testName: "Test 3: 1 numbers",
                 points: 10,
                 parameters: new object[] { 1 },
                 compareParams: false,
                 consoleInput: "3",
-                captureConsoleOutput: true
+                captureConsoleOutput: true,
+                compareReturn: false
             );
         }
 

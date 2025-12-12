@@ -245,35 +245,26 @@ namespace PETEL_VPL
 
             try
             {
-                // When capturing output, suppress console during return comparison to avoid extra prints
-                if (config.CompareReturn)
+                bool needsFunctionalComparison = config.CompareReturn || config.CompareParams;
+                if (needsFunctionalComparison)
                 {
-                    TextWriter originalOut = null;
-                    StringWriter suppress = null;
+                    TextWriter originalOut = Console.Out;
+                    StringWriter suppress = new StringWriter();
+                    Console.SetOut(suppress);
                     try
                     {
-                        if (config.CaptureOutput)
-                        {
-                            originalOut = Console.Out;
-                            suppress = new StringWriter();
-                            Console.SetOut(suppress);
-                        }
                         (studentResult, teacherResult) = CompareReturnValues(config);
                     }
                     finally
                     {
-                        if (originalOut != null)
-                        {
-                            Console.SetOut(originalOut);
-                            suppress?.Dispose();
-                        }
+                        Console.SetOut(originalOut);
+                        suppress.Dispose();
                     }
                 }
 
                 if (config.CaptureOutput)
                     (studentOutput, teacherOutput) = CompareConsoleOutputs(config);
 
-                // Test passed - add points
                 grade += config.Points;
             }
             catch (TestAssertionException e) { exception = e; }
@@ -285,7 +276,6 @@ namespace PETEL_VPL
             testResults.Add(FormatResult(config, exception, studentResult, teacherResult, studentOutput, teacherOutput));
         }
 
-        // Compare return values from student and teacher methods
         private (object studentResult, object teacherResult) CompareReturnValues(TestExecutionConfig config)
         {
             object[] teacherParams = ObjectCloning.DeepCloneArray(config.Parameters);
@@ -298,11 +288,10 @@ namespace PETEL_VPL
                 TeacherNamespace, TeacherClassName, TeacherMethodName,
                 teacherParams, config.ConsoleInput);
 
-            // If both are null (e.g., void), treat as equal
-            if (!(teacherResult == null && studentResult == null))
+            if (config.CompareReturn)
             {
-                // Compare return values
-                if (!comparer.AreEqual(teacherResult, studentResult))
+                bool bothNull = teacherResult == null && studentResult == null;
+                if (!bothNull && !comparer.AreEqual(teacherResult, studentResult))
                 {
                     string expected = Snapshot(teacherResult);
                     string actual = Snapshot(studentResult);
@@ -314,21 +303,21 @@ namespace PETEL_VPL
                 }
             }
 
-            // Compare parameter modifications if requested
             if (config.CompareParams)
             {
                 if (!comparer.AreEqual(teacherParams, config.Parameters))
                 {
                     var sb = new StringBuilder();
 
-                    // Return first + explanation
-                    sb.AppendLine("Return value check:");
-                    sb.AppendLine("Expected: " + Snapshot(teacherResult));
-                    sb.AppendLine("Actual:   " + Snapshot(studentResult));
-                    sb.AppendLine("Explanation: Returned value matches the expected result.");
-                    sb.AppendLine();
+                    if (config.CompareReturn)
+                    {
+                        sb.AppendLine("Return value check:");
+                        sb.AppendLine("Expected: " + Snapshot(teacherResult));
+                        sb.AppendLine("Actual:   " + Snapshot(studentResult));
+                        sb.AppendLine("Explanation: Returned value matches the expected result.");
+                        sb.AppendLine();
+                    }
 
-                    // Then parameters
                     sb.AppendLine("Input parameter state after call does not match the requirement:");
                     for (int i = 0; i < teacherParams.Length; i++)
                     {
@@ -657,9 +646,9 @@ namespace PETEL_VPL
             {
                 sb.AppendLine();
                 sb.AppendLine("<|--");
+                // Show captured console output (student) alongside return when available
                 if (config.CaptureOutput && studentOutput != null)
                     sb.AppendLine("output: \"" + NormalizeForDisplay(studentOutput) + "\"");
-                // Also show return when available, even if output is captured
                 if (studentResult != null)
                     sb.AppendLine("return: " + Snapshot(studentResult));
                 sb.AppendLine("--|>");
