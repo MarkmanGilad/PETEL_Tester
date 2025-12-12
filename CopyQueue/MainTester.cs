@@ -14,56 +14,30 @@ namespace PETEL_VPL
                 studentFile: "StudentAnswer.cs",
                 studentNamespace: "",
                 studentClassName: "StudentAnswer",
-                studentMethodName: "countRemoveItem",
+                studentMethodName: "Copy",
                 teacherNamespace: "PETEL_VPL",
                 teacherClassName: "TeacherAnswer",
-                teacherMethodName: "countRemoveItem",
+                teacherMethodName: "Copy",
                 showDetails: true
             );
 
             // Run all test suites
             CaseTester(tester);
-            CodeTester(tester);
+            //CodeTester(tester);
 
             // Display results (VPL parses this output)
             Console.WriteLine("\n" + tester.FormatResponse());
             Console.WriteLine($"Grade :=>> {tester.GetGrade()}");
-
         }
 
         private static void CaseTester(VPLTester tester)
         {
-            // Optional: shared comments for this suite (can also pass per-call)
-            var commonExceptionComments = new C.Dictionary<Type, string>
-            {
-                { typeof(NullReferenceException), "You advanced past the end of the list (node became null) " },
-                { typeof(InvalidOperationException), "You invoked an operation (Pop/Peek/Dequeue) on an empty stack/queue. Check Count > 0 before accessing." }
-            };
             Queue<int> q1 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
-
             tester.TestMethod(
                 testName: "Test 1: check the correct return",
                 points: 10,
-                parameters: new object[] { q1, 5 },
-                compareParams: false,
-                exceptionComments: commonExceptionComments
+                parameters: new object[] { q1 }
             );
-            Queue<int> q2 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
-            tester.TestMethod(
-                testName: "Test 2: check the correct return",
-                points: 10,
-                parameters: new object[] { q2, 10 }
-            );
-
-            Queue<int> q3 = Unit4Helper.BuildQueue(new int[] { 1, 4, 4, 1, 5, -9, -9, 1, -9 });
-            tester.TestMethod(
-                testName: "Test 3: check if student change the original queue",
-                points: 10,
-                parameters: new object[] { q3, 1 },
-                compareParams: true
-            );
-
-
         }
 
         private static void CodeTester(VPLTester tester)
@@ -72,6 +46,23 @@ namespace PETEL_VPL
             // Initialize code analyzer (handles errors internally)
             tester.InitializeCodeAnalyzer();
 
+            // NEW: Check student method parameter list matches teacher method
+            tester.TestCodeStructure(
+                testName: "Test Params: method signature matches teacher",
+                points: 5,
+                checkType: CodeStructureCheck.CheckParams,
+                shouldPass: true,
+                failureMessage: "Wrong parameter list. Ensure the method has the same parameters as the teacher (name, count, and types)."
+            );
+
+            // NEW: Check return type matches teacher method
+            tester.TestCodeStructure(
+                testName: "Test Return Type: matches teacher",
+                points: 5,
+                checkType: CodeStructureCheck.CheckReturnType,
+                shouldPass: true,
+                failureMessage: "Wrong return type. Ensure the method returns the same type as the teacher."
+            );
 
             // Test 11: Check that the method uses exactly one loop (O(n) complexity)
             tester.TestCodeStructure(
