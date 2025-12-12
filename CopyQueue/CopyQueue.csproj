@@ -43,8 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeAnalyzer.cs" />
+    <Compile Include="MainTester.cs" />
+    <Compile Include="ObjectCloning.cs" />
+    <Compile Include="ObjectComparer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StudentAnswer.cs" />
+    <Compile Include="TeacherAnswer.cs" />
+    <Compile Include="Unit4.cs" />
+    <Compile Include="VPLTester.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
