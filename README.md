@@ -308,7 +308,7 @@ private static void CaseTester(VPLTester tester)
 ```
 
 <p align="center">
-   <img src="images\test_output_1" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\test_output1.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
 </p>
 
 ---
