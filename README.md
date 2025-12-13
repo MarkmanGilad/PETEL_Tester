@@ -585,10 +585,13 @@ tester.TestCodeStructure(
 
 <p align="center">
    <img src="images\validate2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
-      <img src="images\validate3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\validate3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
 </p>
 
 
 ---
-**בהצלחה!**
+
+<p align="center">
+   <img src="images\TheEnd.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
 
