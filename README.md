@@ -197,7 +197,7 @@ public static void StackMethods()
 
 
 
-### פעצים בינאריים
+### עצים בינאריים
 **עצים בינאריים:** ניתן לטעון עץ מקובץ טקסט המייצג את המבנה בהזחות (Tabs)
 
 
@@ -229,15 +229,30 @@ public static void BinTreeMethods()
 בפונקציה `Main`, אנו יוצרים מופע של `VPLTester` ומגדירים את שמות הקבצים והמחלקות:
 
 ```csharp
-var tester = new VPLTester(
-    studentFile: "StudentAnswer.cs",
-    studentClassName: "StudentAnswer",
-    studentMethodName: "countRemoveItem", // שם הפעולה הנבדקת אצל התלמיד
-    teacherNamespace: "PETEL_VPL",
-    teacherClassName: "TeacherAnswer",
-    teacherMethodName: "countRemoveItem", // שם הפעולה הנבדקת אצל המורה
-    showDetails: true
-);
+class MainTester
+{
+    public static void Main(string[] args)
+    {
+        // Initialize the tester
+        var tester = new VPLTester(
+            studentFile: "StudentAnswer.cs",
+            studentNamespace: "",
+            studentClassName: "StudentAnswer",
+            studentMethodName: "Copy",
+            teacherNamespace: "PETEL_VPL",
+            teacherClassName: "TeacherAnswer",
+            teacherMethodName: "Copy",
+            showDetails: true
+        );
+
+        // Run all test suites
+        CaseTester(tester);
+        CodeTester(tester);
+
+        // Display results (VPL parses this output)
+        Console.WriteLine("\n" + tester.FormatResponse());
+        Console.WriteLine($"Grade :=>> {tester.GetGrade()}");
+    }
 ```
 
 ### הגדרת בדיקה (TestMethod)
@@ -254,18 +269,47 @@ var tester = new VPLTester(
 | **captureConsoleOutput** | `bool` | האם להשוות את הפלט שהודפס למסוף (Console.WriteLine)? |
 | **exceptionComments** | `Dictionary` | מילון הממיר שגיאות (Exceptions) להודעות מותאמות אישית. |
 
-#### דוגמה לבדיקה המודאת שהתלמיד לא הרס את התור המקורי:
+#### דוגמה לתרגיל:
+
+כתוב פעולה המקבלת מספר שלם num. הפעולה תקלוט מחירים של מוצרים כמספר ה num. הפעולה תדפיס את סכום המוצרים ותחזיר את הממוצע שלהם.
+
+**בדיקות**
 ```csharp
-Queue<int> q3 = Unit4Helper.BuildQueue(new int[] { 1, 4, 4 });
-tester.TestMethod(
-    testName: "Test 3: check if student changed the original queue",
-    points: 10,
-    parameters: new object[] { q3, 1 },
-    compareParams: true // בדיקה קריטית - תוודא שהתור זהה לתור של המורה בסיום
-);
+private static void CaseTester(VPLTester tester)
+{
+    tester.TestMethod(
+        testName: "Test 1: 3 numbers. capture Console Output",
+        points: 10,
+        parameters: new object[] { 3 },
+        compareParams: false,
+        consoleInput: new string[] { "5", "3", "7" },
+        captureConsoleOutput: true
+    );
+
+    tester.TestMethod(
+        testName: "Test 2: 3 numbers. Only Compare Return",
+        points: 10,
+        parameters: new object[] { 3 },
+        compareParams: false,
+        consoleInput: new string[] { "5", "3", "4" },
+        captureConsoleOutput: false
+    );
+
+    tester.TestMethod(
+        testName: "Test 3: 1 numbers",
+        points: 10,
+        parameters: new object[] { 1 },
+        compareParams: false,
+        consoleInput: "3",
+        captureConsoleOutput: true,
+        compareReturn: false
+    );
+}
 ```
 
-![Case Tester Execution](images/case_tester_output.png)
+<p align="center">
+   <img src="images\test_output_1" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
+</p>
 
 ---
 
