@@ -496,6 +496,7 @@ tester.TestCodeStructure(
 <p align="center">
    <img src="images\PETEL.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
 </p>
+
 ## העלאת הבדיקה ל-PeTel VPL
 
 לאחר שהבדיקות עובדות מקומית ב-Visual Studio, יש להעלות את הקבצים לסביבת PeTel (Moodle).
