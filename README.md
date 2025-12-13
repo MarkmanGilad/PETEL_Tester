@@ -1,6 +1,7 @@
-<div dir="rtl">
+![LOGO](images/Logo.png)
 
-# PeTel Tester C# - ממשק לבדיקת קוד
+
+#ממשק לבדיקת קוד - PeTel Tester C#
 
 **מכון ויצמן למדע | PeTel**
 
@@ -261,4 +262,3 @@ tester.TestCodeStructure(
 ---
 **בהצלחה!**
 
-</div>
