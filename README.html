@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>&#x5de;&#x5de;&#x5e9;&#x5e7; &#x5dc;&#x5d1;&#x5d3;&#x5d9;&#x5e7;&#x5ea; &#x5e7;&#x5d5;&#x5d3; - PeTel Tester C</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+                direction: rtl;
+            }
+            pre {
+              direction: ltr;
+            }
+            h1 {
+              font-size: xx-large;
+              text-align: center;
+            }
+            h2 {
+              text-align:center;
+              font-weight: bold;
+              margin-top: 50px;
+            }
+           
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Logo.png" alt="..." width="450" height="300">   
+</p>
+<h1 id="ממשק-לבדיקת-קוד---petel-tester-c">ממשק לבדיקת קוד - PeTel Tester C#</h1>
+<p><strong>מכון ויצמן למדע | PeTel</strong></p>
+<p>מדריך זה מסביר כיצד להשתמש בממשק בדיקת הקוד (Tester) בשפת C# המיועד עבור סביבת <strong>PeTel</strong> (המבוססת על Moodle VPL). הממשק מאפשר למורים ליצור מטלות תכנות, להריץ בדיקות פונקציונליות (Case Tests) ובדיקות מבניות (Code Tests) על פתרונות תלמידים בצורה אוטומטית.</p>
+<h2 id="תוכן-עניינים">תוכן עניינים</h2>
+<ol>
+<li><a href="#%D7%9B%D7%9C%D7%9C%D7%99">כללי</a></li>
+<li><a href="#%D7%94%D7%9B%D7%A0%D7%AA-%D7%A1%D7%91%D7%99%D7%91%D7%AA-%D7%94%D7%A4%D7%99%D7%AA%D7%95%D7%97">הכנת סביבת הפיתוח</a></li>
+<li><a href="#%D7%94%D7%95%D7%A8%D7%93%D7%AA-%D7%95%D7%94%D7%AA%D7%A7%D7%A0%D7%AA-%D7%94%D7%9E%D7%9E%D7%A9%D7%A7">הורדת והתקנת הממשק</a></li>
+<li><a href="#%D7%99%D7%A6%D7%99%D7%A8%D7%AA-%D7%9E%D7%A9%D7%99%D7%9E%D7%94-%D7%97%D7%93%D7%A9%D7%94">יצירת משימה חדשה</a></li>
+<li><a href="#%D7%91%D7%A0%D7%99%D7%99%D7%AA-tester---%D7%A7%D7%91%D7%A6%D7%99-%D7%91%D7%A1%D7%99%D7%A1">בניית Tester - קבצי בסיס</a></li>
+<li><a href="#%D7%A2%D7%91%D7%95%D7%93%D7%94-%D7%A2%D7%9D-unit4helper">עבודה עם Unit4Helper</a></li>
+<li><a href="#%D7%91%D7%A0%D7%99%D7%99%D7%AA-%D7%91%D7%93%D7%99%D7%A7%D7%95%D7%AA-%D7%A4%D7%95%D7%A0%D7%A7%D7%A6%D7%99%D7%95%D7%A0%D7%9C%D7%99%D7%95%D7%AA-case-tester">בניית בדיקות פונקציונליות (Case Tester)</a></li>
+<li><a href="#%D7%91%D7%A0%D7%99%D7%99%D7%AA-%D7%91%D7%93%D7%99%D7%A7%D7%95%D7%AA-%D7%9E%D7%91%D7%A0%D7%94-%D7%95%D7%AA%D7%97%D7%91%D7%99%D7%A8-code-tester">בניית בדיקות מבנה ותחביר (Code Tester)</a></li>
+<li><a href="#%D7%94%D7%A2%D7%9C%D7%90%D7%AA-%D7%94%D7%91%D7%93%D7%99%D7%A7%D7%94-%D7%9C-petel-vpl">העלאת הבדיקה ל-PeTel VPL</a></li>
+</ol>
+<hr>
+<h2 id="כללי">כללי</h2>
+<p>ממשק בדיקת הקוד מורכב משלושה חלקים עיקריים:</p>
+<ol>
+<li><strong>בדיקה פונקציונאלית</strong>-<strong>Case Tester</strong>: בדיקה של תוצאות הרצת קוד התלמיד (Output/Return Value) בהשוואה לפתרון המורה.</li>
+<li><strong>בדיקה תחבירית</strong>-<strong>Code Tester</strong>: בדיקה של תחביר ומבנה הקוד (האם הפונקציה רקורסיבית? האם היא סטטית? האם יש לולאות מקוננות?).</li>
+<li><strong>בדיקת בינה מלאכותית</strong>-<strong>AI Tester</strong>: (בפיתוח) בדיקת קוד באמצעות מודל בינה מלאכותית.</li>
+</ol>
+<p>תהליך העבודה כולל פיתוח הבדיקות בסביבת <strong>Visual Studio</strong>, הרצת בדיקות מקומיות על פתרונות אפשריים, ולבסוף העלאת הקבצים לסביבת PeTel.</p>
+<hr>
+<hr>
+<h2 id="הכנת-סביבת-הפיתוח">הכנת סביבת הפיתוח</h2>
+<p>סביבת הפיתוח הנדרשת היא <strong>Visual Studio</strong> (גרסת Community החינמית מספיקה).</p>
+<h3 id="שלבי-התקנה-ודרישות">שלבי התקנה ודרישות:</h3>
+<ol>
+<li>בעת התקנת Visual Studio, יש לוודא שה-Workload בשם <strong>NET desktop development.</strong> מסומן.</li>
+<li>יש לוודא שרכיב <strong>NET Framework 4.7.2.</strong> מותקן (אם חסר, יש להתקינו דרך ה-Installer בלשונית Individual Components).</li>
+</ol>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\vs_installer_workloads.png" alt="..." width="450" height="300">
+</p>
+---
+<h2 id="הורדת-והתקנת-הממשק">הורדת והתקנת הממשק</h2>
+<p>הממשק זמין כפרויקט פתוח ב-GitHub. ניתן להוריד אותו באחת משתי דרכים:</p>
+<ol>
+<li><strong>Cloning</strong>: שכפול הפרויקט באמצעות Git.</li>
+<li><strong>Download ZIP</strong>: הורדת קובץ ZIP ופתיחתו במחשב.</li>
+</ol>
+<p><strong>כתובת המאגר:</strong> <code>https://github.com/MarkmanGilad/PETEL_Tester</code></p>
+<h3 id="אפשרות-1-cloning-דרך-visual-studio">אפשרות 1: Cloning דרך Visual Studio</h3>
+<p>במסך הפתיחה בחר ב-<strong>Clone a repository</strong>, הזן את הכתובת הנ&quot;ל ולחץ על <strong>Clone</strong>.</p>
+<p align="center">
+<img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\vs_clone_repo.png" alt="..." width="450" height="300">
+</p>
+<h3 id="אפשרות-2-הורדת-zip">אפשרות 2: הורדת ZIP</h3>
+<p>באתר GitHub, לחץ על כפתור <strong>Code</strong> ובחר <strong>Download ZIP</strong>. לאחר ההורדה, חלץ את הקבצים (Extract) ופתח את הקובץ <code>PETEL_Tester.slnx</code>.</p>
+<p align="center">
+<img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\zip_download_repo.png" alt="..." width="450" height="300">
+</p>
+---
+<h2 id="יצירת-משימה-חדשה">יצירת משימה חדשה</h2>
+<p>כדי ליצור בדיקה למטלה חדשה, אנו יוצרים פרויקט חדש בתוך ה-Solution הקיים.</p>
+<h3 id="שלב-1-יצירת-פרויקט">שלב 1: יצירת פרויקט</h3>
+<ol>
+<li>בחלון Solution Explorer, לחץ קליק ימני על ה-Solution.</li>
+<li>בחר <strong>Add -&gt; New Project</strong>.</li>
+<li>בחר בסוג פרויקט: <strong>Console App (.NET Framework)</strong> בשפת <strong>C#</strong>.</li>
+<li>תן שם לפרויקט (לדוגמה: <code>CopyQueue</code>) וודא שה-Framework הוא <strong>4.7.2</strong>.</li>
+</ol>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\new_project_console1.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\new_project_console2.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">   
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\new_project_console3.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">   
+</p>
+<h3 id="שלב-2-התקנת-ספריות-nuget">שלב 2: התקנת ספריות (NuGet)</h3>
+<ol>
+<li>לחץ קליק ימני על ה-Solution ובחר <strong>Manage NuGet Packages for Solution</strong>.</li>
+<li>עבור ללשונית <strong>Installed</strong>.</li>
+<li>אתר את הספרייה <strong>Microsoft.CodeAnalysis.CSharp</strong>.</li>
+<li>סמן את הפרויקט החדש שיצרת.</li>
+<li><strong>חשוב מאוד:</strong> וודא שהגרסה המותקנת היא <strong>4.10.0</strong>. <strong>אין לעדכן לגרסה חדשה יותר</strong>. לחץ על Install.</li>
+</ol>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\nuget_manager1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\nuget_manager2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
+</p>
+<h3 id="שלב-3-העתקת-קבצי-המערכת">שלב 3: העתקת קבצי המערכת</h3>
+<p>יש להעתיק לפרויקט החדש את קבצי הליבה של הטסטר מתוך התיקייה <code>PETEL_Tester</code> המקורית.</p>
+<ol>
+<li>קליק ימני על הפרויקט החדש -&gt; <strong>Add -&gt; Existing Item</strong>.</li>
+<li>נווט לתיקיית <code>PETEL_Tester/PETEL_Tester</code>.</li>
+<li>סמן והוסף את כל הקבצים <strong>למעט</strong> <code>Program.cs</code>. הקבצים הנדרשים כוללים את:
+<ul>
+<li><code>CodeAnalyzer.cs</code></li>
+<li><code>MainTester.cs</code></li>
+<li><code>ObjectCloning.cs</code></li>
+<li><code>ObjectComparer.cs</code></li>
+<li><code>StudentAnswer.cs</code></li>
+<li><code>TeacherAnswer.cs</code></li>
+<li><code>Unit4.cs</code></li>
+<li><code>VPLTester.cs</code></li>
+</ul>
+</li>
+</ol>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\add_existing_items1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\add_existing_items2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
+</p>
+<h3 id="שלב-4-הגדרת-פרויקט-ונקודת-כניסה-entry-point">שלב 4: הגדרת פרויקט ונקודת כניסה (Entry Point)</h3>
+<ol>
+<li>קבע את הפרויקט שאותו ברצונך להריץ (startup project)</li>
+<li>קליק ימני על הפרויקט החדש -&gt; <strong>Properties</strong>.</li>
+<li>שנה את ה-<strong>Startup Object</strong> ל-<code>PETEL_VPL.MainTester</code>.</li>
+<li>שמור את השינויים (Ctrl+S).</li>
+</ol>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\startPoint1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\startPoint2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
+</p>
+<br>
+<p>כעת הפרויקט מוכן לפיתוח המשימה. ניתן להריץ (Ctrl+F5) כדי לראות פלט ברירת מחדל.</p>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\test_output1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
+<hr>
+<hr>
+<h2 id="בניית-tester---קבצי-בסיס">בניית Tester - קבצי בסיס</h2>
+<p>תהליך בניית הבדיקה דורש עריכה של שלושה קבצים מרכזיים בפרויקט שיצרנו:</p>
+<ol>
+<li><strong>TeacherAnswer.cs</strong>: קובץ המכיל את הפתרון הנכון (של המורה). משמש כבסיס להשוואה (&quot;האמת&quot;).</li>
+<li><strong>StudentAnswer.cs</strong>: קובץ המדמה פתרון של תלמיד. נשתמש בו כדי לבדוק שהטסטר שלנו מזהה שגיאות נכון (למשל, נכתוב בו פתרון שגוי בכוונה).</li>
+<li><strong>MainTester.cs</strong>: קובץ המנהל את הבדיקות (יוסבר בהרחבה בהמשך).</li>
+</ol>
+<p>יש לכתוב את פתרון המורה והתלמיד. פתרון התלמיד יכול לכלול שגיאות לצורך בדיקת ה Tetser.</p>
+<p>ניקח לדוגמה את השאלה בה נדרש התלמיד לבנות פעולה המעתיקה תור מבלי לפגוע בתור המקורי. תשובת התלמיד שגויה בכך שהיא משנה את התור המקורי.</p>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\teacher_code.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\student_code.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
+</p>
+<hr>
+<h2 id="עבודה-עם-unit4helper">עבודה עם Unit4Helper</h2>
+<p>הממשק כולל מחלקה בשם <code>Unit4Helper</code> המאפשרת יצירה והדפסה קלה של מבני נתונים (רשימות, תורים, מחסניות ועצים) לצורך כתיבת הבדיקות.</p>
+<h3 id="פעולות-עבור-רשימת-חוליות">פעולות עבור רשימת חוליות</h3>
+<pre><code class="language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">NodeLIst</span>()</span>
+{
+    Node&lt;<span class="hljs-built_in">int</span>&gt; lst = Unit4Helper.BuildNodeList(<span class="hljs-keyword">new</span> <span class="hljs-built_in">int</span>[] { <span class="hljs-number">4</span>, <span class="hljs-number">-2</span>, <span class="hljs-number">7</span>, <span class="hljs-number">0</span>, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span> });
+    Unit4Helper.PrintList(lst);
+    <span class="hljs-built_in">int</span>[] arr = Unit4Helper.NodeListToArray(lst);
+    <span class="hljs-built_in">string</span> str = Unit4Helper.NodeListToString(lst);
+    Console.WriteLine(str);
+}
+</code></pre>
+<h3 id="פעולות-של-תור">פעולות של תור</h3>
+<pre><code class="language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">QueueMethods</span>()</span>
+{
+    Queue&lt;<span class="hljs-built_in">int</span>&gt; q = Unit4Helper.BuildQueue(<span class="hljs-keyword">new</span> <span class="hljs-built_in">int</span>[] { <span class="hljs-number">4</span>, <span class="hljs-number">-2</span>, <span class="hljs-number">7</span>, <span class="hljs-number">0</span>, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span> });
+    Console.WriteLine(q);
+    <span class="hljs-built_in">int</span>[] arr = Unit4Helper.QueueToArray(q);
+}
+</code></pre>
+<h3 id="פעולות-של-מחסנית">פעולות של מחסנית</h3>
+<pre><code class="language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">StackMethods</span>()</span> 
+{
+    Stack&lt;<span class="hljs-built_in">int</span>&gt; s = Unit4Helper.BuildStack(<span class="hljs-keyword">new</span> <span class="hljs-built_in">int</span>[] { <span class="hljs-number">4</span>, <span class="hljs-number">-2</span>, <span class="hljs-number">7</span>, <span class="hljs-number">0</span>, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span> });
+    Console.WriteLine(s);
+    <span class="hljs-built_in">int</span>[] arr = Unit4Helper.StackToArray(s);
+}
+</code></pre>
+<h3 id="עצים-בינאריים">עצים בינאריים</h3>
+<p><strong>עצים בינאריים:</strong> ניתן לטעון עץ מקובץ טקסט המייצג את המבנה בהזחות (Tabs)</p>
+<pre><code class="language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">BinTreeMethods</span>()</span>
+{
+  <span class="hljs-built_in">string</span> path = Unit4Helper.GetTreeFilePath(<span class="hljs-string">&quot;tree.txt&quot;</span>);
+  BinNode&lt;<span class="hljs-built_in">int</span>&gt; tree = Unit4Helper.BuildBinaryTree&lt;<span class="hljs-built_in">int</span>&gt;(path);
+  Unit4Helper.PrintBinaryTree(tree);
+  Unit4Helper.PrintBinaryTreeColored(tree);
+  <span class="hljs-built_in">string</span> str = Unit4Helper.BinaryTreeToString(tree);
+  Console.WriteLine(str);
+}
+</code></pre>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\tree_txt.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\tree_print1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\tree_print2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
+<hr>
+<h2 id="בניית-בדיקות-פונקציונליות-case-tester">בניית בדיקות פונקציונליות (Case Tester)</h2>
+<p>הקובץ <code>MainTester.cs</code> הוא הלב של מערכת הבדיקות. עלינו להגדיר את הפונקציה <code>CaseTester</code> שמבצעת את הבדיקות בפועל.</p>
+<h3 id="אתחול-main">אתחול (Main)</h3>
+<p>בפונקציה <code>Main</code>, אנו יוצרים מופע של <code>VPLTester</code> ומגדירים את שמות הקבצים והמחלקות:</p>
+<pre><code class="language-csharp"><span class="hljs-keyword">class</span> <span class="hljs-title">MainTester</span>
+{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>(<span class="hljs-params"><span class="hljs-built_in">string</span>[] args</span>)</span>
+    {
+        <span class="hljs-comment">// Initialize the tester</span>
+        <span class="hljs-keyword">var</span> tester = <span class="hljs-keyword">new</span> VPLTester(
+            studentFile: <span class="hljs-string">&quot;StudentAnswer.cs&quot;</span>,
+            studentNamespace: <span class="hljs-string">&quot;&quot;</span>,
+            studentClassName: <span class="hljs-string">&quot;StudentAnswer&quot;</span>,
+            studentMethodName: <span class="hljs-string">&quot;Copy&quot;</span>,
+            teacherNamespace: <span class="hljs-string">&quot;PETEL_VPL&quot;</span>,
+            teacherClassName: <span class="hljs-string">&quot;TeacherAnswer&quot;</span>,
+            teacherMethodName: <span class="hljs-string">&quot;Copy&quot;</span>,
+            showDetails: <span class="hljs-literal">true</span>
+        );
+
+        <span class="hljs-comment">// Run all test suites</span>
+        CaseTester(tester);
+        CodeTester(tester);
+
+        <span class="hljs-comment">// Display results (VPL parses this output)</span>
+        Console.WriteLine(<span class="hljs-string">&quot;\n&quot;</span> + tester.FormatResponse());
+        Console.WriteLine(<span class="hljs-string">$&quot;Grade :=&gt;&gt; <span class="hljs-subst">{tester.GetGrade()}</span>&quot;</span>);
+    }
+</code></pre>
+<h3 id="הגדרת-בדיקה-testmethod">הגדרת בדיקה (TestMethod)</h3>
+<p>הפונקציה <code>tester.TestMethod</code> מגדירה מקרה בדיקה בודד. להלן הפרמטרים העיקריים:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">פרמטר</th>
+<th style="text-align:left">סוג</th>
+<th style="text-align:left">תיאור</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>testName</strong></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">שם הבדיקה והסבר קצר שיוצג לתלמיד.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>points</strong></td>
+<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left">ניקוד שיינתן במידה והבדיקה עברה.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>parameters</strong></td>
+<td style="text-align:left"><code>object[]</code></td>
+<td style="text-align:left">מערך הפרמטרים שיישלחו לפונקציה הנבדקת.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>compareParams</strong></td>
+<td style="text-align:left"><code>bool</code></td>
+<td style="text-align:left">האם לבדוק שינויים בפרמטרים המקוריים (Side Effects)? (ברירת מחדל: <code>true</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>compareReturn</strong></td>
+<td style="text-align:left"><code>bool</code></td>
+<td style="text-align:left">האם לבדוק את ערך ההחזרה? (ברירת מחדל: <code>true</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>consoleInput</strong></td>
+<td style="text-align:left"><code>object</code></td>
+<td style="text-align:left">קלט למסוף (אם הפונקציה מבקשת קלט מהמשתמש).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>captureConsoleOutput</strong></td>
+<td style="text-align:left"><code>bool</code></td>
+<td style="text-align:left">האם להשוות את הפלט שהודפס למסוף (Console.WriteLine)?</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>exceptionComments</strong></td>
+<td style="text-align:left"><code>Dictionary</code></td>
+<td style="text-align:left">מילון הממיר שגיאות (Exceptions) להודעות מותאמות אישית.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="דוגמה-לתרגיל">דוגמה לתרגיל:</h4>
+<p>כתוב פעולה המקבלת מספר שלם num. הפעולה תקלוט מחירים של מוצרים כמספר ה num. הפעולה תדפיס את סכום המוצרים ותחזיר את הממוצע שלהם.</p>
+<p><strong>בדיקות</strong></p>
+<pre><code class="language-csharp"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">CaseTester</span>(<span class="hljs-params">VPLTester tester</span>)</span>
+{
+    tester.TestMethod(
+        testName: <span class="hljs-string">&quot;Test 1: 3 numbers. capture Console Output&quot;</span>,
+        points: <span class="hljs-number">10</span>,
+        parameters: <span class="hljs-keyword">new</span> <span class="hljs-built_in">object</span>[] { <span class="hljs-number">3</span> },
+        compareParams: <span class="hljs-literal">false</span>,
+        consoleInput: <span class="hljs-keyword">new</span> <span class="hljs-built_in">string</span>[] { <span class="hljs-string">&quot;5&quot;</span>, <span class="hljs-string">&quot;3&quot;</span>, <span class="hljs-string">&quot;7&quot;</span> },
+        captureConsoleOutput: <span class="hljs-literal">true</span>
+    );
+
+    tester.TestMethod(
+        testName: <span class="hljs-string">&quot;Test 2: 3 numbers. Only Compare Return&quot;</span>,
+        points: <span class="hljs-number">10</span>,
+        parameters: <span class="hljs-keyword">new</span> <span class="hljs-built_in">object</span>[] { <span class="hljs-number">3</span> },
+        compareParams: <span class="hljs-literal">false</span>,
+        consoleInput: <span class="hljs-keyword">new</span> <span class="hljs-built_in">string</span>[] { <span class="hljs-string">&quot;5&quot;</span>, <span class="hljs-string">&quot;3&quot;</span>, <span class="hljs-string">&quot;4&quot;</span> },
+        captureConsoleOutput: <span class="hljs-literal">false</span>
+    );
+
+    tester.TestMethod(
+        testName: <span class="hljs-string">&quot;Test 3: 1 numbers&quot;</span>,
+        points: <span class="hljs-number">10</span>,
+        parameters: <span class="hljs-keyword">new</span> <span class="hljs-built_in">object</span>[] { <span class="hljs-number">1</span> },
+        compareParams: <span class="hljs-literal">false</span>,
+        consoleInput: <span class="hljs-string">&quot;3&quot;</span>,
+        captureConsoleOutput: <span class="hljs-literal">true</span>,
+        compareReturn: <span class="hljs-literal">false</span>
+    );
+}
+</code></pre>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\test_output1.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
+</p>
+<hr>
+<h4 id="דוגמה-לתרגיל-נוסף">דוגמה לתרגיל נוסף:</h4>
+<p>כתבו פעולה המעתיקה תור מבלי לפגוע בתור המקורי.</p>
+<ul>
+<li>בדיקה ראשונה – בודק רק את התור המוחזר ולא בודק אם התור המקורי השתנה.</li>
+<li>בדיקה שניה – בודק רק אם התור המקורי השתנה.</li>
+<li>בדיקה שלישית – בודק את שניהם</li>
+</ul>
+<pre><code class="language-csharp"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">CaseTester</span>(<span class="hljs-params">VPLTester tester</span>)</span>
+{
+    Queue&lt;<span class="hljs-built_in">int</span>&gt; q1 = Unit4Helper.BuildQueue(<span class="hljs-keyword">new</span> <span class="hljs-built_in">int</span>[] { <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">-9</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span> });
+    tester.TestMethod(
+        testName: <span class="hljs-string">&quot;Test 1: check the correct return. Don&#x27;t check the original Queue &quot;</span>,
+        points: <span class="hljs-number">10</span>,
+        parameters: <span class="hljs-keyword">new</span> <span class="hljs-built_in">object</span>[] { q1 },
+        compareParams: <span class="hljs-literal">false</span>
+    );
+
+
+    Queue&lt;<span class="hljs-built_in">int</span>&gt; q2 = Unit4Helper.BuildQueue(<span class="hljs-keyword">new</span> <span class="hljs-built_in">int</span>[] { <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">-9</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span> });
+    tester.TestMethod(
+        testName: <span class="hljs-string">&quot;Test 2: check only the original Queue if it changed&quot;</span>,
+        points: <span class="hljs-number">10</span>,
+        parameters: <span class="hljs-keyword">new</span> <span class="hljs-built_in">object</span>[] { q2 },
+        compareParams: <span class="hljs-literal">true</span>, 
+        compareReturn:<span class="hljs-literal">false</span>
+    );
+
+    q2 = Unit4Helper.BuildQueue(<span class="hljs-keyword">new</span> <span class="hljs-built_in">int</span>[] { <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">-9</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span> });
+    tester.TestMethod(
+        testName: <span class="hljs-string">&quot;Test 2: check both return and original&quot;</span>,
+        points: <span class="hljs-number">10</span>,
+        parameters: <span class="hljs-keyword">new</span> <span class="hljs-built_in">object</span>[] { q2 },
+        compareParams: <span class="hljs-literal">true</span>,
+        compareReturn: <span class="hljs-literal">true</span>
+    );
+}
+
+</code></pre>
+<h3 id="הוספת-הודעת-שגיאה-מותאמת-אישית">הוספת הודעת שגיאה מותאמת אישית</h3>
+<p>באפשרותנו להוסיף להודעות השגיאה של המערכת הודעות שגיאה מותאמת אישית.</p>
+<pre><code class="language-csharp"> <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">CaseTester</span>(<span class="hljs-params">VPLTester tester</span>)</span>
+ {
+
+     <span class="hljs-comment">// Optional: Custom exception message</span>
+     <span class="hljs-keyword">var</span> commonExceptionComments = <span class="hljs-keyword">new</span> C.Dictionary&lt;Type, <span class="hljs-built_in">string</span>&gt;
+     {
+         { <span class="hljs-keyword">typeof</span>(NullReferenceException), <span class="hljs-string">&quot;You tried to remove from empty queue&quot;</span> },
+     };
+
+     Queue&lt;<span class="hljs-built_in">int</span>&gt; q1 = Unit4Helper.BuildQueue(<span class="hljs-keyword">new</span> <span class="hljs-built_in">int</span>[] { <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">-9</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span> });
+     tester.TestMethod(
+         testName: <span class="hljs-string">&quot;Test 1: check the correct return. Don&#x27;t check the original Queue &quot;</span>,
+         points: <span class="hljs-number">10</span>,
+         parameters: <span class="hljs-keyword">new</span> <span class="hljs-built_in">object</span>[] { q1 },
+         compareParams: <span class="hljs-literal">false</span>,
+         exceptionComments: commonExceptionComments
+     );
+</code></pre>
+<ul>
+<li>לדוגמה הודעת השגיאה המקורית:</li>
+</ul>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Exception1.png" alt="..." height="100" style="vertical-align: top; margin-right: 8px;">
+</p>
+<ul>
+<li>לאחר השינוי הוספה ההודעה הבאה:</li>
+</ul>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Exception2.png" alt="..." height="150" style="vertical-align: top; margin-right: 8px;">
+</p>
+<hr>
+<hr>
+<h2 id="בניית-בדיקות-מבנה-ותחביר-code-tester">בניית בדיקות מבנה ותחביר (Code Tester)</h2>
+<p>במערכת PeTel ניתן לבדוק דרישות פדגוגיות ומבניות בקוד התלמיד באמצעות <code>CodeAnalyzer</code>. הבדיקות מתבצעות בפונקציה <code>CodeTester</code> ב-<code>MainTester.cs</code>.</p>
+<p>ראשית, יש לאתחל את המנתח ולאחר מכן משתמשים בפונקציה <code>TestCodeStructure</code>.</p>
+<ul>
+<li>נוסיף את שם הבדיקה והסבר.</li>
+<li>מספר הנקודות.</li>
+<li>סוג הבדיקה לפי רשימה קבועה מראש (ראו במהשך).</li>
+<li>פרמטרים נוספים אופציונאליים: כגון הודעת שגיאה.</li>
+</ul>
+<p><strong>לדוגמה:</strong></p>
+<pre><code class="language-csharp"> <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">CodeTester</span>(<span class="hljs-params">VPLTester tester</span>)</span>
+{
+
+    <span class="hljs-comment">// Initialize code analyzer (handles errors internally)</span>
+    tester.InitializeCodeAnalyzer();
+
+    <span class="hljs-comment">// NEW: Check student method parameter list matches teacher method</span>
+    tester.TestCodeStructure(
+        testName: <span class="hljs-string">&quot;Test Params: method signature matches teacher&quot;</span>,
+        points: <span class="hljs-number">5</span>,
+        checkType: CodeStructureCheck.CheckParams,
+        shouldPass: <span class="hljs-literal">true</span>,
+        failureMessage: <span class="hljs-string">&quot;Wrong parameter list. Ensure the method has the same parameters as the teacher (name, count, and types).&quot;</span>
+    );
+
+    <span class="hljs-comment">// NEW: Check return type matches teacher method</span>
+    tester.TestCodeStructure(
+        testName: <span class="hljs-string">&quot;Test Return Type: matches teacher&quot;</span>,
+        points: <span class="hljs-number">5</span>,
+        checkType: CodeStructureCheck.CheckReturnType,
+        shouldPass: <span class="hljs-literal">true</span>,
+        failureMessage: <span class="hljs-string">&quot;Wrong return type. Ensure the method returns the same type as the teacher.&quot;</span>
+    );
+
+    <span class="hljs-comment">// Test 11: Check that the method uses exactly one loop (O(n) complexity)</span>
+    tester.TestCodeStructure(
+        testName: <span class="hljs-string">&quot;Test 11: Uses exactly one loop&quot;</span>,
+        points: <span class="hljs-number">10</span>,
+        checkType: CodeStructureCheck.CountAnyLoop,
+        expectedCount: <span class="hljs-number">1</span>,
+        failureMessage: <span class="hljs-string">&quot;Method must use exactly one loop for O(n) time complexity&quot;</span>
+    );
+</code></pre>
+<hr>
+<h3 id="פרמטרים-של-testcodestructure">פרמטרים של TestCodeStructure:</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">פרמטר</th>
+<th style="text-align:left">סוג (Type)</th>
+<th style="text-align:left">פירוט והסבר</th>
+<th style="text-align:left">חובה/אופציונלי</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>testName</strong></td>
+<td style="text-align:left"><code>String</code></td>
+<td style="text-align:left">שם הבדיקה והסבר קצר שלה. הטקסט יופיע לתלמיד.</td>
+<td style="text-align:left">חובה</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>points</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר הנקודות שיקבל התלמיד אם יעבור את הבדיקה.</td>
+<td style="text-align:left">חובה</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>checkType</strong></td>
+<td style="text-align:left"><code>CodeStructureCheck</code></td>
+<td style="text-align:left">סוג הבדיקה לפי רשימה קבועה מראש (כגון <code>IsRecursive</code>, <code>HasNestedLoops</code> וכו').</td>
+<td style="text-align:left">חובה</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>shouldPass</strong></td>
+<td style="text-align:left"><code>Bool</code></td>
+<td style="text-align:left">האם תוצאת הבדיקה המצופה היא חיובית או שלילית (ברירת מחדל: <code>true</code>).</td>
+<td style="text-align:left">אופציונלי</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>expectedCount</strong></td>
+<td style="text-align:left"><code>Int?</code></td>
+<td style="text-align:left">בבדיקות כמותיות: המספר המצופה (לדוגמה: מספר הלולאות). ברירת מחדל: <code>null</code>.</td>
+<td style="text-align:left">אופציונלי</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>failureMessage</strong></td>
+<td style="text-align:left"><code>String</code></td>
+<td style="text-align:left">הודעת שגיאה שתוצג לתלמיד אם הבדיקה נכשלת. ברירת מחדל: <code>null</code>.</td>
+<td style="text-align:left">אופציונלי</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="סוגי-בדיקות-codestructurecheck">סוגי בדיקות (CodeStructureCheck)</h3>
+<p>להלן רשימה של הבדיקות האפשריות:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">שם הבדיקה (Check Name)</th>
+<th style="text-align:left">ערך מוחזר (Return Type)</th>
+<th style="text-align:left">תיאור הבדיקה</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>IsRecursive</strong></td>
+<td style="text-align:left"><code>bool</code></td>
+<td style="text-align:left">האם קיימת קריאה רקורסיבית בפעולה.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountForLoop</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר לולאות <code>for</code> (לאו דווקא מקוננות) בהן השתמש התלמיד.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountWhileLoop</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר לולאות <code>while</code> (לאו דווקא מקוננות) בהן השתמש התלמיד.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountForEachLoop</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר לולאות <code>forEach</code> (לאו דווקא מקוננות) בהן השתמש התלמיד.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountAnyLoop</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר לולאות מכל סוג בהן השתמש התלמיד (לאו דווקא מקוננות).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountIfStatements</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר משפטי התנאי (<code>if</code>) בהם השתמש התלמיד.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountRecursiveCalls</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר הקריאות הרקורסיביות בפעולה.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountReturnStatements</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר פקודות ה-<code>return</code> בפעולה.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountNewNodes</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר הפקודות <code>new Node&lt;T&gt;</code> בפעולה.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountNewQueue</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר הפקודות <code>new Queue&lt;T&gt;</code> בפעולה.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountNewStack</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר הפקודות <code>new Stack&lt;T&gt;</code> בפעולה.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountNewBinNode</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר הפקודות <code>new BinNode&lt;T&gt;</code> בפעולה.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountSetNext</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר פקודות <code>SetNext</code> של המחלקה <code>Node&lt;T&gt;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CountGetNext</strong></td>
+<td style="text-align:left"><code>Int</code></td>
+<td style="text-align:left">מספר פקודות <code>GetNext</code> של המחלקה <code>Node&lt;T&gt;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>HasNestedLoops</strong></td>
+<td style="text-align:left"><code>Bool</code></td>
+<td style="text-align:left">האם התלמיד השתמש בלולאות מקוננות מכל סוג (משמש לבדיקת סיבוכיות).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>IsStatic</strong></td>
+<td style="text-align:left"><code>Bool</code></td>
+<td style="text-align:left">בדיקת חתימת הפעולה (האם מוגדרת כ-Static).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>IsPublic</strong></td>
+<td style="text-align:left"><code>Bool</code></td>
+<td style="text-align:left">בדיקת חתימת הפעולה (האם מוגדרת כ-Public).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>IsPrivate</strong></td>
+<td style="text-align:left"><code>Bool</code></td>
+<td style="text-align:left">בדיקת חתימת הפעולה (האם מוגדרת כ-Private).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>IsProtected</strong></td>
+<td style="text-align:left"><code>Bool</code></td>
+<td style="text-align:left">בדיקת חתימת הפעולה (האם מוגדרת כ-Protected).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>IsInternal</strong></td>
+<td style="text-align:left"><code>Bool</code></td>
+<td style="text-align:left">בדיקת חתימת הפעולה (האם מוגדרת כ-Internal).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CheckParams</strong></td>
+<td style="text-align:left"><code>Bool</code></td>
+<td style="text-align:left">בדיקת חתימת הפעולה – השוואת הפרמטרים לחתימת פעולת המורה.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>CheckReturnType</strong></td>
+<td style="text-align:left"><code>Bool</code></td>
+<td style="text-align:left">בדיקת חתימת הפעולה – השוואת הערך המוחזר לחתימת פעולת המורה.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="דוגמה-לבדיקת-יעילות-on-ומניעת-לולאות-מקוננות">דוגמה לבדיקת יעילות (O(n)) ומניעת לולאות מקוננות:</h4>
+<pre><code class="language-csharp">tester.TestCodeStructure(
+    testName: <span class="hljs-string">&quot;Test 11: No nested loops (O(n) complexity)&quot;</span>,
+    points: <span class="hljs-number">10</span>,
+    checkType: CodeStructureCheck.HasNestedLoops,
+    shouldPass: <span class="hljs-literal">false</span>, <span class="hljs-comment">// אנו מצפים שהתוצאה תהיה False (אין לולאות מקוננות)</span>
+    failureMessage: <span class="hljs-string">&quot;Method must not have nested loops&quot;</span>
+);
+</code></pre>
+<hr>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\PETEL.png" alt="..." width="600" style="vertical-align: top; margin-right: 8px;">
+</p>
+<h2 id="העלאת-הבדיקה-ל-petel-vpl">העלאת הבדיקה ל-PeTel VPL</h2>
+<p>לאחר שהבדיקות עובדות מקומית ב-Visual Studio, יש ליצור שאלה מתאימה ולהעלות את קבצי הבדיקה לסביבת PeTel (Moodle).</p>
+<h3 id="שלב-1-יצירת-שאלה">שלב 1: יצירת שאלה</h3>
+<ol>
+<li>בתוך Moodle/PeTel, צור פעילות חדשה מסוג <strong>VPL Question</strong>.</li>
+<li>הגדר את שם הקובץ הנדרש מהתלמיד (למשל <code>StudentAnswer.cs</code>).</li>
+</ol>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\StudentAnswer.cs.png" alt="..." width="400" style="vertical-align: top; margin-right: 8px;">
+</p>
+<ol start="3">
+<li>ב&quot;תבנית תשובה&quot; (Answer Template), הדבק את שלד הקוד של <code>StudentAnswer</code> ומחק את הקטעים הרלוונטיים.</li>
+</ol>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Student_template.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Teacher_example.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
+<h3 id="שלב-2-העלאת-קבצי-הבדיקה-upload">שלב 2: העלאת קבצי הבדיקה (Upload)</h3>
+<p>יש להעלות ל-VPL שני סוגי קבצים דרך ממשק <strong>PETEL_Tester</strong>:</p>
+<p>ללחוץ על פלוס (+)</p>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Upload1.png" alt="..." width="600" style="vertical-align: top; margin-right: 8px;">
+</p>
+<p>ללחוץ על חץ למעלה (↑)</p>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Upload2.png" alt="..." width="600" style="vertical-align: top; margin-right: 8px;">
+</p>
+<h4 id="א-קבצי-מערכת-כלליים-common-files">א. קבצי מערכת כלליים (Common Files)</h4>
+<p>קבצים אלו זהים לכל המשימות ונמצאים בתיקיית <code>Upload</code> בתיקייה שהורדתם מ-GitHub. יש להעלות את:</p>
+<ul>
+<li><code>Tester.exe.b64</code> (הגרסה המקומפלת של מנוע הבדיקה)</li>
+<li><code>vpl_evaluate.sh</code> (סקריפט הרצה)</li>
+<li><code>vpl_run.sh</code></li>
+</ul>
+<p>יש לאתר את הספריה Upload בתוך הפרויקט שלכם, לסמן את שלושת הקבצים בספריה, ולהעלות אותם (עזרה באיתור הספריה ראה בהמשך). קבצים אילו קבועים בכל המשימות.</p>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Upload3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
+<p><strong>איתור ספריית Upload</strong>: על מנת לאתר את ספריית העבודה במחשב שלנו נלחץ קליק ימני על ה solution שלנו. בחירה ב Open in File Explorer. ניתן להעתיק את הנתיב של הפרויקט ולהשתמש בו בחלון העלאה של ה PETEL.</p>
+  <table style="margin-left: auto; margin-right: auto;">
+    <tbody>
+      <tr>
+        <td><img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Find_upload2.png" alt="..." height="250"><br>
+          <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Find_upload3.png" alt="..." height="250"></td>
+        <td><img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Find_upload1.png" alt="..." height="450"></td>
+      </tr>
+    </tbody>
+  </table>
+
+<h4 id="ב-קבצי-המשימה-הספציפית">ב. קבצי המשימה הספציפית</h4>
+<p>בשלב הבא נעלה את הקבצים של המשימה הספציפית. קבצים מתוך תיקיית הפרויקט שיצרתם (למשל <code>CopyQueue</code>).</p>
+<ul>
+<li>ללחוץ שוב על החץ למעלה</li>
+<li>לאתר את הספריה של הפרויקט</li>
+<li>לסמן רק את שני הקבצים: MainTester.cs, TeacherAnswer.cs</li>
+<li>לעלות את הקבצים ולשמור.</li>
+</ul>
+<p><strong>שים לב:</strong> אין להעלות את <code>StudentAnswer.cs</code> או קבצים אחרים שלא צוינו.</p>
+<p><strong>העלאת הקבצים</strong></p>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\Upload4.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
+<h3 id="שלב-3-אימות-verification">שלב 3: אימות (Verification)</h3>
+<ol>
+<li>לחץ על שמירה.</li>
+<li>עבור ללשונית &quot;תצוגה מקדימה&quot; (Preview).</li>
+</ol>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\validate1.png" alt="..." width="500" style="vertical-align: top; margin-right: 8px;">
+</p>
+<ol start="4">
+<li>הדבק פתרון תקין (או שגוי) בחלון העורך ולחץ על <strong>בדיקה</strong> (Check).</li>
+<li>וודא שהפלט המתקבל זהה לפלט שראית ב-Visual Studio.</li>
+</ol>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\validate2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\validate3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
+<hr>
+<p align="center">
+   <img src="file:///c:\Users\Gilad\source\repos\PETEL_Tester\images\TheEnd.png" alt="..." height="400" style="vertical-align: top; margin-right: 8px;">
+</p>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>
