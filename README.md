@@ -94,8 +94,8 @@
 5. **חשוב מאוד:** וודא שהגרסה המותקנת היא **4.10.0**. **אין לעדכן לגרסה חדשה יותר**. לחץ על Install.
 
 <p align="center">
-   <img src="images\nuget_manager1.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">
-   <img src="images\nuget_manager2.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">   
+   <img src="images\nuget_manager1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\nuget_manager2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
 </p>
 
 
@@ -114,8 +114,8 @@
     * `VPLTester.cs`
 
 <p align="center">
-   <img src="images\add_existing_items1.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">
-   <img src="images\add_existing_items2.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">   
+   <img src="images\add_existing_items1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\add_existing_items2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
 </p>
 
 
@@ -126,11 +126,17 @@
 4. שמור את השינויים (Ctrl+S).
 
 <p align="center">
-   <img src="images\startPoint1.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">
-   <img src="images\startPoint2.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">   
+   <img src="images\startPoint1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\startPoint2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
 </p>
+<br>
 
 כעת הפרויקט מוכן לפיתוח המשימה. ניתן להריץ (Ctrl+F5) כדי לראות פלט ברירת מחדל.
+
+
+<p align="center">
+   <img src="images\RunTetser.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
 
 ---
 
@@ -142,6 +148,14 @@
 2. **StudentAnswer.cs**: קובץ המדמה פתרון של תלמיד. נשתמש בו כדי לבדוק שהטסטר שלנו מזהה שגיאות נכון (למשל, נכתוב בו פתרון שגוי בכוונה).
 3. **MainTester.cs**: קובץ המנהל את הבדיקות (יוסבר בהרחבה בהמשך).
 
+יש לכתוב את פתרון המורה והתלמיד. פתרון התלמיד יכול לכלול שגיאות לצורך בדיקת ה Tetser. 
+
+ניקח לדוגמה את השאלה בה נדרש התלמיד לבנות פעולה המעתיקה תור מבלי לפגוע בתור המקורי. תשובת התלמיד שגויה בכך שהיא משנה את התור המקורי.
+
+<p align="center">
+   <img src="images\teacher_code.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\student_code.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
+</p>
 ![Student vs Teacher Answer Code](images/student_teacher_code.png)
 
 ---
