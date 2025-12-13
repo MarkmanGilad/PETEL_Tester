@@ -39,6 +39,7 @@ namespace PETEL_VPL
                 { typeof(NullReferenceException), "You advanced past the end of the list (node became null) " },
                 { typeof(InvalidOperationException), "You invoked an operation (Pop/Peek/Dequeue) on an empty stack/queue. Check Count > 0 before accessing." }
             };
+
             Queue<int> q1 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
 
             tester.TestMethod(

@@ -27,7 +27,6 @@ namespace Unit4
         public Node<T> GetNext() { return this.next; }
         public void SetNext(Node<T> next) { this.next = next; }
         public bool HasNext() { return this.next != null; }
-
         public override string ToString()
         {
             return "" + this.value;
@@ -38,12 +37,12 @@ namespace Unit4
     public class Queue<T>
     {
         private Node<T> head;
-        private Node<T> teal;
+        private Node<T> tale;
 
         public Queue()
         {
             this.head = null;
-            this.teal = null;
+            this.tale = null;
         }
 
         public bool IsEmpty()
@@ -58,33 +57,24 @@ namespace Unit4
             if (IsEmpty())
             {
                 head = newNode;
-                teal = newNode;
+                tale = newNode;
             }
             else
             {
-                teal.SetNext(newNode);
-                teal = newNode;
+                tale.SetNext(newNode);
+                tale = newNode;
             }
         }
 
-        internal void Insert(object p)
-        {
-            throw new NotImplementedException();
-        }
 
         public T Remove()
         {
-            if (IsEmpty())
-            {
-                throw new InvalidOperationException("Queue is empty");
-            }
-
             T x = this.head.GetValue();
             this.head = this.head.GetNext();
 
             if (this.head == null)
             {
-                this.teal = null;
+                this.tale = null;
             }
 
             return x;
@@ -92,28 +82,8 @@ namespace Unit4
 
         public T Head()
         {
-            if (IsEmpty())
-            {
-                throw new InvalidOperationException("Queue is empty");
-            }
 
             return this.head.GetValue();
-        }
-
-        public Queue<T> Clone(Queue<T> Q)
-        {
-            Queue<T> temp = new Queue<T>();
-            Queue<T> temp1 = new Queue<T>();
-            if (Q.IsEmpty())
-                return temp;
-            while (!Q.IsEmpty())
-            {
-                temp.Insert(Q.Head());
-                temp1.Insert(Q.Remove());
-            }
-            while (!temp1.IsEmpty())
-                Q.Insert(temp1.Remove());
-            return temp;
         }
 
         public override string ToString()
@@ -165,7 +135,7 @@ namespace Unit4
 
         public override String ToString()
         {
-            String s = "Stack  -->  [ ";
+            String s = "[ ";
             Node<T> p = this.top;
             while (p != null)
             {
@@ -286,6 +256,24 @@ namespace Unit4
         }
 
         /// <summary>
+        /// Clone a queue without changing the original queue
+        public static Queue<T> Clone<T>(Queue<T> Q)
+        {
+            Queue<T> temp = new Queue<T>();
+            Queue<T> temp1 = new Queue<T>();
+            if (Q.IsEmpty())
+                return temp;
+            while (!Q.IsEmpty())
+            {
+                temp.Insert(Q.Head());
+                temp1.Insert(Q.Remove());
+            }
+            while (!temp1.IsEmpty())
+                Q.Insert(temp1.Remove());
+            return temp;
+        }
+
+        /// <summary>
         /// Converts a linked list back to an array
         /// Useful for testing and verification
         /// </summary>
@@ -365,7 +353,7 @@ namespace Unit4
                 return new T[0];
 
             // Clone the queue to preserve original
-            Queue<T> temp = queue.Clone(queue);
+            Queue<T> temp = Clone(queue);
             System.Collections.Generic.List<T> list = new System.Collections.Generic.List<T>();
 
             // Remove all elements and collect values

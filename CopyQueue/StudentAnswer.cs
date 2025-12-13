@@ -11,6 +11,7 @@ class StudentAnswer
 
             q1.Insert(item);
         }
+        //q.Remove();
         return q1;
     }
 }
