@@ -156,7 +156,6 @@
    <img src="images\teacher_code.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
    <img src="images\student_code.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
 </p>
-![Student vs Teacher Answer Code](images/student_teacher_code.png)
 
 ---
 
