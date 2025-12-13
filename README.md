@@ -124,6 +124,11 @@
 2. שנה את ה-**Startup Object** ל-`PETEL_VPL.MainTester`.
 3. שמור את השינויים (Ctrl+S).
 
+<p align="center">
+   <img src="images\startPoint1.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\startPoint2.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">   
+</p>
+
 כעת הפרויקט מוכן לפיתוח המשימה. ניתן להריץ (Ctrl+F5) כדי לראות פלט ברירת מחדל.
 
 ---
