@@ -35,8 +35,8 @@
 סביבת הפיתוח הנדרשת היא **Visual Studio** (גרסת Community החינמית מספיקה).
 
 ### שלבי התקנה ודרישות:
-1. בעת התקנת Visual Studio, יש לוודא שה-Workload בשם **.NET desktop development** מסומן.
-2. יש לוודא שרכיב **.NET Framework 4.7.2** מותקן (אם חסר, יש להתקינו דרך ה-Installer בלשונית Individual Components).
+1. בעת התקנת Visual Studio, יש לוודא שה-Workload בשם **NET desktop development.** מסומן.
+2. יש לוודא שרכיב **NET Framework 4.7.2.** מותקן (אם חסר, יש להתקינו דרך ה-Installer בלשונית Individual Components).
 
 ![Visual Studio Installer Workloads](images/vs_installer_workloads.png)
 
