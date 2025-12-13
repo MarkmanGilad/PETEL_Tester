@@ -511,8 +511,8 @@ tester.TestCodeStructure(
 3. ב"תבנית תשובה" (Answer Template), הדבק את שלד הקוד של `StudentAnswer` ומחק את הקטעים הרלוונטיים.
 
 <p align="center">
-   <img src="images\Student_template.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
-   <img src="images\Teacher_example.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\Student_template.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\Teacher_example.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
 </p>
 
 
@@ -520,6 +520,14 @@ tester.TestCodeStructure(
 
 ### שלב 2: העלאת קבצי הבדיקה (Upload)
 יש להעלות ל-VPL שני סוגי קבצים דרך ממשק **PETEL_Tester**:
+
+<p align="center">
+   <img src="images\Upload1.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">
+</p>
+<p align="center">
+   <img src="images\Upload2.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">
+</p>
+
 
 #### א. קבצי מערכת כלליים (Common Files)
 קבצים אלו זהים לכל המשימות ונמצאים בתיקיית `Upload` בתיקייה שהורדתם מ-GitHub. יש להעלות את:
