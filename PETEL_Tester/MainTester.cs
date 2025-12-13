@@ -33,7 +33,7 @@ namespace PETEL_VPL
 
         private static void CaseTester(VPLTester tester)
         {
-            // Optional: shared comments for this suite (can also pass per-call)
+            // Optional: Custom exception message
             var commonExceptionComments = new C.Dictionary<Type, string>
             {
                 { typeof(NullReferenceException), "You advanced past the end of the list (node became null) " },
@@ -73,23 +73,22 @@ namespace PETEL_VPL
             // Initialize code analyzer (handles errors internally)
             tester.InitializeCodeAnalyzer();
 
-
-            // Test 11: Check that the method uses exactly one loop (O(n) complexity)
+            // Test 11: Verify no nested loops (ensures O(n) not O(n²))
             tester.TestCodeStructure(
-                testName: "Test 11: Uses exactly one loop",
-                points: 10,
-                checkType: CodeStructureCheck.CountAnyLoop,
-                expectedCount: 1,
-                failureMessage: "Method must use exactly one loop for O(n) time complexity"
-            );
-
-            // Test 12: Verify no nested loops (ensures O(n) not O(n²))
-            tester.TestCodeStructure(
-                testName: "Test 12: No nested loops (O(n) complexity)",
+                testName: "Test 11: No nested loops (O(n) complexity)",
                 points: 10,
                 checkType: CodeStructureCheck.HasNestedLoops,
                 shouldPass: false,  // We want HasNestedLoops to return FALSE
                 failureMessage: "Method must not have nested loops to maintain O(n) complexity"
+            );
+
+            // Test 12: Check that the method uses exactly one loop (O(n) complexity)
+            tester.TestCodeStructure(
+                testName: "Test 12: Uses exactly one loop",
+                points: 10,
+                checkType: CodeStructureCheck.CountAnyLoop,
+                expectedCount: 1,
+                failureMessage: "Method must use exactly one loop for O(n) time complexity"
             );
 
             // Test 13: Check for if statements (input validation and comparison logic)

@@ -34,12 +34,10 @@ namespace PETEL_VPL
         private static void CaseTester(VPLTester tester)
         {
 
-            // Optional: shared comments for this suite (can also pass per-call)
+            // Optional: Custom exception message
             var commonExceptionComments = new C.Dictionary<Type, string>
             {
                 { typeof(NullReferenceException), "You tried to remove from empty queue" },
-                { typeof(InvalidOperationException), "You invoked an operation (Pop/Peek/Dequeue) on an empty stack/queue. Check Count > 0 before accessing." }
-
             };
 
             Queue<int> q1 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
