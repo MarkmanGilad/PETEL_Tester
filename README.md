@@ -1,4 +1,7 @@
-![LOGO](images/Logo.png)
+<p align="center">
+   <img src="images/Logo.png" alt="..." width="450" height="300">   
+</p>
+
 
 # ממשק לבדיקת קוד - PeTel Tester C#
 
@@ -38,8 +41,9 @@
 1. בעת התקנת Visual Studio, יש לוודא שה-Workload בשם **NET desktop development.** מסומן.
 2. יש לוודא שרכיב **NET Framework 4.7.2.** מותקן (אם חסר, יש להתקינו דרך ה-Installer בלשונית Individual Components).
 
-<img src="images/vs_installer_workloads.png" alt="..." width="450" height="300">
-
+<p align="center">
+   <img src="images/vs_installer_workloads.png" alt="..." width="450" height="300">
+</p>
 ---
 
 ## הורדת והתקנת הממשק
@@ -53,14 +57,16 @@
 
 ### אפשרות 1: Cloning דרך Visual Studio
 במסך הפתיחה בחר ב-**Clone a repository**, הזן את הכתובת הנ"ל ולחץ על **Clone**.
-
+<p align="center">
 <img src="images/vs_clone_repo.png" alt="..." width="450" height="300">
-
+</p>
 
 ### אפשרות 2: הורדת ZIP
 באתר GitHub, לחץ על כפתור **Code** ובחר **Download ZIP**. לאחר ההורדה, חלץ את הקבצים (Extract) ופתח את הקובץ `PETEL_Tester.slnx`.
 
+<p align="center">
 <img src="images/zip_download_repo.png" alt="..." width="450" height="300">
+</p>
 ---
 
 ## יצירת משימה חדשה
@@ -73,9 +79,10 @@
 3. בחר בסוג פרויקט: **Console App (.NET Framework)** בשפת **C#**.
 4. תן שם לפרויקט (לדוגמה: `CopyQueue`) וודא שה-Framework הוא **4.7.2**.
 
-<p>
-   <img src="images\new_project_console1.png" alt="..." width="450" height="300" style="vertical-align: top; margin-right: 8px;">
-   <img src="images\new_project_console2.png" alt="..." width="450" height="300" style="vertical-align: top; margin-right: 8px;">   
+<p align="center">
+   <img src="images\new_project_console1.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\new_project_console2.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">   
+   <img src="images\new_project_console3.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">   
 </p>
 
 
@@ -86,7 +93,11 @@
 4. סמן את הפרויקט החדש שיצרת.
 5. **חשוב מאוד:** וודא שהגרסה המותקנת היא **4.10.0**. **אין לעדכן לגרסה חדשה יותר**. לחץ על Install.
 
-![NuGet Package Manager](images/nuget_manager.png)
+<p align="center">
+   <img src="images\nuget_manager1.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\nuget_manager2.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">   
+</p>
+
 
 ### שלב 3: העתקת קבצי המערכת
 יש להעתיק לפרויקט החדש את קבצי הליבה של הטסטר מתוך התיקייה `PETEL_Tester` המקורית.
@@ -102,7 +113,11 @@
     * `Unit4.cs`
     * `VPLTester.cs`
 
-![Add Existing Items](images/add_existing_items.png)
+<p align="center">
+   <img src="images\add_existing_items1.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\add_existing_items2.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">   
+</p>
+
 
 ### שלב 4: הגדרת נקודת כניסה (Entry Point)
 1. קליק ימני על הפרויקט החדש -> **Properties**.
