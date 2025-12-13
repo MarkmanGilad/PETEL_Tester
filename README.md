@@ -504,14 +504,14 @@ tester.TestCodeStructure(
 ### שלב 1: יצירת שאלה
 1. בתוך Moodle/PeTel, צור פעילות חדשה מסוג **VPL Question**.
 2. הגדר את שם הקובץ הנדרש מהתלמיד (למשל `StudentAnswer.cs`).
-3. ב"תבנית תשובה" (Answer Template), הדבק את שלד הקוד של `StudentAnswer` ומחק את הקטעים הרלוונטיים.
-
 <p align="center">
    <img src="images\StudentAnswer.cs.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
 </p>
 
+3. ב"תבנית תשובה" (Answer Template), הדבק את שלד הקוד של `StudentAnswer` ומחק את הקטעים הרלוונטיים.
+
 <p align="center">
-   <img src="images\Answer_template.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\Student_template.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
    <img src="images\Teacher_example.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
 </p>
 
