@@ -549,20 +549,29 @@ tester.TestCodeStructure(
 **איתור ספריית Upload**: על מנת לאתר את ספריית העבודה במחשב שלנו נלחץ קליק ימני על ה solution שלנו. בחירה ב Open in File Explorer. ניתן להעתיק את הנתיב של הפרויקט ולהשתמש בו בחלון העלאה של ה PETEL.
 
 <p align="center">
-   <img src="images\Find_upload1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
-   <img src="images\Find_upload2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
-   <img src="images\Find_upload3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+
+|  |  |
+|---|---|
+| <img src="images/Find_upload2.png" alt="..." height="250"><br><img src="images/Find_upload3.png" alt="..." height="250"> | <img src="images/Find_upload1.png" alt="..." height="450"> |
+
 </p>
+
+
 #### ב. קבצי המשימה הספציפית
-קבצים מתוך תיקיית הפרויקט שיצרתם (למשל `CopyQueue`):
-* `MainTester.cs` (קובץ הבדיקות שכתבתם)
-* `TeacherAnswer.cs` (פתרון המורה)
+
+בשלב הבא נעלה את הקבצים של המשימה הספציפית. קבצים מתוך תיקיית הפרויקט שיצרתם (למשל `CopyQueue`). 
+* ללחוץ שוב על החץ למעלה
+* לאתר את הספריה של הפרויקט
+* לסמן רק את שני הקבצים: MainTester.cs, TeacherAnswer.cs
+* לעלות את הקבצים ולשמור.
 
 **שים לב:** אין להעלות את `StudentAnswer.cs` או קבצים אחרים שלא צוינו.
 
 **העלאת הקבצים**
 
-![Upload Files to VPL](images/vpl_upload_screen.png)
+<p align="center">
+   <img src="images\Upload4.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
 
 ### שלב 3: אימות (Verification)
 1. לחץ על שמירה.
