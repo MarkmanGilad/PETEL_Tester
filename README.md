@@ -73,7 +73,8 @@
 3. בחר בסוג פרויקט: **Console App (.NET Framework)** בשפת **C#**.
 4. תן שם לפרויקט (לדוגמה: `CopyQueue`) וודא שה-Framework הוא **4.7.2**.
 
-![New Project Selection](images/new_project_console.png)
+<img src="images\new_project_console1.png" alt="..." width="450" height="300">
+<img src="images\new_project_console2.png" alt="..." width="450" height="300">
 
 ### שלב 2: התקנת ספריות (NuGet)
 1. לחץ קליק ימני על ה-Solution ובחר **Manage NuGet Packages for Solution**.
