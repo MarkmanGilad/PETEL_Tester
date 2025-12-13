@@ -546,8 +546,13 @@ tester.TestCodeStructure(
    <img src="images\Upload3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
 </p>
 
+**איתור ספריית Upload**: על מנת לאתר את ספריית העבודה במחשב שלנו נלחץ קליק ימני על ה solution שלנו. בחירה ב Open in File Explorer. ניתן להעתיק את הנתיב של הפרויקט ולהשתמש בו בחלון העלאה של ה PETEL.
 
-
+<p align="center">
+   <img src="images\Upload3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\Upload3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\Upload3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
 #### ב. קבצי המשימה הספציפית
 קבצים מתוך תיקיית הפרויקט שיצרתם (למשל `CopyQueue`):
 * `MainTester.cs` (קובץ הבדיקות שכתבתם)
