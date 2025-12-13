@@ -387,17 +387,55 @@ private static void CaseTester(VPLTester tester)
 </p>
 
 ---
+---
 
 ## בניית בדיקות מבנה ותחביר (Code Tester)
 
 במערכת PeTel ניתן לבדוק דרישות פדגוגיות ומבניות בקוד התלמיד באמצעות `CodeAnalyzer`. הבדיקות מתבצעות בפונקציה `CodeTester` ב-`MainTester.cs`.
 
-ראשית, יש לאתחל את המנתח:
+ראשית, יש לאתחל את המנתח ולאחר מכן משתמשים בפונקציה `TestCodeStructure`. 
+* נוסיף את שם הבדיקה והסבר.
+* מספר הנקודות.
+* סוג הבדיקה לפי רשימה קבועהמראש (ראו במהשך).
+* פרמטרים נוספים אופציונאליים:כגון הודעת שגיאה.
+
+**לדוגמה:**
 ```csharp
-tester.InitializeCodeAnalyzer();
+ private static void CodeTester(VPLTester tester)
+{
+
+    // Initialize code analyzer (handles errors internally)
+    tester.InitializeCodeAnalyzer();
+
+    // NEW: Check student method parameter list matches teacher method
+    tester.TestCodeStructure(
+        testName: "Test Params: method signature matches teacher",
+        points: 5,
+        checkType: CodeStructureCheck.CheckParams,
+        shouldPass: true,
+        failureMessage: "Wrong parameter list. Ensure the method has the same parameters as the teacher (name, count, and types)."
+    );
+
+    // NEW: Check return type matches teacher method
+    tester.TestCodeStructure(
+        testName: "Test Return Type: matches teacher",
+        points: 5,
+        checkType: CodeStructureCheck.CheckReturnType,
+        shouldPass: true,
+        failureMessage: "Wrong return type. Ensure the method returns the same type as the teacher."
+    );
+
+    // Test 11: Check that the method uses exactly one loop (O(n) complexity)
+    tester.TestCodeStructure(
+        testName: "Test 11: Uses exactly one loop",
+        points: 10,
+        checkType: CodeStructureCheck.CountAnyLoop,
+        expectedCount: 1,
+        failureMessage: "Method must use exactly one loop for O(n) time complexity"
+    );
 ```
 
-לאחר מכן משתמשים בפונקציה `TestCodeStructure`.
+
 
 ### סוגי בדיקות נפוצות (CodeStructureCheck)
 להלן רשימה חלקית של הבדיקות האפשריות:
