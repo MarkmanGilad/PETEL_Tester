@@ -435,20 +435,51 @@ private static void CaseTester(VPLTester tester)
     );
 ```
 
+---
+### פרמטרים של TestCodeStructure:
 
 
-### סוגי בדיקות נפוצות (CodeStructureCheck)
-להלן רשימה חלקית של הבדיקות האפשריות:
+| פרמטר | סוג (Type) | פירוט והסבר | חובה/אופציונלי |
+| :--- | :--- | :--- | :--- |
+| **testName** | `String` | שם הבדיקה והסבר קצר שלה. הטקסט יופיע לתלמיד. | חובה |
+| **points** | `Int` | מספר הנקודות שיקבל התלמיד אם יעבור את הבדיקה. | חובה |
+| **checkType** | `CodeStructureCheck` | סוג הבדיקה לפי רשימה קבועה מראש (כגון `IsRecursive`, `HasNestedLoops` וכו'). | חובה |
+| **shouldPass** | `Bool` | האם תוצאת הבדיקה המצופה היא חיובית או שלילית (ברירת מחדל: `true`). | אופציונלי |
+| **expectedCount** | `Int?` | בבדיקות כמותיות: המספר המצופה (לדוגמה: מספר הלולאות). ברירת מחדל: `null`. | אופציונלי |
+| **failureMessage** | `String` | הודעת שגיאה שתוצג לתלמיד אם הבדיקה נכשלת. ברירת מחדל: `null`. | אופציונלי |
 
-| בדיקה | תיאור |
-| :--- | :--- |
-| **IsRecursive** | האם קיימת קריאה רקורסיבית? |
-| **IsStatic** / **IsPublic** | בדיקת חתימת הפעולה. |
-| **HasNestedLoops** | האם יש לולאות מקוננות? (חשוב לבדיקת יעילות). |
-| **CountForLoop** / **CountWhileLoop** | ספירת כמות לולאות. |
-| **CountIfStatements** | ספירת משפטי תנאי. |
-| **CountNewQueue** / **CountNewStack** | בדיקה אם התלמיד יצר מבני עזר חדשים. |
-| **CountReturnStatements** | בדיקת כמות הוראות return. |
+---
+
+### סוגי בדיקות (CodeStructureCheck)
+להלן רשימה של הבדיקות האפשריות:
+
+| שם הבדיקה (Check Name) | ערך מוחזר (Return Type) | תיאור הבדיקה |
+| :--- | :--- | :--- |
+| **IsRecursive** | `bool` | האם קיימת קריאה רקורסיבית בפעולה. |
+| **CountForLoop** | `Int` | מספר לולאות `for` (לאו דווקא מקוננות) בהן השתמש התלמיד. |
+| **CountWhileLoop** | `Int` | מספר לולאות `while` (לאו דווקא מקוננות) בהן השתמש התלמיד. |
+| **CountForEachLoop** | `Int` | מספר לולאות `forEach` (לאו דווקא מקוננות) בהן השתמש התלמיד. |
+| **CountAnyLoop** | `Int` | מספר לולאות מכל סוג בהן השתמש התלמיד (לאו דווקא מקוננות). |
+| **CountIfStatements** | `Int` | מספר משפטי התנאי (`if`) בהם השתמש התלמיד. |
+| **CountRecursiveCalls** | `Int` | מספר הקריאות הרקורסיביות בפעולה. |
+| **CountReturnStatements** | `Int` | מספר פקודות ה-`return` בפעולה. |
+| **CountNewNodes** | `Int` | מספר הפקודות `new Node<T>` בפעולה. |
+| **CountNewQueue** | `Int` | מספר הפקודות `new Queue<T>` בפעולה. |
+| **CountNewStack** | `Int` | מספר הפקודות `new Stack<T>` בפעולה. |
+| **CountNewBinNode** | `Int` | מספר הפקודות `new BinNode<T>` בפעולה. |
+| **CountSetNext** | `Int` | מספר פקודות `SetNext` של המחלקה `Node<T>`. |
+| **CountGetNext** | `Int` | מספר פקודות `GetNext` של המחלקה `Node<T>`. |
+| **HasNestedLoops** | `Bool` | האם התלמיד השתמש בלולאות מקוננות מכל סוג (משמש לבדיקת סיבוכיות). |
+| **IsStatic** | `Bool` | בדיקת חתימת הפעולה (האם מוגדרת כ-Static). |
+| **IsPublic** | `Bool` | בדיקת חתימת הפעולה (האם מוגדרת כ-Public). |
+| **IsPrivate** | `Bool` | בדיקת חתימת הפעולה (האם מוגדרת כ-Private). |
+| **IsProtected** | `Bool` | בדיקת חתימת הפעולה (האם מוגדרת כ-Protected). |
+| **IsInternal** | `Bool` | בדיקת חתימת הפעולה (האם מוגדרת כ-Internal). |
+| **CheckParams** | `Bool` | בדיקת חתימת הפעולה – השוואת הפרמטרים לחתימת פעולת המורה. |
+| **CheckReturnType** | `Bool` | בדיקת חתימת הפעולה – השוואת הערך המוחזר לחתימת פעולת המורה. |
+
+---
+
 
 #### דוגמה לבדיקת יעילות (O(n)) ומניעת לולאות מקוננות:
 ```csharp
@@ -462,7 +493,9 @@ tester.TestCodeStructure(
 ```
 
 ---
-
+<p align="center">
+   <img src="images\PETEL.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
+</p>
 ## העלאת הבדיקה ל-PeTel VPL
 
 לאחר שהבדיקות עובדות מקומית ב-Visual Studio, יש להעלות את הקבצים לסביבת PeTel (Moodle).
