@@ -23,7 +23,7 @@ namespace PETEL_VPL
 
             // Run all test suites
             CaseTester(tester);
-            //CodeTester(tester);
+            CodeTester(tester);
 
             // Display results (VPL parses this output)
             Console.WriteLine("\n" + tester.FormatResponse());
