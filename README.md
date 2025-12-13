@@ -313,6 +313,80 @@ private static void CaseTester(VPLTester tester)
 
 ---
 
+#### דוגמה לתרגיל נוסף:
+כתבו פעולה המעתיקה תור מבלי לפגוע בתור המקורי.
+* בדיקה ראשונה – בודק רק את התור המוחזר ולא בודק אם התור המקורי השתנה.
+* בדיקה שניה – בודק רק אם התור המקורי השתנה.
+* בדיקה שלישית – בודק את שניהם
+```csharp
+private static void CaseTester(VPLTester tester)
+{
+    Queue<int> q1 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
+    tester.TestMethod(
+        testName: "Test 1: check the correct return. Don't check the original Queue ",
+        points: 10,
+        parameters: new object[] { q1 },
+        compareParams: false
+    );
+
+
+    Queue<int> q2 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
+    tester.TestMethod(
+        testName: "Test 2: check only the original Queue if it changed",
+        points: 10,
+        parameters: new object[] { q2 },
+        compareParams: true, 
+        compareReturn:false
+    );
+
+    q2 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
+    tester.TestMethod(
+        testName: "Test 2: check both return and original",
+        points: 10,
+        parameters: new object[] { q2 },
+        compareParams: true,
+        compareReturn: true
+    );
+}
+
+```
+
+### הוספת הודעת שגיאה מותאמת אישית
+
+באפשרותנו להוסיף להודעות השגיאה של המערכת הודעות שגיאה מותאמת אישית.
+
+```csharp
+ private static void CaseTester(VPLTester tester)
+ {
+
+     // Optional: Custom exception message
+     var commonExceptionComments = new C.Dictionary<Type, string>
+     {
+         { typeof(NullReferenceException), "You tried to remove from empty queue" },
+     };
+
+     Queue<int> q1 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
+     tester.TestMethod(
+         testName: "Test 1: check the correct return. Don't check the original Queue ",
+         points: 10,
+         parameters: new object[] { q1 },
+         compareParams: false,
+         exceptionComments: commonExceptionComments
+     );
+```
+
+* לדוגמה הודעת השגיאה המקורית:
+<p align="center">
+   <img src="images\Exception1.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
+</p>
+
+* לאחר השינוי הוספה ההודעה הבאה:
+<p align="center">
+   <img src="images\Exception2.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
+</p>
+
+---
+
 ## בניית בדיקות מבנה ותחביר (Code Tester)
 
 במערכת PeTel ניתן לבדוק דרישות פדגוגיות ומבניות בקוד התלמיד באמצעות `CodeAnalyzer`. הבדיקות מתבצעות בפונקציה `CodeTester` ב-`MainTester.cs`.
