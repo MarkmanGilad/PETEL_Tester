@@ -200,10 +200,6 @@ public static void StackMethods()
 ### פעצים בינאריים
 **עצים בינאריים:** ניתן לטעון עץ מקובץ טקסט המייצג את המבנה בהזחות (Tabs)
 
-<p align="center">
-   <img src="images\tree_txt.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
-</p>
-
 
   ```csharp
 public static void BinTreeMethods()
@@ -218,7 +214,9 @@ public static void BinTreeMethods()
   ```
 
 <p align="center">
-   <img src="images\tree_print.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\tree_txt.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\tree_print1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\tree_print2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
 </p>
 
 ---
