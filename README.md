@@ -163,15 +163,53 @@
 
 הממשק כולל מחלקה בשם `Unit4Helper` המאפשרת יצירה והדפסה קלה של מבני נתונים (רשימות, תורים, מחסניות ועצים) לצורך כתיבת הבדיקות.
 
-### פעולות נפוצות:
-* **יצירת רשימה/תור/מחסנית:** `Unit4Helper.BuildQueue(new int[] {1, 2, 3})`.
-* **הדפסה:** `Console.WriteLine(q)` (המתודות `ToString` ממומשות להדפסה נוחה).
-* **עצים בינאריים:** ניתן לטעון עץ מקובץ טקסט המייצג את המבנה בהזחות (Tabs).
+### פעולות עבור רשימת חוליות
+```csharp
+public static void NodeLIst()
+{
+    Node<int> lst = Unit4Helper.BuildNodeList(new int[] { 4, -2, 7, 0, -1, 0, 0 });
+    Unit4Helper.PrintList(lst);
+    int[] arr = Unit4Helper.NodeListToArray(lst);
+    string str = Unit4Helper.NodeListToString(lst);
+    Console.WriteLine(str);
+}
+```
+
+### פעולות של תור
+```csharp
+public static void QueueMethods()
+{
+    Queue<int> q = Unit4Helper.BuildQueue(new int[] { 4, -2, 7, 0, -1, 0, 0 });
+    Console.WriteLine(q);
+    int[] arr = Unit4Helper.QueueToArray(q);
+}
+```
+
+### פעולות של מחסנית
+```csharp
+public static void StackMethods() 
+{
+    Stack<int> s = Unit4Helper.BuildStack(new int[] { 4, -2, 7, 0, -1, 0, 0 });
+    Console.WriteLine(s);
+    int[] arr = Unit4Helper.StackToArray(s);
+}
+```
+
+
+
+### פעצים בינאריים
+*עצים בינאריים:** ניתן לטעון עץ מקובץ טקסט המייצג את המבנה בהזחות (Tabs)
+
   ```csharp
-  // דוגמה לטעינת עץ
-  string path = Unit4Helper.GetTreeFilePath("tree.txt");
-  BinNode<int> tree = Unit4Helper.BuildBinaryTree<int>(path);
-  Unit4Helper.PrintBinaryTree(tree); // הדפסה ויזואלית לקונסול
+public static void BinTreeMethods()
+{
+    string path = Unit4Helper.GetTreeFilePath("tree.txt");
+    BinNode<int> tree = Unit4Helper.BuildBinaryTree<int>(path);
+    Unit4Helper.PrintBinaryTree(tree);
+    Unit4Helper.PrintBinaryTreeColored(tree);
+    string str = Unit4Helper.BinaryTreeToString(tree);
+    Console.WriteLine(str);
+}
   ```
 
 ![Binary Tree Visualization](images/tree_visualization.png)
