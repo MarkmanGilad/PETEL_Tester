@@ -499,15 +499,27 @@ tester.TestCodeStructure(
 
 ## העלאת הבדיקה ל-PeTel VPL
 
-לאחר שהבדיקות עובדות מקומית ב-Visual Studio, יש להעלות את הקבצים לסביבת PeTel (Moodle).
+לאחר שהבדיקות עובדות מקומית ב-Visual Studio, יש ליצור שאלה מתאימה ולהעלות את קבצי הבדיקה לסביבת PeTel (Moodle).
 
 ### שלב 1: יצירת שאלה
 1. בתוך Moodle/PeTel, צור פעילות חדשה מסוג **VPL Question**.
 2. הגדר את שם הקובץ הנדרש מהתלמיד (למשל `StudentAnswer.cs`).
-3. ב"תבנית תשובה" (Answer Template), הדבק את שלד הקוד של `StudentAnswer` כדי להקל על התלמיד.
+3. ב"תבנית תשובה" (Answer Template), הדבק את שלד הקוד של `StudentAnswer` ומחק את הקטעים הרלוונטיים.
+
+<p align="center">
+   <img src="images\StudentAnswer.cs.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
+</p>
+
+<p align="center">
+   <img src="images\Answer_template.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\Teacher_example.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
+</p>
+
+
+
 
 ### שלב 2: העלאת קבצי הבדיקה (Upload)
-יש להעלות ל-VPL שני סוגי קבצים דרך ממשק **Test cases** -> **Upload**:
+יש להעלות ל-VPL שני סוגי קבצים דרך ממשק **PETEL_Tester**:
 
 #### א. קבצי מערכת כלליים (Common Files)
 קבצים אלו זהים לכל המשימות ונמצאים בתיקיית `Upload` בתיקייה שהורדתם מ-GitHub. יש להעלות את:
@@ -521,6 +533,8 @@ tester.TestCodeStructure(
 * `TeacherAnswer.cs` (פתרון המורה)
 
 **שים לב:** אין להעלות את `StudentAnswer.cs` או קבצים אחרים שלא צוינו.
+
+**העלאת הקבצים**
 
 ![Upload Files to VPL](images/vpl_upload_screen.png)
 
