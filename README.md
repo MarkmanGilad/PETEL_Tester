@@ -576,10 +576,18 @@ tester.TestCodeStructure(
 ### שלב 3: אימות (Verification)
 1. לחץ על שמירה.
 2. עבור ללשונית "תצוגה מקדימה" (Preview).
-3. הדבק פתרון תקין (או שגוי) בחלון העורך ולחץ על **בדיקה** (Check).
-4. וודא שהפלט המתקבל זהה לפלט שראית ב-Visual Studio.
+<p align="center">
+   <img src="images\validate1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
+   
+4. הדבק פתרון תקין (או שגוי) בחלון העורך ולחץ על **בדיקה** (Check).
+5. וודא שהפלט המתקבל זהה לפלט שראית ב-Visual Studio.
 
-![PeTel Verification](images/petel_check_result.png)
+<p align="center">
+   <img src="images\validate2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+      <img src="images\validate3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
+
 
 ---
 **בהצלחה!**
