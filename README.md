@@ -38,7 +38,7 @@
 1. בעת התקנת Visual Studio, יש לוודא שה-Workload בשם **NET desktop development.** מסומן.
 2. יש לוודא שרכיב **NET Framework 4.7.2.** מותקן (אם חסר, יש להתקינו דרך ה-Installer בלשונית Individual Components).
 
-![Visual Studio Installer Workloads](images/vs_installer_workloads.png)
+<img src="images/vs_installer_workloads.png" alt="..." width="600" height="400">
 
 ---
 
@@ -54,7 +54,8 @@
 ### אפשרות 1: Cloning דרך Visual Studio
 במסך הפתיחה בחר ב-**Clone a repository**, הזן את הכתובת הנ"ל ולחץ על **Clone**.
 
-![Clone Repository Screen](images/vs_clone_repo.png)
+<img src="images/vs_clone_repo.png" alt="..." width="150" height="100">
+
 
 ### אפשרות 2: הורדת ZIP
 באתר GitHub, לחץ על כפתור **Code** ובחר **Download ZIP**. לאחר ההורדה, חלץ את הקבצים (Extract) ופתח את הקובץ `PETEL_Tester.slnx`.
