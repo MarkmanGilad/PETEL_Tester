@@ -32,7 +32,7 @@
 תהליך העבודה כולל פיתוח הבדיקות בסביבת **Visual Studio**, הרצת בדיקות מקומיות על פתרונות אפשריים, ולבסוף העלאת הקבצים לסביבת PeTel.
 
 ---
-
+---
 ## הכנת סביבת הפיתוח
 
 סביבת הפיתוח הנדרשת היא **Visual Studio** (גרסת Community החינמית מספיקה).
@@ -135,9 +135,10 @@
 
 
 <p align="center">
-   <img src="images\RunTetser.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\test_output1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
 </p>
 
+---
 ---
 
 ## בניית Tester - קבצי בסיס
