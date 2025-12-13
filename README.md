@@ -521,9 +521,13 @@ tester.TestCodeStructure(
 ### שלב 2: העלאת קבצי הבדיקה (Upload)
 יש להעלות ל-VPL שני סוגי קבצים דרך ממשק **PETEL_Tester**:
 
+ללחוץ על פלוס (+)
+
 <p align="center">
    <img src="images\Upload1.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">
 </p>
+
+ללחוץ על חץ למעלה (&uarr;) 
 <p align="center">
    <img src="images\Upload2.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">
 </p>
@@ -534,6 +538,13 @@ tester.TestCodeStructure(
 * `Tester.exe.b64` (הגרסה המקומפלת של מנוע הבדיקה)
 * `vpl_evaluate.sh` (סקריפט הרצה)
 * `vpl_run.sh`
+יש לאתר את הספריה Upload בתוך הפרויקט שלכם, לסמן את שלושת הקבצים בספריה, ולהעלות אותם (עזרה באיתור הספריה ראה בהמשך). קבצים אילו קבועים בכל המשימות.
+
+<p align="center">
+   <img src="images\Upload3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+</p>
+
+
 
 #### ב. קבצי המשימה הספציפית
 קבצים מתוך תיקיית הפרויקט שיצרתם (למשל `CopyQueue`):
