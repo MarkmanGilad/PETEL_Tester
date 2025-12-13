@@ -121,10 +121,9 @@
 
 ### שלב 4: הגדרת פרויקט ונקודת כניסה (Entry Point)
 1. קבע את הפרויקט שאותו ברצונך להריץ (startup project)
-2. קבע את נקודת ההתחלה של הפרויקט (Main)
-3. קליק ימני על הפרויקט החדש -> **Properties**.
-4. שנה את ה-**Startup Object** ל-`PETEL_VPL.MainTester`.
-5. שמור את השינויים (Ctrl+S).
+2. קליק ימני על הפרויקט החדש -> **Properties**.
+3. שנה את ה-**Startup Object** ל-`PETEL_VPL.MainTester`.
+4. שמור את השינויים (Ctrl+S).
 
 <p align="center">
    <img src="images\startPoint1.png" alt="..." height="300" style="vertical-align: top; margin-right: 8px;">
