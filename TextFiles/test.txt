@@ -1,0 +1,30 @@
+להלן טבלת ה-Markdown המבוקשת עבור "סוגי הבדיקות – המחלקה CodeStructureCheck", כפי שמופיעה במקורות (שקופיות 37-38 בקובץ המקורי),,.
+
+# סוגי הבדיקות – המחלקה CodeStructureCheck
+
+הטבלה הבאה מפרטת את סוגי הבדיקות הזמינות במחלקה לבדיקת מבנה הקוד (Code Structure), כולל סוג הערך המוחזר ותיאור הבדיקה.
+
+| שם הבדיקה (Check Name) | ערך מוחזר (Return Type) | תיאור הבדיקה |
+| :--- | :--- | :--- |
+| **IsRecursive** | `bool` | האם קיימת קריאה רקורסיבית בפעולה. |
+| **CountForLoop** | `Int` | מספר לולאות `for` (לאו דווקא מקוננות) בהן השתמש התלמיד. |
+| **CountWhileLoop** | `Int` | מספר לולאות `while` (לאו דווקא מקוננות) בהן השתמש התלמיד. |
+| **CountForEachLoop** | `Int` | מספר לולאות `forEach` (לאו דווקא מקוננות) בהן השתמש התלמיד. |
+| **CountAnyLoop** | `Int` | מספר לולאות מכל סוג בהן השתמש התלמיד (לאו דווקא מקוננות). |
+| **CountIfStatements** | `Int` | מספר משפטי התנאי (`if`) בהם השתמש התלמיד. |
+| **CountRecursiveCalls** | `Int` | מספר הקריאות הרקורסיביות בפעולה. |
+| **CountReturnStatements** | `Int` | מספר פקודות ה-`return` בפעולה. |
+| **CountNewNodes** | `Int` | מספר הפקודות `new Node<T>` בפעולה. |
+| **CountNewQueue** | `Int` | מספר הפקודות `new Queue<T>` בפעולה. |
+| **CountNewStack** | `Int` | מספר הפקודות `new Stack<T>` בפעולה. |
+| **CountNewBinNode** | `Int` | מספר הפקודות `new BinNode<T>` בפעולה. |
+| **CountSetNext** | `Int` | מספר פקודות `SetNext` של המחלקה `Node<T>`. |
+| **CountGetNext** | `Int` | מספר פקודות `GetNext` של המחלקה `Node<T>`. |
+| **HasNestedLoops** | `Bool` | האם התלמיד השתמש בלולאות מקוננות מכל סוג (משמש לבדיקת סיבוכיות). |
+| **IsStatic** | `Bool` | בדיקת חתימת הפעולה (האם מוגדרת כ-Static). |
+| **IsPublic** | `Bool` | בדיקת חתימת הפעולה (האם מוגדרת כ-Public). |
+| **IsPrivate** | `Bool` | בדיקת חתימת הפעולה (האם מוגדרת כ-Private). |
+| **IsProtected** | `Bool` | בדיקת חתימת הפעולה (האם מוגדרת כ-Protected). |
+| **IsInternal** | `Bool` | בדיקת חתימת הפעולה (האם מוגדרת כ-Internal). |
+| **CheckParams** | `Bool` | בדיקת חתימת הפעולה – השוואת הפרמטרים לחתימת פעולת המורה. |
+| **CheckReturnType** | `Bool` | בדיקת חתימת הפעולה – השוואת הערך המוחזר לחתימת פעולת המורה. |
