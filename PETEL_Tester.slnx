@@ -3,4 +3,5 @@
   <Project Path="InputOutput/InputOutput.csproj" Id="70608852-606f-4a1f-a81a-d19e054f1d87" />
   <Project Path="PETEL_Tester/PETEL_Tester.csproj" Id="097407eb-e074-48be-94d2-9bafce30c133" />
   <Project Path="Tester/Tester.csproj" Id="d95ddac9-0089-4887-bb01-1a33ffe6679d" />
+  <Project Path="Tester_Net_core/Tester_Net_core.csproj" Id="6c32e9a2-7b30-4260-9706-15caca8dc22d" />
 </Solution>
