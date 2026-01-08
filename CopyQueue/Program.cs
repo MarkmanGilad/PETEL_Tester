@@ -8,9 +8,9 @@ namespace CopyQueue
         static void Main(string[] args)
         {
             RunStudentCode();
-            //NodeLIst();
-            //QueueMethods();
-            //StackMethods();
+            NodeLIst();
+            QueueMethods();
+            StackMethods();
             BinTreeMethods();
         }
 

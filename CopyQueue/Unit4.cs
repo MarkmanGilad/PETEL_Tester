@@ -170,7 +170,7 @@ namespace Unit4
         public BinNode<T> GetLeft() { return this.left; }
         public BinNode<T> GetRight() { return this.right; }
         public bool HasLeft() { return this.left != null; }
-        public bool hasRight() { return this.right != null; }
+        public bool HasRight() { return this.right != null; }
         public void SetValue(T value) { this.value = value; }
         public void SetLeft(BinNode<T> left) { this.left = left; }
         public void SetRight(BinNode<T> right) { this.right = right; }
@@ -544,7 +544,7 @@ namespace Unit4
 
             sb.AppendLine(prefix + node.GetValue());
 
-            if (node.HasLeft() || node.hasRight())
+            if (node.HasLeft() || node.HasRight())
             {
                 if (node.HasLeft())
                 {
@@ -556,7 +556,7 @@ namespace Unit4
                     sb.AppendLine(childPrefix + "├─Left: null");
                 }
 
-                if (node.hasRight())
+                if (node.HasRight())
                 {
                     sb.Append(childPrefix + "└─Right: ");
                     BinaryTreeToStringRecursive(node.GetRight(), sb, "", childPrefix + "   ");
@@ -615,21 +615,21 @@ namespace Unit4
             }
 
             // Print left and right children
-            if (node.HasLeft() || node.hasRight())
+            if (node.HasLeft() || node.HasRight())
             {
                 // Print left child
                 if (node.HasLeft())
                 {
                     PrintBinaryTreeRecursive(node.GetLeft(), childIndent, "├── ", false);
                 }
-                else if (node.hasRight())
+                else if (node.HasRight())
                 {
                     // Show null left child only if right child exists
                     Console.WriteLine(childIndent + "├── (null)");
                 }
 
                 // Print right child
-                if (node.hasRight())
+                if (node.HasRight())
                 {
                     PrintBinaryTreeRecursive(node.GetRight(), childIndent, "└── ", false);
                 }
@@ -706,20 +706,20 @@ namespace Unit4
             }
 
             // Print left and right children
-            if (node.HasLeft() || node.hasRight())
+            if (node.HasLeft() || node.HasRight())
             {
                 // Print left child
                 if (node.HasLeft())
                 {
                     PrintBinaryTreeColoredRecursive(node.GetLeft(), childIndent, "├── ", false, depth + 1, useColors);
                 }
-                else if (node.hasRight())
+                else if (node.HasRight())
                 {
                     Console.WriteLine(childIndent + "├── (null)");
                 }
 
                 // Print right child
-                if (node.hasRight())
+                if (node.HasRight())
                 {
                     PrintBinaryTreeColoredRecursive(node.GetRight(), childIndent, "└── ", false, depth + 1, useColors);
                 }
