@@ -66,18 +66,41 @@ if [ -f "./Microsoft.CodeAnalysis.CSharp.dll" ]; then
 	export MICROSOFTLIB1="-r:$(pwd)/Microsoft.CodeAnalysis.CSharp.dll"
 fi
 
+# Roslyn targets netstandard2.0; on Mono we must reference netstandard.dll.
+NETSTANDARD_FACADE=""
+for CANDIDATE in \
+	/usr/lib/mono/4.5/netstandard.dll \
+	/usr/lib/mono/4.5/Facades/netstandard.dll \
+	/usr/lib/mono/4.6.1-api/netstandard.dll \
+	/usr/lib/mono/4.6.1-api/Facades/netstandard.dll \
+	/usr/lib/mono/4.7.1-api/netstandard.dll \
+	/usr/lib/mono/4.7.1-api/Facades/netstandard.dll \
+	/usr/lib/mono/4.7.2-api/netstandard.dll \
+	/usr/lib/mono/4.7.2-api/Facades/netstandard.dll \
+	/usr/lib/mono/4.8-api/netstandard.dll \
+	/usr/lib/mono/4.8-api/Facades/netstandard.dll
+do
+	if [ -f "$CANDIDATE" ]; then
+		NETSTANDARD_FACADE="$CANDIDATE"
+		break
+	fi
+done
+if [ "$NETSTANDARD_FACADE" != "" ]; then
+	export NETSTANDARDLIB="-r:$NETSTANDARD_FACADE"
+fi
+
 
 # Compile
 export MONO_ENV_OPTIONS=--gc=sgen
 EXECUTABLE=false
-$PROGRAM $PKGDOTNET $NUNITLIB $MICROSOFTLIB $MICROSOFTLIB1 $CSharp_DLL_REFERENCE -out:$OUTPUTFILE -lib:/usr/lib/mono @.vpl_source_files &>.vpl_compilation_message
+$PROGRAM $PKGDOTNET $NUNITLIB $NETSTANDARDLIB $MICROSOFTLIB $MICROSOFTLIB1 $CSharp_DLL_REFERENCE -out:$OUTPUTFILE -lib:/usr/lib/mono @.vpl_source_files &>.vpl_compilation_message
 if [ -f $OUTPUTFILE ] ; then
 	EXECUTABLE=true
 else
 	# Try to compile as dll
 	OUTPUTFILE=output.dll
 	if [ "$NUNITLIB" != "" ] ; then
-		PROGRAM $PKGDOTNET $NUNITLIB $MICROSOFTLIB $MICROSOFTLIB1 -out:$OUTPUTFILE -target:library -lib:/usr/lib/mono @.vpl_source_files &> /dev/null
+		$PROGRAM $PKGDOTNET $NUNITLIB $NETSTANDARDLIB $MICROSOFTLIB $MICROSOFTLIB1 -out:$OUTPUTFILE -target:library -lib:/usr/lib/mono @.vpl_source_files &> /dev/null
 	fi
 fi
 rm .vpl_source_files
