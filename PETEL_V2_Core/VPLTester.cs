@@ -25,17 +25,16 @@ namespace PETEL_VPL
         private string TeacherClassName { get; }
         private string TeacherMethodName { get; }
 
-        public bool ShowDetails { get; set; }
+        public bool ShowDetails { get; set; } = true; // Default to true
 
         public VPLTester(
-            string studentFile,
-            string studentNamespace,
-            string studentClassName,
             string studentMethodName,
-            string teacherNamespace,
-            string teacherClassName,
-            string teacherMethodName,
-            bool showDetails = false,
+            string? teacherMethodName = null,
+            string studentFile = "StudentAnswer.cs",
+            string studentNamespace = "",
+            string studentClassName = "StudentAnswer",
+            string teacherNamespace = "",
+            string teacherClassName = "TeacherAnswer",
             int timeoutMilliseconds = 2000)
         {
             StudentSourceFilePath = GetStudentSourcePath(studentFile);
@@ -44,10 +43,12 @@ namespace PETEL_VPL
             StudentMethodName = studentMethodName;
             TeacherNamespace = teacherNamespace;
             TeacherClassName = teacherClassName;
-            TeacherMethodName = teacherMethodName;
-            ShowDetails = showDetails;
+            TeacherMethodName = teacherMethodName ?? studentMethodName;
             this.timeoutMilliseconds = timeoutMilliseconds;
             comparer = new ObjectComparer();
+            
+            // Initialize code analyzer automatically
+            InitializeCodeAnalyzer();
         }
 
         private static string GetStudentSourcePath(string studentFile)
