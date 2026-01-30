@@ -102,7 +102,6 @@ namespace PETEL_VPL
             var isEmpty = queueType.GetMethod("IsEmpty")!;
             var remove = queueType.GetMethod("Remove")!;
             var insert = queueType.GetMethod("Insert")!;
-            var elementType = queueType.GetGenericArguments()[0];
 
             // Create new queue
             var clonedQueue = Activator.CreateInstance(queueType)!;

@@ -275,19 +275,7 @@ namespace PETEL_VPL
             }
 
             if (config.CompareParams)
-            {
-                if (!comparer.AreEqual(teacherParams, config.Parameters))
-                {
-                    var sb = new StringBuilder();
-                    sb.AppendLine("Input parameter state after call does not match the requirement:");
-                    for (int i = 0; i < teacherParams.Length; i++)
-                    {
-                        sb.AppendLine($"p{i}: expected={Snapshot(teacherParams[i])} | actual={Snapshot(config.Parameters[i])}");
-                    }
-
-                    throw new TestAssertionException(sb.ToString().TrimEnd());
-                }
-            }
+                EnsureParamsUnchanged(teacherParams, config.Parameters);
         }
 
         private void CompareConsoleOutputs(TestExecutionConfig config)
@@ -307,16 +295,26 @@ namespace PETEL_VPL
                     "Actual output:\n" + studentOutput + "\n" +
                     "Explanation: Printed output does not match the expected text/format.");
 
-            if (config.CompareParams && !comparer.AreEqual(teacherParams, config.Parameters))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("Input parameter state after call does not match the requirement:");
-                for (int i = 0; i < teacherParams.Length; i++)
-                {
-                    sb.AppendLine($"p{i}: expected={Snapshot(teacherParams[i])} | actual={Snapshot(config.Parameters[i])}");
-                }
-                throw new TestAssertionException(sb.ToString().TrimEnd());
-            }
+            if (config.CompareParams)
+                EnsureParamsUnchanged(teacherParams, config.Parameters);
+        }
+
+        private void EnsureParamsUnchanged(object[] expectedParams, object[] actualParams)
+        {
+            if (comparer.AreEqual(expectedParams, actualParams))
+                return;
+
+            throw new TestAssertionException(BuildParamMismatchMessage(expectedParams, actualParams));
+        }
+
+        private string BuildParamMismatchMessage(object[] expectedParams, object[] actualParams)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Input parameter state after call does not match the requirement:");
+            for (int i = 0; i < expectedParams.Length; i++)
+                sb.AppendLine($"p{i}: expected={Snapshot(expectedParams[i])} | actual={Snapshot(actualParams[i])}");
+
+            return sb.ToString().TrimEnd();
         }
 
         private static string CaptureConsoleOutput(Action action)

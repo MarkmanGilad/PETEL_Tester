@@ -11,7 +11,7 @@ namespace PETEL_VPL
     /// </summary>
     public class ObjectComparer
     {
-        private HashSet<Tuple<object, object>> comparedPairs;
+        private readonly HashSet<Tuple<object, object>> comparedPairs;
 
         public ObjectComparer()
         {
@@ -69,27 +69,8 @@ namespace PETEL_VPL
             Type expectedType = expected.GetType();
             Type actualType = actual.GetType();
 
-            if (expectedType.IsGenericType && actualType.IsGenericType)
-            {
-                if (expectedType.GetGenericTypeDefinition() != actualType.GetGenericTypeDefinition())
-                    return false;
-
-                Type[] expectedArgs = expectedType.GetGenericArguments();
-                Type[] actualArgs = actualType.GetGenericArguments();
-
-                if (expectedArgs.Length != actualArgs.Length)
-                    return false;
-
-                for (int i = 0; i < expectedArgs.Length; i++)
-                {
-                    if (expectedArgs[i] != actualArgs[i])
-                        return false;
-                }
-            }
-            else if (expectedType != actualType)
-            {
+            if (!MatchTypes(expectedType, actualType))
                 return false;
-            }
 
             if (expected is string || expectedType.IsPrimitive || expectedType.IsEnum)
                 return expected.Equals(actual);
@@ -118,6 +99,33 @@ namespace PETEL_VPL
                 return CompareArrays((Array)expected, (Array)actual);
 
             return expected.Equals(actual);
+        }
+
+        private static bool MatchTypes(Type expectedType, Type actualType)
+        {
+            if (expectedType.IsGenericType && actualType.IsGenericType)
+            {
+                if (expectedType.GetGenericTypeDefinition() != actualType.GetGenericTypeDefinition())
+                    return false;
+
+                Type[] expectedArgs = expectedType.GetGenericArguments();
+                Type[] actualArgs = actualType.GetGenericArguments();
+
+                if (expectedArgs.Length != actualArgs.Length)
+                    return false;
+
+                for (int i = 0; i < expectedArgs.Length; i++)
+                {
+                    if (expectedArgs[i] != actualArgs[i])
+                        return false;
+                }
+            }
+            else if (expectedType != actualType)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private static bool IsNodeType(Type type) => type.IsGenericType && type.Name.StartsWith("Node`");

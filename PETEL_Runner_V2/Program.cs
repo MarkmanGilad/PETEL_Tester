@@ -16,82 +16,91 @@ namespace PETEL_Runner_V2
         {
             string? methodName = GetArgValue(args, "--method");
             if (string.IsNullOrWhiteSpace(methodName))
-            {
-                EmitPacket(0, "Runner error: missing required argument --method <name>.");
-                return 2;
-            }
+                return Fail(2, "Runner error: missing required argument --method <name>.");
 
             try
             {
                 string? probeDir = GetArgValue(args, "--probeDir");
                 LoadUserAssemblies(probeDir);
 
-                var testCasesType = Type.GetType("PETEL_VPL.TestCases")
-                    ?? AppDomain.CurrentDomain.GetAssemblies()
-                        .Select(a => a.GetType("PETEL_VPL.TestCases", throwOnError: false, ignoreCase: false))
-                        .FirstOrDefault(t => t != null);
-
+                var testCasesType = ResolveTestCasesType();
                 if (testCasesType == null)
-                {
-                    EmitPacket(0, "Runner error: type PETEL_VPL.TestCases not found.");
-                    return 3;
-                }
+                    return Fail(3, "Runner error: type PETEL_VPL.TestCases not found.");
 
-                var method = testCasesType.GetMethod(
-                    methodName,
-                    BindingFlags.Public | BindingFlags.Static,
-                    binder: null,
-                    types: new[] { typeof(VPLTester) },
-                    modifiers: null);
+                var method = ResolveTestMethod(testCasesType, methodName);
+                if (method == null)
+                    return Fail(4, $"Runner error: method '{methodName}(VPLTester)' not found.");
 
-                if (method == null || method.ReturnType != typeof(void))
-                {
-                    EmitPacket(0, $"Runner error: method '{methodName}(VPLTester)' not found.");
-                    return 4;
-                }
-
-                var createTesterMethod = testCasesType.GetMethod("CreateTester", BindingFlags.Public | BindingFlags.Static);
-                if (createTesterMethod == null)
-                {
-                    EmitPacket(0, "Runner error: CreateTester method not found in TestCases.");
-                    return 5;
-                }
-
-                var tester = createTesterMethod.Invoke(null, null) as VPLTester;
+                var tester = CreateTester(testCasesType);
                 if (tester == null)
-                {
-                    EmitPacket(0, "Runner error: CreateTester did not return a VPLTester.");
-                    return 6;
-                }
+                    return Fail(6, "Runner error: CreateTester did not return a VPLTester.");
 
                 tester.ShowDetails = false;
 
-                var originalOut = Console.Out;
-                var suppressed = new StringWriter();
-                Console.SetOut(suppressed);
-                try
-                {
-                    method.Invoke(null, new object[] { tester });
-                }
-                finally
-                {
-                    Console.SetOut(originalOut);
-                    suppressed.Dispose();
-                }
+                ExecuteTest(method, tester);
 
                 EmitPacket(tester.GetGrade(), tester.FormatResponse());
                 return 0;
             }
             catch (TargetInvocationException tie)
             {
-                EmitPacket(0, "Runner exception: " + (tie.InnerException?.Message ?? tie.Message));
-                return 10;
+                return Fail(10, "Runner exception: " + (tie.InnerException?.Message ?? tie.Message));
             }
             catch (Exception ex)
             {
-                EmitPacket(0, "Runner exception: " + ex.Message);
-                return 11;
+                return Fail(11, "Runner exception: " + ex.Message);
             }
+        }
+
+        private static Type? ResolveTestCasesType()
+        {
+            return Type.GetType("PETEL_VPL.TestCases")
+                ?? AppDomain.CurrentDomain.GetAssemblies()
+                    .Select(a => a.GetType("PETEL_VPL.TestCases", throwOnError: false, ignoreCase: false))
+                    .FirstOrDefault(t => t != null);
+        }
+
+        private static MethodInfo? ResolveTestMethod(Type testCasesType, string methodName)
+        {
+            var method = testCasesType.GetMethod(
+                methodName,
+                BindingFlags.Public | BindingFlags.Static,
+                binder: null,
+                types: new[] { typeof(VPLTester) },
+                modifiers: null);
+
+            return method is { ReturnType: { } } && method.ReturnType == typeof(void) ? method : null;
+        }
+
+        private static VPLTester? CreateTester(Type testCasesType)
+        {
+            var createTesterMethod = testCasesType.GetMethod("CreateTester", BindingFlags.Public | BindingFlags.Static);
+            if (createTesterMethod == null)
+                return null;
+
+            return createTesterMethod.Invoke(null, null) as VPLTester;
+        }
+
+        private static void ExecuteTest(MethodInfo method, VPLTester tester)
+        {
+            var originalOut = Console.Out;
+            var suppressed = new StringWriter();
+            Console.SetOut(suppressed);
+            try
+            {
+                method.Invoke(null, new object[] { tester });
+            }
+            finally
+            {
+                Console.SetOut(originalOut);
+                suppressed.Dispose();
+            }
+        }
+
+        private static int Fail(int code, string message)
+        {
+            EmitPacket(0, message);
+            return code;
         }
 
         private static void LoadUserAssemblies(string? probeDir)

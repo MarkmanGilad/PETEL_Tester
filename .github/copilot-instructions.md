@@ -8,6 +8,7 @@
 ## Code Style
 - Use specific formatting rules
 - Follow naming conventions
+- Avoid adding `using System.Collections.Generic` because it can conflict with `Unit4` collections.
 
 ## Project-Specific Rules
 - Requires automatic execution when running `PETEL_MainTester_V2`, including Moodle VPL compatibility.

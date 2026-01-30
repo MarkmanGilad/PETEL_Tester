@@ -94,7 +94,7 @@ namespace PETEL_VPL
             File.WriteAllText(tempFile, code);
             try
             {
-                var analyzer = new CodeAnalyzer(tempFile);
+                _ = new CodeAnalyzer(tempFile);
                 File.Delete(tempFile);
             }
             catch
@@ -137,29 +137,22 @@ namespace PETEL_VPL
             switch (checkType)
             {
                 case CodeStructureCheck.IsRecursive:
-                    // Special case: recursion is not a count, it's a boolean check
-                    bool isRecursive = analyzer.IsRecursive();
-                    return new CodeCheckResult(isRecursive, isRecursive ? 1 : 0, "Is recursive");
+                    return BoolResult(analyzer.IsRecursive(), "Is recursive");
 
                 case CodeStructureCheck.IsStatic:
-                    bool isStatic = analyzer.IsStatic();
-                    return new CodeCheckResult(isStatic, isStatic ? 1 : 0, "Is static");
+                    return BoolResult(analyzer.IsStatic(), "Is static");
 
                 case CodeStructureCheck.IsPublic:
-                    bool isPublic = analyzer.IsPublic();
-                    return new CodeCheckResult(isPublic, isPublic ? 1 : 0, "Is public");
+                    return BoolResult(analyzer.IsPublic(), "Is public");
 
                 case CodeStructureCheck.IsPrivate:
-                    bool isPrivate = analyzer.IsPrivate();
-                    return new CodeCheckResult(isPrivate, isPrivate ? 1 : 0, "Is private");
+                    return BoolResult(analyzer.IsPrivate(), "Is private");
 
                 case CodeStructureCheck.IsProtected:
-                    bool isProtected = analyzer.IsProtected();
-                    return new CodeCheckResult(isProtected, isProtected ? 1 : 0, "Is protected");
+                    return BoolResult(analyzer.IsProtected(), "Is protected");
 
                 case CodeStructureCheck.IsInternal:
-                    bool isInternal = analyzer.IsInternal();
-                    return new CodeCheckResult(isInternal, isInternal ? 1 : 0, "Is internal");
+                    return BoolResult(analyzer.IsInternal(), "Is internal");
 
                 case CodeStructureCheck.CountForLoop:
                     int forCount = analyzer.CountForLoops();
@@ -198,8 +191,7 @@ namespace PETEL_VPL
                     return new CodeCheckResult(!expectedCount.HasValue || getNextCount == expectedCount.Value, getNextCount, $"GetNext call count: {getNextCount}");
 
                 case CodeStructureCheck.HasNestedLoops:
-                    bool hasNested = analyzer.HasNestedLoops();
-                    return new CodeCheckResult(hasNested, hasNested ? 1 : 0, "Has nested loops");
+                    return BoolResult(analyzer.HasNestedLoops(), "Has nested loops");
 
                 // NEW CHECKS
                 case CodeStructureCheck.CountNewQueue:
@@ -220,7 +212,6 @@ namespace PETEL_VPL
                     return new CodeCheckResult(!expectedCount.HasValue || recCount == expectedCount.Value, recCount, $"Recursive call count: {recCount}");
 
                 case CodeStructureCheck.CheckParams:
-                    // Compare student method param types with teacher method (PETEL_VPL.TeacherAnswer)
                     string[] studentParamTypes = analyzer.GetParameterTypes();
 
                     var teacherType = ResolveTeacherType();
@@ -244,7 +235,6 @@ namespace PETEL_VPL
                         typesMatch ? $"Parameter list matches {actualSig}" : $"Wrong parameter list. Expected: {expectedSig}. Actual: {actualSig}.");
 
                 case CodeStructureCheck.CheckReturnType:
-                    // Compare student method return type with teacher method return type
                     string studentReturn = analyzer.GetReturnType();
 
                     var tType = ResolveTeacherType();
@@ -268,6 +258,11 @@ namespace PETEL_VPL
                 default:
                     throw new ArgumentException($"Unknown check type: {checkType}");
             }
+        }
+
+        private static CodeCheckResult BoolResult(bool passed, string description)
+        {
+            return new CodeCheckResult(passed, passed ? 1 : 0, description);
         }
 
         private static string FormatTypeName(Type t)
@@ -301,7 +296,7 @@ namespace PETEL_VPL
                                .FirstOrDefault(c => c.Identifier.Text == className);
 
             if (classDecl == null)
-                return new string[0];
+                return Array.Empty<string>();
 
             return classDecl.DescendantNodes()
                            .OfType<MethodDeclarationSyntax>()
