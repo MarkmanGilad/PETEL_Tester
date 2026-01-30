@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PETEL_V2_Core\PETEL_V2_Core.csproj" />
+    <ProjectReference Include="..\PETEL_Runner_V2\PETEL_Runner_V2.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -14,5 +15,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
   </ItemGroup>
+
+  <Target Name="CopyRunner" AfterTargets="Build">
+    <ItemGroup>
+      <RunnerFiles Include="..\PETEL_Runner_V2\bin\$(Configuration)\net8.0\PETEL_Runner_V2.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(RunnerFiles)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>

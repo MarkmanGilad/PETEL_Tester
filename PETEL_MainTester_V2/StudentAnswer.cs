@@ -11,7 +11,7 @@ public static class StudentAnswer
 
         int count = head.GetValue() == value ? 1 : 0;
     
-        return count + CountValues(head.GetNext(), value);
+        return count + CountValues(head, value);
     }
 }
 
