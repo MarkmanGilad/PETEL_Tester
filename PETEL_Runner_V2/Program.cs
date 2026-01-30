@@ -46,16 +46,8 @@ namespace PETEL_Runner_V2
                     return 4;
                 }
 
-                // TODO: wire real config (student/teacher method names, etc.)
-                var tester = new VPLTester(
-                    studentFile: "StudentAnswer.cs",
-                    studentNamespace: "PETEL_VPL",
-                    studentClassName: "StudentAnswer",
-                    studentMethodName: "Main",
-                    teacherNamespace: "PETEL_VPL",
-                    teacherClassName: "TeacherAnswer",
-                    teacherMethodName: "Main",
-                    showDetails: false);
+                // Single source of truth: teachers configure the assignment inside TestCases.cs
+                var tester = TestCases.CreateTester(showDetails: false);
 
                 // Suppress any stdout from student code or teacher test.
                 var originalOut = Console.Out;
