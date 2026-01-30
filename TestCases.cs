@@ -17,7 +17,8 @@ namespace PETEL_VPL
         // 1) ASSIGNMENT CONFIG (teacher edits this method)
         // ==========================================================
         public static VPLTester CreateTester(bool showDetails = false)
-            => new VPLTester(
+        {
+            return new VPLTester(
                 // Student submission
                 studentFile: "StudentAnswer.cs",
                 studentNamespace: "",
@@ -30,6 +31,7 @@ namespace PETEL_VPL
                 teacherMethodName: "Main", // <-- change to the required teacher method (e.g., "Copy")
 
                 showDetails: showDetails);
+        }
 
         // ==========================================================
         // 2) TESTS (teacher edits this section)
