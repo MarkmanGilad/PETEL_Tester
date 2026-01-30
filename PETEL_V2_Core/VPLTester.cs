@@ -17,6 +17,8 @@ namespace PETEL_VPL
         private CodeAnalyzer? studentCodeAnalyzer;
         private readonly int timeoutMilliseconds;
 
+        public int TimeoutMilliseconds => timeoutMilliseconds;
+
         public string StudentSourceFilePath { get; set; }
         public string StudentNamespace { get; set; }
         public string StudentClassName { get; set; }
@@ -35,7 +37,7 @@ namespace PETEL_VPL
             string studentClassName = "StudentAnswer",
             string teacherNamespace = "",
             string teacherClassName = "TeacherAnswer",
-            int timeoutMilliseconds = 2000)
+            int timeoutMilliseconds = 500)
         {
             StudentSourceFilePath = GetStudentSourcePath(studentFile);
             StudentNamespace = studentNamespace;

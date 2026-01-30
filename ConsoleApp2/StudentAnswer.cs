@@ -10,8 +10,7 @@ public static class StudentAnswer
             return 0;
 
         int count = head.GetValue() == value ? 1 : 0;
-    
-        return count + CountValues(head.GetNext(), value);
+        return count + CountValues(head, value);
     }
 }
 

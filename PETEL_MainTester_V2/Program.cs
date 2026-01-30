@@ -112,7 +112,10 @@ namespace PETEL_MainTester_V2
                 var stdoutTask = p.StandardOutput.ReadToEndAsync();
                 var stderrTask = p.StandardError.ReadToEndAsync();
 
-                const int timeoutMs = 5000;
+                var timeoutMs = TestCases.CreateTester().TimeoutMilliseconds;
+                if (timeoutMs <= 0)
+                    timeoutMs = 500;
+
                 if (!p.WaitForExit(timeoutMs))
                 {
                     try { p.Kill(entireProcessTree: true); } catch { }
