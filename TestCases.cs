@@ -1,4 +1,5 @@
 using System;
+using Unit4;
 
 namespace PETEL_VPL
 {
@@ -14,222 +15,170 @@ namespace PETEL_VPL
     public static class TestCases
     {
         // ==========================================================
-        // 1) ASSIGNMENT CONFIG (teacher edits this method)
+        // 1) ASSIGNMENT CONFIG
         // ==========================================================
         public static VPLTester CreateTester()
         {
-            // Simple: Both student and teacher have method named "Main"
-            return new VPLTester(studentMethodName: "Main");
-            
-            // If teacher method has different name:
-            // return new VPLTester(
-            //     studentMethodName: "Add",
-            //     teacherMethodName: "AddSolution"
-            // );
-            
-            // With custom classes/namespaces:
-            // return new VPLTester(
-            //     studentMethodName: "Calculate",
-            //     teacherNamespace: "Solutions",
-            //     teacherClassName: "MathSolutions"
-            // );
+            return new VPLTester(studentMethodName: "CountValues");
         }
 
         // ==========================================================
-        // 2) FUNCTIONAL TESTS (Case_*
+        // 2) FUNCTIONAL TESTS
         // ==========================================================
 
-        // Example 1: Simple test with parameters
-        public static void Case_BasicTest(VPLTester tester)
+        // Test 1: Empty list
+        public static void Case_EmptyList(VPLTester tester)
         {
+            Node<int>? list = null;
+            
             tester.TestMethod(
-                testName: "Add two numbers",
+                testName: "Count in empty list",
                 points: 10,
-                parameters: new object[] { 5, 3 }
+                parameters: new object[] { list, 5 }
             );
         }
 
-        // Example 2: Test with arrays
-        public static void Case_ArrayTest(VPLTester tester)
+        // Test 2: Single element - found
+        public static void Case_SingleElementFound(VPLTester tester)
         {
-            int[] arr = { 1, 2, 3, 4, 5 };
+            int[] arr = { 5 };
+            Node<int> list = Unit4Helper.BuildNodeList(arr);
+            
             tester.TestMethod(
-                testName: "Sum array elements",
+                testName: "Count 5 in list [5]",
+                points: 10,
+                parameters: new object[] { list, 5 }
+            );
+        }
+
+        // Test 3: Single element - not found
+        public static void Case_SingleElementNotFound(VPLTester tester)
+        {
+            int[] arr = { 3 };
+            Node<int> list = Unit4Helper.BuildNodeList(arr);
+            
+            tester.TestMethod(
+                testName: "Count 5 in list [3]",
+                points: 10,
+                parameters: new object[] { list, 5 }
+            );
+        }
+
+        // Test 4: Multiple elements - some matches
+        public static void Case_MultipleMatches(VPLTester tester)
+        {
+            int[] arr = { 1, 5, 3, 5, 7, 5 };
+            Node<int> list = Unit4Helper.BuildNodeList(arr);
+            
+            tester.TestMethod(
+                testName: "Count 5 in list [1,5,3,5,7,5]",
                 points: 15,
-                parameters: new object[] { arr }
+                parameters: new object[] { list, 5 }
             );
         }
 
-        // Example 3: Test with console input
-        public static void Case_InputTest(VPLTester tester)
+        // Test 5: No matches
+        public static void Case_NoMatches(VPLTester tester)
         {
+            int[] arr = { 1, 2, 3, 4, 6, 7, 8 };
+            Node<int> list = Unit4Helper.BuildNodeList(arr);
+            
             tester.TestMethod(
-                testName: "Read and process input",
+                testName: "Count 5 in list [1,2,3,4,6,7,8]",
                 points: 10,
-                consoleInput: "5\n3\n",
-                captureConsoleOutput: true
+                parameters: new object[] { list, 5 }
             );
         }
 
-        // Example 4: Test parameter modification
-        public static void Case_ModifyArray(VPLTester tester)
+        // Test 6: All elements match
+        public static void Case_AllMatch(VPLTester tester)
         {
-            int[] arr = { 1, 2, 3 };
+            int[] arr = { 5, 5, 5, 5 };
+            Node<int> list = Unit4Helper.BuildNodeList(arr);
+            
             tester.TestMethod(
-                testName: "Modify array in place",
+                testName: "Count 5 in list [5,5,5,5]",
+                points: 15,
+                parameters: new object[] { list, 5 }
+            );
+        }
+
+        // Test 7: Large list
+        public static void Case_LargeList(VPLTester tester)
+        {
+            int[] arr = { 1, 5, 2, 5, 3, 5, 4, 5, 6, 7, 8, 9, 10 };
+            Node<int> list = Unit4Helper.BuildNodeList(arr);
+            
+            tester.TestMethod(
+                testName: "Count 5 in large list",
                 points: 10,
-                parameters: new object[] { arr },
-                compareParams: true,
-                compareReturn: false
+                parameters: new object[] { list, 5 }
             );
         }
 
-        // Example 5: Multiple tests with different method
-        public static void Case_MultipleMethods(VPLTester tester)
+        // Test 8: Negative numbers
+        public static void Case_NegativeNumbers(VPLTester tester)
         {
-            // Test Add method
-            tester.SetStudentMethod("Add");
+            int[] arr = { -5, -3, -5, 0, 5, -5 };
+            Node<int> list = Unit4Helper.BuildNodeList(arr);
+            
             tester.TestMethod(
-                testName: "Test Add(5, 3)",
-                points: 5,
-                parameters: new object[] { 5, 3 }
+                testName: "Count -5 in list with negatives",
+                points: 10,
+                parameters: new object[] { list, -5 }
             );
-
-            // Switch to Multiply method
-            tester.SetStudentMethod("Multiply");
-            tester.TestMethod(
-                testName: "Test Multiply(5, 3)",
-                points: 5,
-                parameters: new object[] { 5, 3 }
-            );
-        }
-
-        // Example 6: Test without showing details
-        public static void Case_QuietTest(VPLTester tester)
-        {
-            tester.ShowDetails = false;
-            tester.TestMethod(
-                testName: "Simple test without details",
-                points: 5,
-                parameters: new object[] { 10 }
-            );
-            tester.ShowDetails = true; // Restore default
         }
 
         // ==========================================================
-        // 3) CODE STRUCTURE TESTS (Code_*
+        // 3) CODE STRUCTURE TESTS
         // ==========================================================
 
-        // Example 1: Check for loop usage
-        public static void Code_CheckForLoop(VPLTester tester)
-        {
-            tester.TestCodeStructure(
-                testName: "Must use for loop",
-                points: 5,
-                checkType: CodeStructureCheck.UsesForLoop,
-                shouldPass: true,
-                failureMessage: "Your solution must use a for loop"
-            );
-        }
-
-        // Example 2: Prohibit while loop
-        public static void Code_NoWhileLoop(VPLTester tester)
-        {
-            tester.TestCodeStructure(
-                testName: "Should not use while loop",
-                points: 5,
-                checkType: CodeStructureCheck.UsesWhileLoop,
-                shouldPass: false,
-                failureMessage: "Your solution should not use a while loop"
-            );
-        }
-
-        // Example 3: Check recursion
+        // Check that solution uses recursion
         public static void Code_MustUseRecursion(VPLTester tester)
         {
             tester.TestCodeStructure(
-                testName: "Must use recursion",
-                points: 10,
-                checkType: CodeStructureCheck.UsesRecursion,
+                testName: "Solution must use recursion",
+                points: 20,
+                checkType: CodeStructureCheck.IsRecursive,  // Changed from UsesRecursion
                 shouldPass: true,
-                failureMessage: "Your solution must be recursive"
+                failureMessage: "Your solution must use recursion to traverse the list"
             );
         }
 
-        // Example 4: Check multiple methods
-        public static void Code_CheckMultipleMethods(VPLTester tester)
+        // Check that solution does NOT use loops
+        public static void Code_NoForLoop(VPLTester tester)
         {
-            // Check Main method
-            tester.SetStudentMethod("Main");
             tester.TestCodeStructure(
-                testName: "Main must use for loop",
+                testName: "Solution must not use for loop",
                 points: 5,
-                checkType: CodeStructureCheck.UsesForLoop
-            );
-
-            // Check Helper method
-            tester.SetStudentMethod("Helper");
-            tester.TestCodeStructure(
-                testName: "Helper must not use recursion",
-                points: 5,
-                checkType: CodeStructureCheck.UsesRecursion,
-                shouldPass: false
+                checkType: CodeStructureCheck.CountForLoop,  // Changed from UsesForLoop
+                expectedCount: 0,  // Added: expect 0 for loops
+                shouldPass: true,  // Changed from false - now checking if count equals 0
+                failureMessage: "Your solution should use recursion, not a for loop"
             );
         }
 
-        // Example 5: Check parameter count
-        public static void Code_CheckParameterCount(VPLTester tester)
+        public static void Code_NoWhileLoop(VPLTester tester)
+        {
+            tester.TestCodeStructure(
+                testName: "Solution must not use while loop",
+                points: 5,
+                checkType: CodeStructureCheck.CountWhileLoop,  // Changed from UsesWhileLoop
+                expectedCount: 0,  // Added: expect 0 while loops
+                shouldPass: true,  // Changed from false - now checking if count equals 0
+                failureMessage: "Your solution should use recursion, not a while loop"
+            );
+        }
+
+        // Check parameter count
+        public static void Code_CorrectParameters(VPLTester tester)
         {
             tester.TestCodeStructure(
                 testName: "Method must have exactly 2 parameters",
                 points: 5,
-                checkType: CodeStructureCheck.ParameterCount,
-                expectedCount: 2,
-                failureMessage: "Method signature is incorrect"
-            );
-        }
-
-        // Example 6: Advanced custom checks using method analyzer
-        public static void Code_AdvancedCheck(VPLTester tester)
-        {
-            var analyzer = tester.GetStudentMethodAnalyzer();
-
-            // Check if method calls Console.WriteLine
-            if (!analyzer.CallsMethod("Console.WriteLine"))
-            {
-                tester.AddInfo("Warning: Method doesn't print output");
-            }
-
-            // Check if method uses specific variable names
-            // Add your custom logic here
-        }
-
-        // ==========================================================
-        // 4) COMBINED TESTS
-        // ==========================================================
-
-        // Example: Test both functionality and structure
-        public static void Combined_FullValidation(VPLTester tester)
-        {
-            // First test functionality
-            tester.TestMethod(
-                testName: "Functional test: Sum(1,2,3,4,5)",
-                points: 10,
-                parameters: new object[] { new[] { 1, 2, 3, 4, 5 } }
-            );
-
-            // Then check code structure
-            tester.TestCodeStructure(
-                testName: "Structure: Must use for loop",
-                points: 5,
-                checkType: CodeStructureCheck.UsesForLoop
-            );
-
-            tester.TestCodeStructure(
-                testName: "Structure: Should not use LINQ",
-                points: 5,
-                checkType: CodeStructureCheck.UsesLinq,
-                shouldPass: false
+                checkType: CodeStructureCheck.CheckParams,  // Changed from ParameterCount
+                shouldPass: true,
+                failureMessage: "CountValues must have exactly 2 parameters (Node<int> head, int value)"
             );
         }
     }
