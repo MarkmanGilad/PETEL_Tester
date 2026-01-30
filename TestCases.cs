@@ -17,9 +17,11 @@ namespace PETEL_VPL
         // ==========================================================
         // 1) ASSIGNMENT CONFIG
         // ==========================================================
-        public static VPLTester CreateTester()
+        public static VPLTester CreateTester(bool showDetails = true)
         {
-            return new VPLTester(studentMethodName: "CountValues");
+            var tester = new VPLTester(studentMethodName: "CountValues");
+            tester.ShowDetails = showDetails;
+            return tester;
         }
 
         // ==========================================================

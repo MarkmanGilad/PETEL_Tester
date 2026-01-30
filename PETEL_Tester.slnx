@@ -2,5 +2,4 @@
   <Project Path="PETEL_MainTester_V2/PETEL_MainTester_V2.csproj" />
   <Project Path="PETEL_Runner_V2/PETEL_Runner_V2.csproj" />
   <Project Path="PETEL_V2_Core/PETEL_V2_Core.csproj" />
-  <Project Path="Tester_Net_core/Tester_Net_core.csproj" Id="6c32e9a2-7b30-4260-9706-15caca8dc22d" />
 </Solution>

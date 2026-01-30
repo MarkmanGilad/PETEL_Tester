@@ -53,13 +53,19 @@ namespace PETEL_VPL
 
         private static string GetStudentSourcePath(string studentFile)
         {
+            var baseDir = AppContext.BaseDirectory;
+            var currentDir = Directory.GetCurrentDirectory();
+
             string[] possiblePaths =
-            [
+            {
                 studentFile,
-                Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.FullName ?? string.Empty, studentFile),
-                Path.Combine("..", studentFile),
-                Path.Combine("..", "..", studentFile)
-            ];
+                Path.Combine(currentDir, studentFile),
+                Path.Combine(baseDir, studentFile),
+                Path.Combine(baseDir, "..", studentFile),
+                Path.Combine(baseDir, "..", "..", studentFile),
+                Path.Combine(baseDir, "..", "..", "..", studentFile),
+                Path.Combine(baseDir, "..", "..", "..", "..", studentFile)
+            };
 
             foreach (var p in possiblePaths)
             {
@@ -68,7 +74,10 @@ namespace PETEL_VPL
                     if (!string.IsNullOrWhiteSpace(p) && File.Exists(p))
                         return Path.GetFullPath(p);
                 }
-                catch { }
+                catch
+                {
+                    // ignore and continue
+                }
             }
 
             return studentFile;
