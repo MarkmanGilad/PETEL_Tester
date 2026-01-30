@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.IO;
-using PETEL_VPL;
 
 namespace PETEL_Runner_V2
 {
@@ -13,10 +11,12 @@ namespace PETEL_Runner_V2
         {
             try
             {
-                var testCasesType = Type.GetType("PETEL_VPL.TestCases")
-                    ?? AppDomain.CurrentDomain.GetAssemblies()
-                        .Select(a => a.GetType("PETEL_VPL.TestCases", throwOnError: false, ignoreCase: false))
-                        .FirstOrDefault(t => t != null);
+                // Load caller's assembly to find TestCases, StudentAnswer, TeacherAnswer
+                LoadCallerAssemblies();
+
+                var testCasesType = AppDomain.CurrentDomain.GetAssemblies()
+                    .Select(a => a.GetType("PETEL_VPL.TestCases", throwOnError: false, ignoreCase: false))
+                    .FirstOrDefault(t => t != null);
 
                 if (testCasesType == null)
                 {
@@ -31,7 +31,7 @@ namespace PETEL_Runner_V2
                     .Where(m =>
                     {
                         var ps = m.GetParameters();
-                        return ps.Length == 1 && ps[0].ParameterType == typeof(VPLTester);
+                        return ps.Length == 1 && ps[0].ParameterType.Name == "VPLTester";
                     })
                     .OrderBy(m => m.Name, StringComparer.Ordinal)
                     .ToList();
@@ -48,7 +48,7 @@ namespace PETEL_Runner_V2
 
                 foreach (var method in testMethods)
                 {
-                    var (pts, txt) = RunTestMethod(method);
+                    var (pts, txt) = RunTestMethod(testCasesType, method);
                     total += pts;
                     outputBlocks.Add(txt);
                 }
@@ -67,14 +67,39 @@ namespace PETEL_Runner_V2
             }
         }
 
-        private static (int points, string text) RunTestMethod(MethodInfo method)
+        private static void LoadCallerAssemblies()
+        {
+            // Load assemblies from working directory (where MainTester runs)
+            var workingDir = Directory.GetCurrentDirectory();
+            var dllFiles = Directory.GetFiles(workingDir, "*.dll", SearchOption.TopDirectoryOnly);
+
+            foreach (var dll in dllFiles)
+            {
+                try
+                {
+                    Assembly.LoadFrom(dll);
+                }
+                catch
+                {
+                    // Ignore load failures
+                }
+            }
+        }
+
+        private static (int points, string text) RunTestMethod(Type testCasesType, MethodInfo method)
         {
             try
             {
-                var tester = TestCases.CreateTester();
+                var createTesterMethod = testCasesType.GetMethod("CreateTester", BindingFlags.Public | BindingFlags.Static);
+                if (createTesterMethod == null)
+                {
+                    return (0, "Comment :=>>" + method.Name + ": failure. 0 points\n<|--\nCreateTester method not found\n--|>\n\n");
+                }
+
+                var tester = createTesterMethod.Invoke(null, null);
 
                 var originalOut = Console.Out;
-                var suppressed = new StringWriter();
+                var suppressed = new System.IO.StringWriter();
                 Console.SetOut(suppressed);
                 try
                 {
@@ -86,7 +111,13 @@ namespace PETEL_Runner_V2
                     suppressed.Dispose();
                 }
 
-                return (tester.GetGrade(), tester.FormatResponse());
+                var getGradeMethod = tester.GetType().GetMethod("GetGrade");
+                var formatResponseMethod = tester.GetType().GetMethod("FormatResponse");
+
+                int grade = (int)getGradeMethod.Invoke(tester, null);
+                string response = (string)formatResponseMethod.Invoke(tester, null);
+
+                return (grade, response);
             }
             catch (TargetInvocationException tie)
             {

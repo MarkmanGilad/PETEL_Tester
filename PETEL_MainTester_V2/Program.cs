@@ -1,79 +1,97 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
-using PETEL_VPL;
 
 namespace PETEL_MainTester_V2
 {
     internal static class Program
     {
-        private const string ProtocolPrefix = "PETEL_V2|";
-
         private static int Main(string[] args)
         {
-            var testCasesType = Type.GetType("PETEL_VPL.TestCases")
-                ?? AppDomain.CurrentDomain.GetAssemblies()
-                    .Select(a => a.GetType("PETEL_VPL.TestCases", throwOnError: false, ignoreCase: false))
-                    .FirstOrDefault(t => t != null);
-
-            if (testCasesType == null)
+            // Locate PETEL_Runner_V2.exe relative to this assembly
+            string runnerPath = FindRunnerExecutable();
+            
+            if (string.IsNullOrEmpty(runnerPath) || !File.Exists(runnerPath))
             {
-                Console.WriteLine("Comment :=>>Framework error: type PETEL_VPL.TestCases not found: failure. 0 points\n");
+                Console.WriteLine("Comment :=>>Framework error: PETEL_Runner_V2.exe not found: failure. 0 points\n");
                 Console.WriteLine("Grade :=>> 0");
-                return 2;
+                return 1;
             }
 
-            var testMethods = testCasesType
-                .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                .Where(m => m.ReturnType == typeof(void))
-                .Where(m =>
-                {
-                    var ps = m.GetParameters();
-                    return ps.Length == 1 && ps[0].ParameterType == typeof(VPLTester);
-                })
-                .OrderBy(m => m.Name, StringComparer.Ordinal)
-                .ToList();
-
-            int total = 0;
-            var outputBlocks = new List<string>();
-
-            foreach (var method in testMethods)
-            {
-                // Run all tests in-process (Code_ and Case_ tests)
-                var (pts, txt) = RunInProcessTest(method);
-                total += pts;
-                outputBlocks.Add(txt);
-            }
-
-            foreach (var block in outputBlocks)
-                Console.Write(block);
-
-            Console.WriteLine($"Grade :=>> {total}");
-            return 0;
-        }
-
-        private static (int points, string text) RunInProcessTest(MethodInfo method)
-        {
             try
             {
-                // Create tester instance (analyzer auto-initializes in constructor)
-                var tester = TestCases.CreateTester();
+                var psi = new ProcessStartInfo
+                {
+                    FileName = runnerPath,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    WorkingDirectory = Path.GetDirectoryName(typeof(Program).Assembly.Location)
+                };
 
-                method.Invoke(null, [tester]);
-                return (tester.GetGrade(), tester.FormatResponse());
-            }
-            catch (TargetInvocationException tie)
-            {
-                return (0, "Comment :=>>" + method.Name + ": failure. 0 points\n<|--\n" + (tie.InnerException?.Message ?? tie.Message) + "\n--|>\n\n");
+                using var process = Process.Start(psi);
+                if (process == null)
+                {
+                    Console.WriteLine("Comment :=>>Framework error: failed to start runner: failure. 0 points\n");
+                    Console.WriteLine("Grade :=>> 0");
+                    return 2;
+                }
+
+                string output = process.StandardOutput.ReadToEnd();
+                string error = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+
+                // Emit runner output directly
+                if (!string.IsNullOrEmpty(output))
+                    Console.Write(output);
+
+                if (!string.IsNullOrEmpty(error))
+                    Console.Error.Write(error);
+
+                return process.ExitCode;
             }
             catch (Exception ex)
             {
-                return (0, "Comment :=>>" + method.Name + ": failure. 0 points\n<|--\n" + ex.Message + "\n--|>\n\n");
+                Console.WriteLine("Comment :=>>Framework error: " + ex.Message + ": failure. 0 points\n");
+                Console.WriteLine("Grade :=>> 0");
+                return 3;
             }
+        }
+
+        private static string FindRunnerExecutable()
+        {
+            var baseDir = AppContext.BaseDirectory;
+            
+            // Try sibling bin folder (common in VS multi-project solutions)
+            string[] candidates = 
+            {
+                // Same directory (published together)
+                Path.Combine(baseDir, "PETEL_Runner_V2.exe"),
+                // Sibling Debug output
+                Path.Combine(baseDir, "..", "..", "..", "PETEL_Runner_V2", "bin", "Debug", "net8.0", "PETEL_Runner_V2.exe"),
+                // Sibling Release output
+                Path.Combine(baseDir, "..", "..", "..", "PETEL_Runner_V2", "bin", "Release", "net8.0", "PETEL_Runner_V2.exe"),
+                // Absolute path attempt (Development mode)
+                Path.Combine(Directory.GetParent(baseDir).Parent.Parent.Parent.Parent.FullName, "PETEL_Runner_V2", "bin", "Debug", "net8.0", "PETEL_Runner_V2.exe")
+            };
+
+            foreach (var candidate in candidates)
+            {
+                try
+                {
+                    var fullPath = Path.GetFullPath(candidate);
+                    if (File.Exists(fullPath))
+                        return fullPath;
+                }
+                catch
+                {
+                    // ignore and continue
+                }
+            }
+
+            return null;
         }
     }
 }
