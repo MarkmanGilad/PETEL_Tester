@@ -223,9 +223,9 @@ namespace PETEL_VPL
                     // Compare student method param types with teacher method (PETEL_VPL.TeacherAnswer)
                     string[] studentParamTypes = analyzer.GetParameterTypes();
 
-                    var teacherType = Type.GetType("PETEL_VPL.TeacherAnswer");
+                    var teacherType = ResolveTeacherType();
                     if (teacherType == null)
-                        return new CodeCheckResult(false, 0, "Teacher type 'PETEL_VPL.TeacherAnswer' not found.");
+                        return new CodeCheckResult(false, 0, "Teacher type 'TeacherAnswer' not found.");
 
                     var teacherMethod = teacherType.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
                                                    .FirstOrDefault(m => m.Name == analyzer.GetMethodName());
@@ -247,9 +247,9 @@ namespace PETEL_VPL
                     // Compare student method return type with teacher method return type
                     string studentReturn = analyzer.GetReturnType();
 
-                    var tType = Type.GetType("PETEL_VPL.TeacherAnswer");
+                    var tType = ResolveTeacherType();
                     if (tType == null)
-                        return new CodeCheckResult(false, 0, "Teacher type 'PETEL_VPL.TeacherAnswer' not found.");
+                        return new CodeCheckResult(false, 0, "Teacher type 'TeacherAnswer' not found.");
 
                     var tMethod = tType.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
                                        .FirstOrDefault(m => m.Name == analyzer.GetMethodName());
@@ -307,6 +307,33 @@ namespace PETEL_VPL
                            .OfType<MethodDeclarationSyntax>()
                            .Select(m => m.Identifier.Text)
                            .ToArray();
+        }
+
+        private Type ResolveTeacherType()
+        {
+            // Try fully-qualified first
+            var type = Type.GetType("PETEL_VPL.TeacherAnswer")
+                       ?? Type.GetType("TeacherAnswer");
+
+            if (type != null)
+                return type;
+
+            // Fallback: search loaded assemblies by name
+            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                try
+                {
+                    type = asm.GetTypes().FirstOrDefault(t => t.Name == "TeacherAnswer");
+                    if (type != null)
+                        return type;
+                }
+                catch
+                {
+                    // ignore and continue
+                }
+            }
+
+            return null;
         }
     }
 

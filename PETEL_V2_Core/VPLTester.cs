@@ -17,13 +17,13 @@ namespace PETEL_VPL
         private CodeAnalyzer? studentCodeAnalyzer;
         private readonly int timeoutMilliseconds;
 
-        private string StudentSourceFilePath { get; }
-        private string StudentNamespace { get; }
-        private string StudentClassName { get; }
-        private string StudentMethodName { get; set; }
-        private string TeacherNamespace { get; }
-        private string TeacherClassName { get; }
-        private string TeacherMethodName { get; }
+        public string StudentSourceFilePath { get; set; }
+        public string StudentNamespace { get; set; }
+        public string StudentClassName { get; set; }
+        public string StudentMethodName { get; set; }
+        public string TeacherNamespace { get; set; }
+        public string TeacherClassName { get; set; }
+        public string TeacherMethodName { get; set; }
 
         public bool ShowDetails { get; set; } = true; // Default to true
 
@@ -81,13 +81,6 @@ namespace PETEL_VPL
             }
 
             return studentFile;
-        }
-
-        public void SetStudentMethod(string methodName)
-        {
-            if (string.IsNullOrWhiteSpace(methodName))
-                throw new ArgumentException("Method name cannot be empty", nameof(methodName));
-            StudentMethodName = methodName.Trim();
         }
 
         public void AddInfo(string message)

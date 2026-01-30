@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <Compile Include="..\TestCases.cs" Link="TestCases.cs" />
+    <Compile Include="..\PETEL_MainTester_V2\StudentAnswer.cs" Link="StudentAnswer.cs" />
+    <Compile Include="..\PETEL_MainTester_V2\TeacherAnswer.cs" Link="TeacherAnswer.cs" />
   </ItemGroup>
 
   <ItemGroup>

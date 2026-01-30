@@ -9,17 +9,8 @@ namespace PETEL_Runner_V2
 {
     internal static class Program
     {
-        private const string ProtocolPrefix = "PETEL_V2|";
-
         private static int Main(string[] args)
         {
-            string? methodName = GetArgValue(args, "--method");
-            if (string.IsNullOrWhiteSpace(methodName))
-            {
-                EmitPacket(0, "Runner error: missing required argument --method <name>.");
-                return 2;
-            }
-
             try
             {
                 var testCasesType = Type.GetType("PETEL_VPL.TestCases")
@@ -29,27 +20,59 @@ namespace PETEL_Runner_V2
 
                 if (testCasesType == null)
                 {
-                    EmitPacket(0, "Runner error: type PETEL_VPL.TestCases not found.");
+                    Console.WriteLine("Comment :=>>Framework error: type PETEL_VPL.TestCases not found: failure. 0 points\n");
+                    Console.WriteLine("Grade :=>> 0");
                     return 3;
                 }
 
-                var method = testCasesType.GetMethod(
-                    methodName,
-                    BindingFlags.Public | BindingFlags.Static,
-                    binder: null,
-                    types: new[] { typeof(VPLTester) },
-                    modifiers: null);
+                var testMethods = testCasesType
+                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                    .Where(m => m.ReturnType == typeof(void))
+                    .Where(m =>
+                    {
+                        var ps = m.GetParameters();
+                        return ps.Length == 1 && ps[0].ParameterType == typeof(VPLTester);
+                    })
+                    .OrderBy(m => m.Name, StringComparer.Ordinal)
+                    .ToList();
 
-                if (method == null || method.ReturnType != typeof(void))
+                if (testMethods.Count == 0)
                 {
-                    EmitPacket(0, $"Runner error: method '{methodName}(VPLTester)' not found.");
-                    return 4;
+                    Console.WriteLine("Comment :=>>Framework error: no test methods found in TestCases: failure. 0 points\n");
+                    Console.WriteLine("Grade :=>> 0");
+                    return 5;
                 }
 
-                // Single source of truth: teachers configure the assignment inside TestCases.cs
-                var tester = TestCases.CreateTester(showDetails: false);
+                int total = 0;
+                var outputBlocks = new System.Collections.Generic.List<string>();
 
-                // Suppress any stdout from student code or teacher test.
+                foreach (var method in testMethods)
+                {
+                    var (pts, txt) = RunTestMethod(method);
+                    total += pts;
+                    outputBlocks.Add(txt);
+                }
+
+                foreach (var block in outputBlocks)
+                    Console.Write(block);
+
+                Console.WriteLine($"Grade :=>> {total}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Comment :=>>Runner exception: failure. 0 points\n<|--\n" + ex.Message + "\n--|>\n");
+                Console.WriteLine("Grade :=>> 0");
+                return 11;
+            }
+        }
+
+        private static (int points, string text) RunTestMethod(MethodInfo method)
+        {
+            try
+            {
+                var tester = TestCases.CreateTester();
+
                 var originalOut = Console.Out;
                 var suppressed = new StringWriter();
                 Console.SetOut(suppressed);
@@ -63,40 +86,16 @@ namespace PETEL_Runner_V2
                     suppressed.Dispose();
                 }
 
-                EmitPacket(tester.GetGrade(), tester.FormatResponse());
-                return 0;
+                return (tester.GetGrade(), tester.FormatResponse());
             }
             catch (TargetInvocationException tie)
             {
-                EmitPacket(0, "Runner exception: " + (tie.InnerException?.Message ?? tie.Message));
-                return 10;
+                return (0, "Comment :=>>" + method.Name + ": failure. 0 points\n<|--\n" + (tie.InnerException?.Message ?? tie.Message) + "\n--|>\n\n");
             }
             catch (Exception ex)
             {
-                EmitPacket(0, "Runner exception: " + ex.Message);
-                return 11;
+                return (0, "Comment :=>>" + method.Name + ": failure. 0 points\n<|--\n" + ex.Message + "\n--|>\n\n");
             }
-        }
-
-        private static string? GetArgValue(string[] args, string key)
-        {
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (!string.Equals(args[i], key, StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                if (i + 1 < args.Length)
-                    return args[i + 1];
-
-                return null;
-            }
-            return null;
-        }
-
-        private static void EmitPacket(int points, string text)
-        {
-            var payload = Convert.ToBase64String(Encoding.UTF8.GetBytes(text ?? string.Empty));
-            Console.WriteLine($"{ProtocolPrefix}{points}|{payload}");
         }
     }
 }
