@@ -48,7 +48,7 @@ namespace PETEL_VPL
             TeacherMethodName = teacherMethodName ?? studentMethodName;
             this.timeoutMilliseconds = timeoutMilliseconds;
             comparer = new ObjectComparer();
-            
+
             // Initialize code analyzer automatically
             InitializeCodeAnalyzer();
         }

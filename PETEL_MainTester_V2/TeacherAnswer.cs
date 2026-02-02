@@ -20,4 +20,8 @@ public static class TeacherAnswer
         // Recursive call on rest of list
         return count + CountValues(head.GetNext(), value);
     }
+
+    
+
+
 }

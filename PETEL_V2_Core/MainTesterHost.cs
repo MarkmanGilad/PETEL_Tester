@@ -14,10 +14,16 @@ namespace PETEL_VPL
 
         public static int Run(Func<VPLTester> createTester)
         {
-            var testCasesType = ResolveTestCasesType();
+            return Run(createTester, null);
+        }
+
+        public static int Run(Func<VPLTester> createTester, string? testCasesTypeName)
+        {
+            var testCasesType = ResolveTestCasesType(testCasesTypeName);
             if (testCasesType == null)
             {
-                Console.WriteLine("Comment :=>>Framework error: type PETEL_VPL.TestCases not found: failure. 0 points\n");
+                var typeName = string.IsNullOrWhiteSpace(testCasesTypeName) ? "PETEL_VPL.TestCases" : testCasesTypeName;
+                Console.WriteLine($"Comment :=>>Framework error: type {typeName} not found: failure. 0 points\n");
                 Console.WriteLine("Grade :=>> 0");
                 return 2;
             }
@@ -48,7 +54,7 @@ namespace PETEL_VPL
                 }
                 else
                 {
-                    var (pts, txt) = RunInRunner(method.Name, timeoutMs);
+                    var (pts, txt) = RunInRunner(method.Name, timeoutMs, testCasesTypeName);
                     total += pts;
                     outputBlocks.Add(txt);
                 }
@@ -61,11 +67,13 @@ namespace PETEL_VPL
             return 0;
         }
 
-        private static Type? ResolveTestCasesType()
+        private static Type? ResolveTestCasesType(string? testCasesTypeName)
         {
-            return Type.GetType("PETEL_VPL.TestCases")
+            var typeName = string.IsNullOrWhiteSpace(testCasesTypeName) ? "PETEL_VPL.TestCases" : testCasesTypeName;
+
+            return Type.GetType(typeName)
                 ?? AppDomain.CurrentDomain.GetAssemblies()
-                    .Select(a => a.GetType("PETEL_VPL.TestCases", throwOnError: false, ignoreCase: false))
+                    .Select(a => a.GetType(typeName, throwOnError: false, ignoreCase: false))
                     .FirstOrDefault(t => t != null);
         }
 
@@ -97,7 +105,7 @@ namespace PETEL_VPL
             }
         }
 
-        private static (int points, string text) RunInRunner(string methodName, int timeoutMs)
+        private static (int points, string text) RunInRunner(string methodName, int timeoutMs, string? testCasesTypeName)
         {
             try
             {
@@ -105,7 +113,7 @@ namespace PETEL_VPL
                 if (runnerCmd == null)
                     return Fail(methodName, "Runner.exe not found");
 
-                using var p = StartRunner(runnerCmd.Value, methodName);
+                using var p = StartRunner(runnerCmd.Value, methodName, testCasesTypeName);
                 if (p == null)
                     return Fail(methodName, "Failed to start Runner.exe");
 
@@ -114,19 +122,29 @@ namespace PETEL_VPL
 
                 if (!p.WaitForExit(timeoutMs))
                 {
-                    try { p.Kill(entireProcessTree: true); } catch { }
+                    try { p.Kill(); } catch { }
 
                     if (p.WaitForExit(1000))
                     {
                         if (IsStackOverflowExitCode(p.ExitCode))
-                            return Fail(methodName, $"Runner crashed (stack overflow). Exit code: 0x{p.ExitCode:X8}.");
+                        {
+                            var msg = GetTestCasesString("StackOverflowComment", testCasesTypeName)
+                                ?? $"Runner crashed (stack overflow). Exit code: 0x{p.ExitCode:X8}.";
+                            return Fail(methodName, msg);
+                        }
                     }
 
-                    return Fail(methodName, "Runner timed out (possible infinite loop or stack overflow).");
+                    var timeoutMsg = GetTestCasesString("TimeoutComment", testCasesTypeName)
+                        ?? "Runner timed out (possible infinite loop or stack overflow).";
+                    return Fail(methodName, timeoutMsg);
                 }
 
                 if (IsStackOverflowExitCode(p.ExitCode))
-                    return Fail(methodName, $"Runner crashed (stack overflow). Exit code: 0x{p.ExitCode:X8}.");
+                {
+                    var msg = GetTestCasesString("StackOverflowComment", testCasesTypeName)
+                        ?? $"Runner crashed (stack overflow). Exit code: 0x{p.ExitCode:X8}.";
+                    return Fail(methodName, msg);
+                }
 
                 const int drainGraceMs = 100;
                 Task.WaitAll(new Task[] { stdoutTask, stderrTask }, drainGraceMs);
@@ -168,12 +186,16 @@ namespace PETEL_VPL
             }
         }
 
-        private static Process? StartRunner(RunnerCommand cmd, string methodName)
+        private static Process? StartRunner(RunnerCommand cmd, string methodName, string? testCasesTypeName)
         {
+            var args = $"{cmd.Arguments} --method {EscapeArg(methodName)} --probeDir {EscapeArg(AppContext.BaseDirectory)}";
+            if (!string.IsNullOrWhiteSpace(testCasesTypeName))
+                args += $" --testCases {EscapeArg(testCasesTypeName)}";
+
             var psi = new ProcessStartInfo
             {
                 FileName = cmd.FileName,
-                Arguments = $"{cmd.Arguments} --method {EscapeArg(methodName)} --probeDir {EscapeArg(AppContext.BaseDirectory)}",
+                Arguments = args,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -211,7 +233,17 @@ namespace PETEL_VPL
             return (0, $"Comment :=>>{methodName}: failure. 0 points\n<|--\n{message}\n--|>\n\n");
         }
 
-        private readonly record struct RunnerCommand(string FileName, string Arguments);
+        private readonly struct RunnerCommand
+        {
+            public RunnerCommand(string fileName, string arguments)
+            {
+                FileName = fileName;
+                Arguments = arguments;
+            }
+
+            public string FileName { get; }
+            public string Arguments { get; }
+        }
 
         private static RunnerCommand? ResolveRunnerCommand()
         {
@@ -264,6 +296,27 @@ namespace PETEL_VPL
         private static bool IsStackOverflowExitCode(int exitCode)
         {
             return exitCode == unchecked((int)0xC00000FD) || exitCode == 139;
+        }
+
+        private static string GetTestCasesString(string memberName, string? testCasesTypeName)
+        {
+            var type = ResolveTestCasesType(testCasesTypeName);
+            if (type == null)
+                return null;
+
+            try
+            {
+                var prop = type.GetProperty(memberName, BindingFlags.Public | BindingFlags.Static);
+                if (prop != null && prop.PropertyType == typeof(string))
+                    return prop.GetValue(null) as string;
+
+                var field = type.GetField(memberName, BindingFlags.Public | BindingFlags.Static);
+                if (field != null && field.FieldType == typeof(string))
+                    return field.GetValue(null) as string;
+            }
+            catch { }
+
+            return null;
         }
     }
 }

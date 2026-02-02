@@ -20,12 +20,16 @@ namespace PETEL_Runner_V2
 
             try
             {
+                string? testCasesTypeName = GetArgValue(args, "--testCases");
                 string? probeDir = GetArgValue(args, "--probeDir");
-                LoadUserAssemblies(probeDir);
+                LoadUserAssemblies(probeDir, testCasesTypeName);
 
-                var testCasesType = ResolveTestCasesType();
+                var testCasesType = ResolveTestCasesType(testCasesTypeName);
                 if (testCasesType == null)
-                    return Fail(3, "Runner error: type PETEL_VPL.TestCases not found.");
+                {
+                    var typeName = string.IsNullOrWhiteSpace(testCasesTypeName) ? "PETEL_VPL.TestCases" : testCasesTypeName;
+                    return Fail(3, $"Runner error: type {typeName} not found.");
+                }
 
                 var method = ResolveTestMethod(testCasesType, methodName);
                 if (method == null)
@@ -52,11 +56,13 @@ namespace PETEL_Runner_V2
             }
         }
 
-        private static Type? ResolveTestCasesType()
+        private static Type? ResolveTestCasesType(string? testCasesTypeName)
         {
-            return Type.GetType("PETEL_VPL.TestCases")
+            var typeName = string.IsNullOrWhiteSpace(testCasesTypeName) ? "PETEL_VPL.TestCases" : testCasesTypeName;
+
+            return Type.GetType(typeName)
                 ?? AppDomain.CurrentDomain.GetAssemblies()
-                    .Select(a => a.GetType("PETEL_VPL.TestCases", throwOnError: false, ignoreCase: false))
+                    .Select(a => a.GetType(typeName, throwOnError: false, ignoreCase: false))
                     .FirstOrDefault(t => t != null);
         }
 
@@ -103,7 +109,7 @@ namespace PETEL_Runner_V2
             return code;
         }
 
-        private static void LoadUserAssemblies(string? probeDir)
+        private static void LoadUserAssemblies(string? probeDir, string? testCasesTypeName)
         {
             var baseDir = AppContext.BaseDirectory;
             var currentDir = Directory.GetCurrentDirectory();
@@ -145,7 +151,8 @@ namespace PETEL_Runner_V2
                     LoadAssemblyIfPresent(Path.Combine(dir, name));
             }
 
-            EnsureTypesLoaded(new[] { "StudentAnswer", "PETEL_VPL.TestCases" }, expanded);
+            var typeName = string.IsNullOrWhiteSpace(testCasesTypeName) ? "PETEL_VPL.TestCases" : testCasesTypeName;
+            EnsureTypesLoaded(new[] { "StudentAnswer", typeName }, expanded);
         }
 
         private static void EnsureTypesLoaded(string[] typeNames, IEnumerable<string> probeDirs)

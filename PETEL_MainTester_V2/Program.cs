@@ -4,6 +4,8 @@ namespace PETEL_MainTester_V2
 {
     internal static class Program
     {
-        private static int Main(string[] args) => MainTesterHost.Run(TestCases.CreateTester);
+        private const string TestCasesTypeName = "PETEL_VPL.TestCases";
+
+        private static int Main(string[] args) => MainTesterHost.Run(TestCases.CreateTester, TestCasesTypeName);
     }
 }
