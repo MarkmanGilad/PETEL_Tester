@@ -4,25 +4,32 @@ using C = System.Collections.Generic;
 
 namespace PETEL_VPL
 {
-    public static class TestCases
+    public static class TestCases_tree
     {
         
         public static VPLTester CreateTester()
         {
-            var tester = new VPLTester(studentMethodName: "CountValues");
+            var tester = new VPLTester(studentMethodName: "DFS_FindMax");
             return tester;
         }
-        
+        private static readonly C.Dictionary<Type, string> CommonExceptionComments = new C.Dictionary<Type, string>
+        {
+            { typeof(NullReferenceException), "You advanced past the end of the list (node became null) " },
+        };
+
 
         // Test 1: Empty list
-        public static void Case_2_EmptyList(VPLTester tester)
+        public static void Case_1(VPLTester tester)
         {
-            Node<int> list = null;
+            string path = Unit4Helper.GetTreeFilePath("tree.txt");
+            BinNode<int> tree = Unit4Helper.BuildBinaryTree<int>(path);
 
             tester.TestMethod(
-                testName: "Count in empty list",
+                testName: "Test 1: check the correct return",
                 points: 10,
-                parameters: new object[] { list, 5 }
+                parameters: new object[] { tree },
+                compareParams: true,
+                exceptionComments: commonExceptionComments
             );
         }
 

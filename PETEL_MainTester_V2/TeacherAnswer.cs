@@ -1,3 +1,4 @@
+using System;
 using Unit4;
 
 public static class TeacherAnswer
@@ -21,7 +22,13 @@ public static class TeacherAnswer
         return count + CountValues(head.GetNext(), value);
     }
 
-    
+    public static int DFS_FindMax(BinNode<int> node)
+    {
+        if (node == null)
+            return int.MinValue;
+        int max = Math.Max(DFS_FindMax(node.GetLeft()), DFS_FindMax(node.GetRight()));
+        return Math.Max(max, node.GetValue());
+    }
 
 
 }
