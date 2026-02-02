@@ -39,10 +39,31 @@ public static class StudentAnswer
 
     public static int DFS_FindMax(BinNode<int> node)
     {
+
         if (node == null)
-            return int.MinValue;
-        int max = Math.Max(DFS_FindMax(node.GetLeft()), DFS_FindMax(node.GetRight()));
+            return 100; // int.MinValue;
+            
+        int max = Math.Max(DFS_FindMax(node), DFS_FindMax(node.GetRight()));
         return Math.Max(max, node.GetValue());
+    }
+
+    public static Stack<int> CopyStack(Stack<int> s)
+    {
+        Stack<int> stack = new Stack<int>();
+        Stack<int> temp = new Stack<int>();
+
+        while (true)
+        {
+            int value = s.Pop();
+            temp.Push(value);
+        }
+        //while (!temp.IsEmpty())
+        //{
+        //    int value = temp.Pop();
+        //    s.Push(value);
+        //    stack.Push(value);
+        //}
+        return stack;
     }
 }
 

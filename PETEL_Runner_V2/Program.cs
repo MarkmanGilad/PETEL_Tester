@@ -105,6 +105,13 @@ namespace PETEL_Runner_V2
 
         private static int Fail(int code, string message)
         {
+            if (!string.IsNullOrEmpty(message) &&
+                !message.EndsWith("\n") &&
+                !message.EndsWith("\r\n"))
+            {
+                message += "\n";
+            }
+
             EmitPacket(0, message);
             return code;
         }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 
@@ -198,96 +198,414 @@ namespace Unit4
             return temp;
         }
 
-        public static string NodeListToString<T>(Node<T>? head, bool includeBrackets = false, int maxNodes = 256)
+        public static T[] NodeListToArray<T>(Node<T>? head)
         {
             if (head == null)
-                return includeBrackets ? "[]" : "";
+                return new T[0];
 
-            var sb = new StringBuilder();
-            if (includeBrackets) sb.Append("[");
-
-            var seen = new System.Collections.Generic.HashSet<Node<T>>();
-            var current = head;
-            bool first = true;
             int count = 0;
-
-            while (current != null && count < maxNodes)
+            Node<T>? current = head;
+            while (current != null)
             {
-                if (!seen.Add(current))
-                {
-                    if (!first) sb.Append(", ");
-                    sb.Append("...cycle...");
-                    break;
-                }
-
-                if (!first) sb.Append(", ");
-                var val = current.GetValue();
-                sb.Append(val != null ? val.ToString() : "null");
-
+                count++;
                 current = current.GetNext();
-                first = false;
-                count++;
             }
 
-            if (count >= maxNodes)
-                sb.Append(", ...truncated...");
+            T[] array = new T[count];
+            current = head;
+            int index = 0;
+            while (current != null)
+            {
+                array[index++] = current.GetValue();
+                current = current.GetNext();
+            }
 
-            if (includeBrackets) sb.Append("]");
-            return sb.ToString();
+            return array;
         }
 
-        public static string NodeListToString(object? head, bool includeBrackets = false, int maxNodes = 256)
+        public static T[] StackToArray<T>(Stack<T> stack)
         {
-            if (head == null)
-                return includeBrackets ? "[]" : "";
+            if (stack.IsEmpty())
+                return new T[0];
 
-            var type = head.GetType();
-            if (!(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Node<>)))
-                return head.ToString() ?? string.Empty;
+            Stack<T> temp = new Stack<T>();
+            System.Collections.Generic.List<T> list = new System.Collections.Generic.List<T>();
 
-            var sb = new StringBuilder();
-            if (includeBrackets) sb.Append("[");
-
-            var getValue = type.GetMethod("GetValue");
-            var getNext = type.GetMethod("GetNext");
-
-            var seen = new System.Collections.Generic.HashSet<object>(ReferenceEqualityComparer.Instance);
-
-            object? current = head;
-            bool first = true;
-            int count = 0;
-
-            while (current != null && count < maxNodes)
+            while (!stack.IsEmpty())
             {
-                if (!seen.Add(current))
+                T value = stack.Pop();
+                list.Add(value);
+                temp.Push(value);
+            }
+
+            while (!temp.IsEmpty())
+            {
+                stack.Push(temp.Pop());
+            }
+
+            return list.ToArray();
+        }
+
+        public static T[] QueueToArray<T>(Queue<T> queue)
+        {
+            if (queue.IsEmpty())
+                return new T[0];
+
+            Queue<T> temp = Clone(queue);
+            System.Collections.Generic.List<T> list = new System.Collections.Generic.List<T>();
+
+            while (!temp.IsEmpty())
+            {
+                list.Add(temp.Remove());
+            }
+
+            return list.ToArray();
+        }
+
+        public static BinNode<T>? BuildBinaryTree<T>(string filePath)
+        {
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException($"Tree file not found: {filePath}");
+
+            string[] lines = File.ReadAllLines(filePath);
+            if (lines.Length == 0)
+                return null;
+
+            int currentLine = 0;
+            return BuildTreeRecursive<T>(lines, ref currentLine, 0);
+        }
+
+        private static BinNode<T>? BuildTreeRecursive<T>(string[] lines, ref int currentLine, int expectedDepth)
+        {
+            while (currentLine < lines.Length && string.IsNullOrWhiteSpace(lines[currentLine]))
+            {
+                currentLine++;
+            }
+
+            if (currentLine >= lines.Length)
+                return null;
+
+            string line = lines[currentLine];
+
+            int depth = 0;
+            while (depth < line.Length && line[depth] == '\t')
+            {
+                depth++;
+            }
+
+            if (depth != expectedDepth)
+                return null;
+
+            string trimmedLine = line.TrimStart('\t');
+            string valueStr = trimmedLine;
+
+            if (trimmedLine.StartsWith("Left:"))
+                valueStr = trimmedLine.Substring(5);
+            else if (trimmedLine.StartsWith("Right:"))
+                valueStr = trimmedLine.Substring(6);
+
+            T value = ConvertToType<T>(valueStr);
+
+            BinNode<T> node = new BinNode<T>(value);
+            currentLine++;
+
+            while (currentLine < lines.Length)
+            {
+                while (currentLine < lines.Length && string.IsNullOrWhiteSpace(lines[currentLine]))
                 {
-                    if (!first) sb.Append(", ");
-                    sb.Append("...cycle...");
-                    break;
+                    currentLine++;
                 }
 
-                if (!first) sb.Append(", ");
-                var value = getValue!.Invoke(current, null);
-                sb.Append(value ?? "null");
+                if (currentLine >= lines.Length)
+                    break;
 
-                current = getNext!.Invoke(current, null);
-                first = false;
-                count++;
+                string nextLine = lines[currentLine];
+
+                int nextDepth = 0;
+                while (nextDepth < nextLine.Length && nextLine[nextDepth] == '\t')
+                {
+                    nextDepth++;
+                }
+
+                if (nextDepth != depth + 1)
+                    break;
+
+                string trimmedNextLine = nextLine.TrimStart('\t');
+
+                if (trimmedNextLine.StartsWith("Left:"))
+                {
+                    node.SetLeft(BuildTreeRecursive<T>(lines, ref currentLine, depth + 1));
+                }
+                else if (trimmedNextLine.StartsWith("Right:"))
+                {
+                    node.SetRight(BuildTreeRecursive<T>(lines, ref currentLine, depth + 1));
+                }
+                else
+                {
+                    break;
+                }
             }
 
-            if (count >= maxNodes)
-                sb.Append(", ...truncated...");
+            return node;
+        }
 
-            if (includeBrackets) sb.Append("]");
+        private static T ConvertToType<T>(string value)
+        {
+            try
+            {
+                Type targetType = typeof(T);
+
+                if (targetType == typeof(string))
+                    return (T)(object)value;
+
+                if (targetType == typeof(int))
+                    return (T)(object)int.Parse(value);
+
+                if (targetType == typeof(double))
+                    return (T)(object)double.Parse(value);
+
+                if (targetType == typeof(float))
+                    return (T)(object)float.Parse(value);
+
+                if (targetType == typeof(bool))
+                    return (T)(object)bool.Parse(value);
+
+                if (targetType == typeof(char) && value.Length == 1)
+                    return (T)(object)value[0];
+
+                return (T)Convert.ChangeType(value, targetType);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Cannot convert '{value}' to type {typeof(T).Name}", ex);
+            }
+        }
+
+        public static string BinaryTreeToString<T>(BinNode<T>? root)
+        {
+            if (root == null)
+                return "null";
+
+            var sb = new StringBuilder();
+            BinaryTreeToStringRecursive(root, sb, "", "");
             return sb.ToString();
         }
 
-        private sealed class ReferenceEqualityComparer : System.Collections.Generic.IEqualityComparer<object>
+        private static void BinaryTreeToStringRecursive<T>(BinNode<T>? node, StringBuilder sb, string prefix, string childPrefix)
         {
-            public static readonly ReferenceEqualityComparer Instance = new ReferenceEqualityComparer();
-            private ReferenceEqualityComparer() { }
-            public new bool Equals(object x, object y) => ReferenceEquals(x, y);
-            public int GetHashCode(object obj) => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
+            if (node == null)
+                return;
+
+            sb.AppendLine(prefix + node.GetValue());
+
+            if (node.HasLeft() || node.hasRight())
+            {
+                if (node.HasLeft())
+                {
+                    sb.Append(childPrefix + "├─Left: ");
+                    BinaryTreeToStringRecursive(node.GetLeft(), sb, "", childPrefix + "│  ");
+                }
+                else
+                {
+                    sb.AppendLine(childPrefix + "├─Left: null");
+                }
+
+                if (node.hasRight())
+                {
+                    sb.Append(childPrefix + "└─Right: ");
+                    BinaryTreeToStringRecursive(node.GetRight(), sb, "", childPrefix + "   ");
+                }
+                else
+                {
+                    sb.AppendLine(childPrefix + "└─Right: null");
+                }
+            }
+        }
+
+        public static void PrintBinaryTree<T>(BinNode<T>? root)
+        {
+            if (root == null)
+            {
+                Console.WriteLine("Tree is empty (null)");
+                return;
+            }
+
+            Console.WriteLine("Binary Tree Structure:");
+            Console.WriteLine("======================");
+            PrintBinaryTreeRecursive(root, "", "", true);
+            Console.WriteLine("======================");
+        }
+
+        private static void PrintBinaryTreeRecursive<T>(BinNode<T>? node, string indent, string pointer, bool isRoot)
+        {
+            if (node == null)
+                return;
+
+            Console.Write(indent);
+            if (!isRoot)
+                Console.Write(pointer);
+            Console.WriteLine(node.GetValue());
+
+            string childIndent = indent;
+            if (!isRoot)
+            {
+                childIndent += (pointer == "└── " ? "    " : "│   ");
+            }
+
+            if (node.HasLeft() || node.hasRight())
+            {
+                if (node.HasLeft())
+                {
+                    PrintBinaryTreeRecursive(node.GetLeft(), childIndent, "├── ", false);
+                }
+                else if (node.hasRight())
+                {
+                    Console.WriteLine(childIndent + "├── (null)");
+                }
+
+                if (node.hasRight())
+                {
+                    PrintBinaryTreeRecursive(node.GetRight(), childIndent, "└── ", false);
+                }
+                else if (node.HasLeft())
+                {
+                    Console.WriteLine(childIndent + "└── (null)");
+                }
+            }
+        }
+
+        public static void PrintBinaryTreeColored<T>(BinNode<T>? root, bool useColors = true)
+        {
+            if (root == null)
+            {
+                Console.WriteLine("Tree is empty (null)");
+                return;
+            }
+
+            Console.WriteLine("Binary Tree Structure:");
+            Console.WriteLine("======================");
+            PrintBinaryTreeColoredRecursive(root, "", "", true, 0, useColors);
+            Console.WriteLine("======================");
+        }
+
+        private static void PrintBinaryTreeColoredRecursive<T>(BinNode<T>? node, string indent, string pointer, bool isRoot, int depth, bool useColors)
+        {
+            if (node == null)
+                return;
+
+            ConsoleColor[] colors = new ConsoleColor[]
+            {
+                ConsoleColor.Cyan,
+                ConsoleColor.Yellow,
+                ConsoleColor.Green,
+                ConsoleColor.Magenta,
+                ConsoleColor.Blue,
+                ConsoleColor.Red
+            };
+
+            Console.Write(indent);
+            if (!isRoot)
+                Console.Write(pointer);
+
+            if (useColors)
+            {
+                var originalColor = Console.ForegroundColor;
+                Console.ForegroundColor = colors[depth % colors.Length];
+                Console.WriteLine(node.GetValue());
+                Console.ForegroundColor = originalColor;
+            }
+            else
+            {
+                Console.WriteLine(node.GetValue());
+            }
+
+            string childIndent = indent;
+            if (!isRoot)
+            {
+                childIndent += (pointer == "└── " ? "    " : "│   ");
+            }
+
+            if (node.HasLeft() || node.hasRight())
+            {
+                if (node.HasLeft())
+                {
+                    PrintBinaryTreeColoredRecursive(node.GetLeft(), childIndent, "├── ", false, depth + 1, useColors);
+                }
+                else if (node.hasRight())
+                {
+                    Console.WriteLine(childIndent + "├── (null)");
+                }
+
+                if (node.hasRight())
+                {
+                    PrintBinaryTreeColoredRecursive(node.GetRight(), childIndent, "└── ", false, depth + 1, useColors);
+                }
+                else if (node.HasLeft())
+                {
+                    Console.WriteLine(childIndent + "└── (null)");
+                }
+            }
+        }
+
+        public static void PrintList<T>(Node<T>? head)
+        {
+            Console.Write("[");
+            Node<T>? current = head;
+            bool first = true;
+
+            while (current != null)
+            {
+                if (!first) Console.Write(", ");
+                T value = current.GetValue();
+                Console.Write(value != null ? value.ToString() : "null");
+                first = false;
+                current = current.GetNext();
+            }
+
+            Console.WriteLine("]");
+        }
+
+        public static string GetTreeFilePath(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                return filePath;
+
+            if (Path.IsPathRooted(filePath))
+                return filePath;
+
+            var baseDir = AppContext.BaseDirectory;
+            var currentDir = Directory.GetCurrentDirectory();
+
+            string[] possiblePaths =
+            {
+                filePath,
+                Path.Combine(currentDir, filePath),
+                Path.Combine(baseDir, filePath),
+                Path.Combine(baseDir, "..", filePath),
+                Path.Combine(baseDir, "..", "..", filePath),
+                Path.Combine(baseDir, "..", "..", "..", filePath),
+                Path.Combine(baseDir, "..", "..", "..", "..", filePath),
+                Path.Combine(currentDir, "..", filePath),
+                Path.Combine(currentDir, "..", "..", filePath),
+                Path.Combine(currentDir, "..", "..", "..", filePath),
+                Path.Combine(currentDir, "..", "..", "..", "..", filePath)
+            };
+
+            foreach (var path in possiblePaths)
+            {
+                try
+                {
+                    var full = Path.GetFullPath(path);
+                    if (File.Exists(full))
+                        return full;
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+
+            return filePath;
         }
     }
 }
