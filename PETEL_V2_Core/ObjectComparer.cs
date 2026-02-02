@@ -98,7 +98,50 @@ namespace PETEL_VPL
             if (expectedType.IsArray)
                 return CompareArrays((Array)expected, (Array)actual);
 
-            return expected.Equals(actual);
+            return CompareMembers(expected, actual);
+        }
+
+        private bool CompareMembers(object expected, object actual)
+        {
+            Type type = expected.GetType();
+
+            FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            bool hasMembers = fields.Length > 0;
+            for (int i = 0; i < properties.Length; i++)
+            {
+                if (properties[i].CanRead && properties[i].GetIndexParameters().Length == 0)
+                {
+                    hasMembers = true;
+                    break;
+                }
+            }
+
+            if (!hasMembers)
+                return expected.Equals(actual);
+
+            for (int i = 0; i < fields.Length; i++)
+            {
+                object expectedValue = fields[i].GetValue(expected);
+                object actualValue = fields[i].GetValue(actual);
+                if (!AreEqualDeep(expectedValue, actualValue))
+                    return false;
+            }
+
+            for (int i = 0; i < properties.Length; i++)
+            {
+                PropertyInfo prop = properties[i];
+                if (!prop.CanRead || prop.GetIndexParameters().Length != 0)
+                    continue;
+
+                object expectedValue = prop.GetValue(expected, null);
+                object actualValue = prop.GetValue(actual, null);
+                if (!AreEqualDeep(expectedValue, actualValue))
+                    return false;
+            }
+
+            return true;
         }
 
         private static bool MatchTypes(Type expectedType, Type actualType)

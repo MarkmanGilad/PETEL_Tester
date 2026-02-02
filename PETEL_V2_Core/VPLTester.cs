@@ -248,7 +248,19 @@ namespace PETEL_VPL
             catch (TestAssertionException e) { exception = e; }
             catch (Exception e)
             {
-                exception = new TestAssertionException($"Error during test execution: {e.InnerException?.Message ?? e.Message}", e);
+                Exception baseEx = e is TargetInvocationException tie && tie.InnerException != null
+                    ? tie.InnerException
+                    : e;
+
+                if (config.ExceptionComments != null &&
+                    config.ExceptionComments.TryGetValue(baseEx.GetType(), out string comment))
+                {
+                    exception = new TestAssertionException(comment, baseEx);
+                }
+                else
+                {
+                    exception = new TestAssertionException($"Error during test execution: {baseEx.Message}", baseEx);
+                }
             }
 
             testResults.Add(FormatResult(config, exception));

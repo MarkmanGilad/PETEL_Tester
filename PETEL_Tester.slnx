@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Another_Tester/Another_Tester.csproj" Id="af0f0485-79c9-4438-8176-57bb7b46f846" />
   <Project Path="PETEL_MainTester_V2/PETEL_MainTester_V2.csproj" />
   <Project Path="PETEL_Runner_V2/PETEL_Runner_V2.csproj" />
   <Project Path="PETEL_V2_Core/PETEL_V2_Core.csproj" />
