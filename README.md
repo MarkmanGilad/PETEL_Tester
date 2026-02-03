@@ -3,11 +3,19 @@
 </p>
 
 
-# ממשק לבדיקת קוד - PeTel Tester C#
+# ממשק לבדיקת קוד - PeTel Tester C# (V2)
 
 **מכון ויצמן למדע | PeTel**
 
 מדריך זה מסביר כיצד להשתמש בממשק בדיקת הקוד (Tester) בשפת C# המיועד עבור סביבת **PeTel** (המבוססת על Moodle VPL). הממשק מאפשר למורים ליצור מטלות תכנות, להריץ בדיקות פונקציונליות (Case Tests) ובדיקות מבניות (Code Tests) על פתרונות תלמידים בצורה אוטומטית.
+
+**גרסה זו מתארת את V2.** קוד ה-V2 נמצא בתיקיות:
+- `PETEL_MainTester_V2`
+- `PETEL_Runner_V2`
+- `PETEL_V2_Core`
+- `Upload_V2_Net472`
+
+שאר התיקיות בפרויקט מיועדות ל-V1 (לא רלוונטיות למדריך זה).
 
 ## תוכן עניינים
 1. [כללי](#כללי)
@@ -24,10 +32,11 @@
 
 ## כללי
 
-ממשק בדיקת הקוד מורכב משלושה חלקים עיקריים:
-1. **בדיקה פונקציונאלית**-**Case Tester**: בדיקה של תוצאות הרצת קוד התלמיד (Output/Return Value) בהשוואה לפתרון המורה.
-2. **בדיקה תחבירית**-**Code Tester**: בדיקה של תחביר ומבנה הקוד (האם הפונקציה רקורסיבית? האם היא סטטית? האם יש לולאות מקוננות?).
-3. **בדיקת בינה מלאכותית**-**AI Tester**: (בפיתוח) בדיקת קוד באמצעות מודל בינה מלאכותית.
+ממשק בדיקת הקוד (V2) מורכב משני סוגי בדיקות עיקריים:
+1. **בדיקה פונקציונאלית (Case Tests)**: בדיקה של תוצאות הרצת קוד התלמיד (Return Value / פלט למסך / Side Effects בפרמטרים) בהשוואה לפתרון המורה.
+2. **בדיקה תחבירית/מבנית (Code Tests)**: בדיקות על מבנה הקוד (למשל: האם קיימת רקורסיה? כמה לולאות יש? האם החתימה תואמת?).
+
+ב-V2, כל **בדיקה פונקציונאלית** רצה בתהליך נפרד (Runner) כדי למנוע מצב שבו קריסה/תקיעה של פתרון תלמיד תפיל את כל הבדיקה.
 
 תהליך העבודה כולל פיתוח הבדיקות בסביבת **Visual Studio**, הרצת בדיקות מקומיות על פתרונות אפשריים, ולבסוף העלאת הקבצים לסביבת PeTel.
 
@@ -71,83 +80,40 @@
 
 ## יצירת משימה חדשה
 
-כדי ליצור בדיקה למטלה חדשה, אנו יוצרים פרויקט חדש בתוך ה-Solution הקיים.
+ב-V2 **אין צורך ליצור פרויקט נפרד לכל משימה** ואין צורך להעתיק קבצי מערכת בין פרויקטים.
 
-### שלב 1: יצירת פרויקט
-1. בחלון Solution Explorer, לחץ קליק ימני על ה-Solution.
-2. בחר **Add -> New Project**.
-3. בחר בסוג פרויקט: **Console App (.NET Framework)** בשפת **C#**.
-4. תן שם לפרויקט (לדוגמה: `CopyQueue`) וודא שה-Framework הוא **4.7.2**.
+### עבודה מקומית (Visual Studio)
+הפרויקט כבר מכיל פרויקט ריצה מוכן:
+- `PETEL_MainTester_V2` (מריץ את כל הטסטים ומחשב ציון)
+- `PETEL_Runner_V2` (מריץ כל Case Test בתהליך נפרד)
 
-<p align="center">
-   <img src="images\new_project_console1.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">
-   <img src="images\new_project_console2.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">   
-   <img src="images\new_project_console3.png" alt="..." height="200" style="vertical-align: top; margin-right: 8px;">   
-</p>
+כדי לפתח משימה חדשה מקומית:
+1. קבע כ-Startup Project את `PETEL_MainTester_V2`.
+2. ערוך את שני הקבצים של המשימה:
+    - `TeacherAnswer.cs` — פתרון מורה.
+    - `TestCases.cs` — הגדרות + בדיקות.
+3. (אופציונלי) ערוך `StudentAnswer.cs` כדי לדמות תשובת תלמיד ולוודא שהבדיקות “תופסות” טעויות.
 
+### ניהול כמה משימות באותו Solution (אופציונלי)
+אם רוצים לשמור כמה סטים של בדיקות במחשב:
+1. העתק את `TestCases.cs` לקובץ חדש (למשל `TestCases_CopyStack.cs`).
+2. שנה גם את שם המחלקה (למשל `public static class TestCases_CopyStack`).
+3. עדכן את `TestCasesTypeName` בקובץ `PETEL_MainTester_V2/Program.cs` כך שיצביע למחלקה החדשה (לדוגמה: `PETEL_VPL.TestCases_CopyStack`).
 
-### שלב 2: התקנת ספריות (NuGet)
-1. לחץ קליק ימני על ה-Solution ובחר **Manage NuGet Packages for Solution**.
-2. עבור ללשונית **Installed**.
-3. אתר את הספרייה **Microsoft.CodeAnalysis.CSharp**.
-4. סמן את הפרויקט החדש שיצרת.
-5. **חשוב מאוד:** וודא שהגרסה המותקנת היא **4.10.0**. **אין לעדכן לגרסה חדשה יותר**. לחץ על Install.
-
-<p align="center">
-   <img src="images\nuget_manager1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
-   <img src="images\nuget_manager2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
-</p>
-
-
-### שלב 3: העתקת קבצי המערכת
-יש להעתיק לפרויקט החדש את קבצי הליבה של הטסטר מתוך התיקייה `PETEL_Tester` המקורית.
-1. קליק ימני על הפרויקט החדש -> **Add -> Existing Item**.
-2. נווט לתיקיית `PETEL_Tester/PETEL_Tester`.
-3. סמן והוסף את כל הקבצים **למעט** `Program.cs`. הקבצים הנדרשים כוללים את:
-    * `CodeAnalyzer.cs`
-    * `MainTester.cs`
-    * `ObjectCloning.cs`
-    * `ObjectComparer.cs`
-    * `StudentAnswer.cs`
-    * `TeacherAnswer.cs`
-    * `Unit4.cs`
-    * `VPLTester.cs`
-
-<p align="center">
-   <img src="images\add_existing_items1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
-   <img src="images\add_existing_items2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
-</p>
-
-
-### שלב 4: הגדרת פרויקט ונקודת כניסה (Entry Point)
-1. קבע את הפרויקט שאותו ברצונך להריץ (startup project)
-2. קליק ימני על הפרויקט החדש -> **Properties**.
-3. שנה את ה-**Startup Object** ל-`PETEL_VPL.MainTester`.
-4. שמור את השינויים (Ctrl+S).
-
-<p align="center">
-   <img src="images\startPoint1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
-   <img src="images\startPoint2.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">   
-</p>
-<br>
-
-כעת הפרויקט מוכן לפיתוח המשימה. ניתן להריץ (Ctrl+F5) כדי לראות פלט ברירת מחדל.
-
-
-<p align="center">
-   <img src="images\test_output1.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
-</p>
+ב-PeTel/VPL מעלים תמיד קובץ אחד בשם `TestCases.cs` שמכיל מחלקה בשם `PETEL_VPL.TestCases`.
 
 ---
 ---
 
 ## בניית Tester - קבצי בסיס
 
-תהליך בניית הבדיקה דורש עריכה של שלושה קבצים מרכזיים בפרויקט שיצרנו:
+תהליך בניית הבדיקה ב-V2 דורש עריכה של שני קבצים עיקריים (ועוד אחד אופציונלי להרצה מקומית):
 
 1. **TeacherAnswer.cs**: קובץ המכיל את הפתרון הנכון (של המורה). משמש כבסיס להשוואה ("האמת").
-2. **StudentAnswer.cs**: קובץ המדמה פתרון של תלמיד. נשתמש בו כדי לבדוק שהטסטר שלנו מזהה שגיאות נכון (למשל, נכתוב בו פתרון שגוי בכוונה).
-3. **MainTester.cs**: קובץ המנהל את הבדיקות (יוסבר בהרחבה בהמשך).
+2. **TestCases.cs**: קובץ שמכיל:
+    - פונקציה `CreateTester()` שמגדירה איזה מחלקות/מתודות להשוות.
+    - פונקציות בדיקה `Case_...` (פונקציונאליות) ו-`Code_...` (מבנה/תחביר).
+3. **StudentAnswer.cs** (אופציונלי): קובץ המדמה פתרון של תלמיד להרצה מקומית בלבד.
 
 יש לכתוב את פתרון המורה והתלמיד. פתרון התלמיד יכול לכלול שגיאות לצורך בדיקת ה Tetser. 
 
@@ -224,37 +190,32 @@ public static void BinTreeMethods()
 
 ## בניית בדיקות פונקציונליות (Case Tester)
 
-הקובץ `MainTester.cs` הוא הלב של מערכת הבדיקות. עלינו להגדיר את הפונקציה `CaseTester` שמבצעת את הבדיקות בפועל.
+ב-V2, הבדיקות מוגדרות כמתודות סטטיות בתוך `TestCases.cs`.
 
-### אתחול (Main)
-בפונקציה `Main`, אנו יוצרים מופע של `VPLTester` ומגדירים את שמות הקבצים והמחלקות:
+### הגדרות משימה (CreateTester)
+במחלקה `PETEL_VPL.TestCases` חייבת להיות מתודה:
 
 ```csharp
-class MainTester
+public static VPLTester CreateTester()
 {
-    public static void Main(string[] args)
-    {
-        // Initialize the tester
-        var tester = new VPLTester(
-            studentFile: "StudentAnswer.cs",
-            studentNamespace: "",
-            studentClassName: "StudentAnswer",
-            studentMethodName: "Copy",
-            teacherNamespace: "PETEL_VPL",
-            teacherClassName: "TeacherAnswer",
-            teacherMethodName: "Copy",
-            showDetails: true
-        );
-
-        // Run all test suites
-        CaseTester(tester);
-        CodeTester(tester);
-
-        // Display results (VPL parses this output)
-        Console.WriteLine("\n" + tester.FormatResponse());
-        Console.WriteLine($"Grade :=>> {tester.GetGrade()}");
-    }
+    // שם המתודה של התלמיד (ובתור ברירת מחדל גם של המורה)
+    // ניתן גם להעביר teacherMethodName אם השמות שונים.
+    var tester = new VPLTester(studentMethodName: "CountValues");
+    return tester;
+}
 ```
+
+### כתיבת בדיקות (Case_...)
+כל בדיקה פונקציונלית היא מתודה סטטית בשם `Case_...` עם חתימה:
+
+```csharp
+public static void Case_1_SomeTest(VPLTester tester)
+{
+    tester.TestMethod(...);
+}
+```
+
+כל `Case_...` ירוץ בתהליך נפרד (Runner).
 
 ### הגדרת בדיקה (TestMethod)
 הפונקציה `tester.TestMethod` מגדירה מקרה בדיקה בודד. להלן הפרמטרים העיקריים:
@@ -276,7 +237,7 @@ class MainTester
 
 **בדיקות**
 ```csharp
-private static void CaseTester(VPLTester tester)
+public static void Case_1_Average_3Numbers(VPLTester tester)
 {
     tester.TestMethod(
         testName: "Test 1: 3 numbers. capture Console Output",
@@ -308,6 +269,25 @@ private static void CaseTester(VPLTester tester)
 }
 ```
 
+### בדיקה של כמה מתודות באותו TestCases
+אפשר לבדוק כמה מתודות של התלמיד באותו קובץ בדיקות, ע"י שינוי זמני של `tester.StudentMethodName` (ולהחזיר בסוף לערך המקורי):
+
+```csharp
+public static void Case_ExtraFunction(VPLTester tester)
+{
+    var original = tester.StudentMethodName;
+    tester.StudentMethodName = "OtherMethodName";
+
+    tester.TestMethod(
+        testName: "Other method test",
+        points: 10,
+        parameters: new object[] { /* ... */ }
+    );
+
+    tester.StudentMethodName = original;
+}
+```
+
 <p align="center">
    <img src="images\test_output1.png" alt="..." height="350" style="vertical-align: top; margin-right: 8px;">
 </p>
@@ -320,7 +300,7 @@ private static void CaseTester(VPLTester tester)
 * בדיקה שניה – בודק רק אם התור המקורי השתנה.
 * בדיקה שלישית – בודק את שניהם
 ```csharp
-private static void CaseTester(VPLTester tester)
+public static void Case_1_CopyQueue(VPLTester tester)
 {
     Queue<int> q1 = Unit4Helper.BuildQueue(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
     tester.TestMethod(
@@ -357,7 +337,7 @@ private static void CaseTester(VPLTester tester)
 באפשרותנו להוסיף להודעות השגיאה של המערכת הודעות שגיאה מותאמת אישית.
 
 ```csharp
- private static void CaseTester(VPLTester tester)
+ public static void Case_Exceptions_WithCustomMessage(VPLTester tester)
  {
 
      // Optional: Custom exception message
@@ -374,6 +354,7 @@ private static void CaseTester(VPLTester tester)
          compareParams: false,
          exceptionComments: commonExceptionComments
      );
+ }
 ```
 
 * לדוגמה הודעת השגיאה המקורית:
@@ -391,9 +372,9 @@ private static void CaseTester(VPLTester tester)
 
 ## בניית בדיקות מבנה ותחביר (Code Tester)
 
-במערכת PeTel ניתן לבדוק דרישות פדגוגיות ומבניות בקוד התלמיד באמצעות `CodeAnalyzer`. הבדיקות מתבצעות בפונקציה `CodeTester` ב-`MainTester.cs`.
+במערכת PeTel ניתן לבדוק דרישות פדגוגיות ומבניות בקוד התלמיד באמצעות `CodeAnalyzer`.
 
-ראשית, יש לאתחל את המנתח ולאחר מכן משתמשים בפונקציה `TestCodeStructure`. 
+ב-V2, בדיקות מבנה מוגדרות כמתודות סטטיות בשם `Code_...` בתוך `TestCases.cs`, ומשתמשים בפונקציה `TestCodeStructure`.
 * נוסיף את שם הבדיקה והסבר.
 * מספר הנקודות.
 * סוג הבדיקה לפי רשימה קבועה מראש (ראו במהשך).
@@ -401,12 +382,8 @@ private static void CaseTester(VPLTester tester)
 
 **לדוגמה:**
 ```csharp
- private static void CodeTester(VPLTester tester)
+public static void Code_1_CheckSignature(VPLTester tester)
 {
-
-    // Initialize code analyzer (handles errors internally)
-    tester.InitializeCodeAnalyzer();
-
     // NEW: Check student method parameter list matches teacher method
     tester.TestCodeStructure(
         testName: "Test Params: method signature matches teacher",
@@ -433,6 +410,7 @@ private static void CaseTester(VPLTester tester)
         expectedCount: 1,
         failureMessage: "Method must use exactly one loop for O(n) time complexity"
     );
+}
 ```
 
 ---
@@ -519,7 +497,7 @@ tester.TestCodeStructure(
 
 
 ### שלב 2: העלאת קבצי הבדיקה (Upload)
-יש להעלות ל-VPL שני סוגי קבצים דרך ממשק **PETEL_Tester**:
+יש להעלות ל-VPL שני סוגי קבצים דרך מסך הקבצים של שאלה מסוג VPL:
 
 ללחוץ על פלוס (+)
 
@@ -534,19 +512,19 @@ tester.TestCodeStructure(
 
 
 #### א. קבצי מערכת כלליים (Common Files)
-קבצים אלו זהים לכל המשימות ונמצאים בתיקיית `Upload` בתיקייה שהורדתם מ-GitHub. יש להעלות את:
-* `Tester.exe.b64` (הגרסה המקומפלת של מנוע הבדיקה)
-* `vpl_evaluate.sh` (סקריפט הרצה)
+ב-V2 קבצים אלו זהים לכל המשימות ונמצאים בתיקייה `Upload_V2_Net472`. יש להעלות את:
+* `tester_payload.tar` (מכיל את קבצי המערכת של ה-Tester: Runner + Core + תלות)
+* `vpl_evaluate.sh`
 * `vpl_run.sh`
 
   
-יש לאתר את הספריה Upload בתוך הפרויקט שלכם, לסמן את שלושת הקבצים בספריה, ולהעלות אותם (עזרה באיתור הספריה ראה בהמשך). קבצים אילו קבועים בכל המשימות.
+יש לאתר את הספריה `Upload_V2_Net472` בתוך הפרויקט שלכם, לסמן את שלושת הקבצים שבתוכה, ולהעלות אותם (עזרה באיתור הספריה ראה בהמשך). קבצים אילו קבועים בכל המשימות.
 
 <p align="center">
    <img src="images\Upload3.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
 </p>
 
-**איתור ספריית Upload**: על מנת לאתר את ספריית העבודה במחשב שלנו נלחץ קליק ימני על ה solution שלנו. בחירה ב Open in File Explorer. ניתן להעתיק את הנתיב של הפרויקט ולהשתמש בו בחלון העלאה של ה PETEL.
+**איתור ספריית Upload_V2_Net472**: על מנת לאתר את ספריית העבודה במחשב שלנו נלחץ קליק ימני על ה solution שלנו. בחירה ב Open in File Explorer. ניתן להעתיק את הנתיב של הפרויקט ולהשתמש בו בחלון העלאה של ה PETEL.
 
 <p align="center">
 
@@ -559,13 +537,15 @@ tester.TestCodeStructure(
 
 #### ב. קבצי המשימה הספציפית
 
-בשלב הבא נעלה את הקבצים של המשימה הספציפית. קבצים מתוך תיקיית הפרויקט שיצרתם (למשל `CopyQueue`). 
-* ללחוץ שוב על החץ למעלה
-* לאתר את הספריה של הפרויקט
-* לסמן רק את שני הקבצים: MainTester.cs, TeacherAnswer.cs
-* לעלות את הקבצים ולשמור.
+בשלב הבא נעלה את הקבצים של המשימה הספציפית (המורה):
+* `TeacherAnswer.cs`
+* `TestCases.cs`
 
-**שים לב:** אין להעלות את `StudentAnswer.cs` או קבצים אחרים שלא צוינו.
+שני הקבצים נמצאים אצלכם מקומית (בדרך כלל בתיקייה `Upload_V2_Net472` לאחר שהתאמתם אותם למשימה).
+
+**שים לב:** אין להעלות את `StudentAnswer.cs` (זהו קובץ שהתלמיד מגיש) ואין להעלות קבצים נוספים שלא צוינו.
+
+**הערה על תקלות ריצה:** אם תהליך הבדיקה של תלמיד קורס (למשל StackOverflow) ייתכן שלא יופיע פלט מפורט מהתהליך שקרס. במצב כזה תהליך האב עדיין מחכה ל-timeout ורק אז מחזיר הודעת ריצה קצרה (לפי `TimeoutComment`/`StackOverflowComment` המוגדרים ב-`TestCases.cs`).
 
 **העלאת הקבצים**
 
