@@ -6,7 +6,15 @@ namespace PETEL_VPL
 {
     public static class TestCases
     {
-        
+        // Teacher-settable runtime messages
+        public static string TimeoutComment =
+            "Runtime error: timeout (possible infinite loop). If you used recursion, verify the stop condition and that each call moves toward it (e.g., head = head.GetNext()).";
+
+        public static string StackOverflowComment =
+            "Runtime error: stack overflow. Your recursion did not stop (stop condition failed) or the recursive call did not advance toward the stop condition (e.g., you called CountValues(head, ...) instead of CountValues(head.GetNext(), ...)).";
+
+
+
         public static VPLTester CreateTester()
         {
             var tester = new VPLTester(studentMethodName: "CountValues");

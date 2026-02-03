@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -60,8 +60,12 @@ namespace PETEL_VPL
                 }
             }
 
-            foreach (var block in outputBlocks)
-                Console.Write(block);
+            for (int i = 0; i < outputBlocks.Count; i++)
+            {
+                Console.Write(outputBlocks[i]);
+                if (i < outputBlocks.Count - 1)
+                    Console.WriteLine("Comment :=>>");
+            }
 
             Console.WriteLine($"Grade :=>> {total}");
             return 0;
@@ -124,14 +128,18 @@ namespace PETEL_VPL
                 {
                     try { p.Kill(); } catch { }
 
-                    if (p.WaitForExit(1000))
+                    // Give the runner a moment to terminate and flush stderr, then drain what we can.
+                    try { p.WaitForExit(1000); } catch { }
+                    Task.WaitAll(new Task[] { stdoutTask, stderrTask }, 1500);
+
+                    var killedStderr = stderrTask.IsCompleted ? stderrTask.Result : string.Empty;
+
+                    // On Mono the runner may exit with code 1, but stderr contains StackOverflowException.
+                    if (LooksLikeStackOverflow(killedStderr))
                     {
-                        if (IsStackOverflowExitCode(p.ExitCode))
-                        {
-                            var msg = GetTestCasesString("StackOverflowComment", testCasesTypeName)
-                                ?? $"Runner crashed (stack overflow). Exit code: 0x{p.ExitCode:X8}.";
-                            return Fail(methodName, msg);
-                        }
+                        var soMsg = GetTestCasesString("StackOverflowComment", testCasesTypeName)
+                            ?? "Runtime error: stack overflow.";
+                        return Fail(methodName, soMsg);
                     }
 
                     var timeoutMsg = GetTestCasesString("TimeoutComment", testCasesTypeName)
@@ -139,29 +147,44 @@ namespace PETEL_VPL
                     return Fail(methodName, timeoutMsg);
                 }
 
-                if (IsStackOverflowExitCode(p.ExitCode))
+                // Ensure the async reads finish (crucial on Windows/Mono to avoid delayed stderr).
+                try
                 {
-                    var msg = GetTestCasesString("StackOverflowComment", testCasesTypeName)
-                        ?? $"Runner crashed (stack overflow). Exit code: 0x{p.ExitCode:X8}.";
-                    return Fail(methodName, msg);
+                    Task.WaitAll(new Task[] { stdoutTask, stderrTask }, 1000);
                 }
-
-                const int drainGraceMs = 100;
-                Task.WaitAll(new Task[] { stdoutTask, stderrTask }, drainGraceMs);
+                catch
+                {
+                    // Ignore: we will use what we managed to read.
+                }
 
                 string stdout = stdoutTask.IsCompleted ? stdoutTask.Result : string.Empty;
                 string stderr = stderrTask.IsCompleted ? stderrTask.Result : string.Empty;
 
+                // If the process exited due to stack overflow, prefer a short, controlled message.
+                if (IsRunnerStackOverflow(p.ExitCode, stderr))
+                {
+                    var soMsg = GetTestCasesString("StackOverflowComment", testCasesTypeName)
+                        ?? $"Runner crashed (stack overflow). Exit code: 0x{p.ExitCode:X8}.";
+                    return Fail(methodName, soMsg);
+                }
+
                 var packet = TryReadPacket(stdout);
                 if (packet == null)
                 {
-                    var exitCode = p.ExitCode;
-                    var isStackOverflow = exitCode == unchecked((int)0xC00000FD) || exitCode == 139;
-                    var msg = isStackOverflow
-                        ? "Runner crashed (stack overflow)."
-                        : (string.IsNullOrWhiteSpace(stderr) ? "Runner produced no protocol output." : "Runner stderr: " + stderr.Trim());
+                    // If runner produced no protocol output, do NOT dump the entire Mono crash text.
+                    // Show a short message; optionally include a single-line hint.
+                    if (LooksLikeStackOverflow(stderr))
+                    {
+                        var soMsg = GetTestCasesString("StackOverflowComment", testCasesTypeName)
+                            ?? "Runner crashed (stack overflow).";
+                        return Fail(methodName, soMsg);
+                    }
 
-                    return Fail(methodName, msg);
+                    var noPacketMsg = string.IsNullOrWhiteSpace(stderr)
+                        ? "Runner produced no protocol output."
+                        : "Runner error: " + FirstLine(stderr);
+
+                    return Fail(methodName, noPacketMsg);
                 }
 
                 if (!int.TryParse(packet.Value.points, out int pts))
@@ -176,6 +199,14 @@ namespace PETEL_VPL
                 {
                     text = $"Comment :=>>{methodName}: failure. 0 points\n<|--\nInvalid base64 payload\n--|>\n\n";
                     pts = 0;
+                    return (pts, text);
+                }
+
+                // If runner returned a raw message (no standard header), wrap it so VPL output is readable.
+                if (!string.IsNullOrWhiteSpace(text) &&
+                    !text.StartsWith("Comment :=>>", StringComparison.Ordinal))
+                {
+                    text = $"Comment :=>>{methodName}: {(pts > 0 ? "success" : "failure")}. {pts} points\n<|--\n{text.Trim()}\n--|>\n\n";
                 }
 
                 return (pts, text);
@@ -230,7 +261,18 @@ namespace PETEL_VPL
 
         private static (int points, string text) Fail(string methodName, string message)
         {
-            return (0, $"Comment :=>>{methodName}: failure. 0 points\n<|--\n{message}\n--|>\n\n");
+            message = (message ?? string.Empty).Trim();
+            
+            if (message.StartsWith("Comment :=>>", StringComparison.Ordinal))
+                return (0, message.EndsWith("\n\n") ? message : message + "\n\n");
+
+            var wrapped =
+                $"Comment :=>>{methodName}: failure. 0 points\n" +
+                "<|--\n" +
+                message + "\n" +
+                "--|>\n\n";
+
+            return (0, wrapped);
         }
 
         private readonly struct RunnerCommand
@@ -296,6 +338,31 @@ namespace PETEL_VPL
         private static bool IsStackOverflowExitCode(int exitCode)
         {
             return exitCode == unchecked((int)0xC00000FD) || exitCode == 139;
+        }
+
+        private static bool LooksLikeStackOverflow(string stderr)
+        {
+            if (string.IsNullOrWhiteSpace(stderr))
+                return false;
+
+            // Mono typically prints: "StackOverflowException" (and/or "stack overflow")
+            return stderr.IndexOf("StackOverflowException", StringComparison.OrdinalIgnoreCase) >= 0
+                || stderr.IndexOf("stack overflow", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private static bool IsRunnerStackOverflow(int exitCode, string stderr)
+        {
+            return IsStackOverflowExitCode(exitCode) || LooksLikeStackOverflow(stderr);
+        }
+
+        private static string FirstLine(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return string.Empty;
+
+            text = text.Trim();
+            int i = text.IndexOfAny(new[] { '\r', '\n' });
+            return i < 0 ? text : text.Substring(0, i).Trim();
         }
 
         private static string GetTestCasesString(string memberName, string? testCasesTypeName)

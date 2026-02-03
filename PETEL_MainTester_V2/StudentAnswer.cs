@@ -8,7 +8,7 @@ public static class StudentAnswer
     {
 
         if (head == null)
-            return 0;
+            return 100;
 
         int count = head.GetValue() == value ? 1 : 0;
     
