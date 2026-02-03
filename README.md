@@ -197,17 +197,61 @@ public static void BinTreeMethods()
 ב-V2, הבדיקות מוגדרות כמתודות סטטיות בתוך `TestCases.cs`.
 
 ### הגדרות משימה (CreateTester)
-במחלקה `PETEL_VPL.TestCases` חייבת להיות מתודה:
+במחלקה `PETEL_VPL.TestCases` חייבת להיות מתודה בשם `CreateTester` שמחזירה `VPLTester`. מתודה זו מגדירה **איזו פעולה של התלמיד** בודקים, **מול איזו פעולת מורה**, ובאילו שמות קבצים/מחלקות/מרחבי שמות להשתמש.
 
 ```csharp
 public static VPLTester CreateTester()
 {
-    // שם המתודה של התלמיד (ובתור ברירת מחדל גם של המורה)
-    // ניתן גם להעביר teacherMethodName אם השמות שונים.
-    var tester = new VPLTester(studentMethodName: "CountValues");
+    // ההגדרה המינימלית: שם המתודה של התלמיד (ובברירת מחדל גם של המורה)
+    return new VPLTester(studentMethodName: "CountValues");
+}
+```
+
+#### אפשרויות נוספות להגדרה ב-CreateTester (V2)
+ל-`VPLTester` יש בנאי עם הפרמטרים הבאים (החשובים להגדרת משימה):
+
+```csharp
+public static VPLTester CreateTester()
+{
+    var tester = new VPLTester(
+        studentMethodName: "CountValues",
+        teacherMethodName: "CountValues",     // אופציונלי: אם שם מתודת המורה שונה
+        studentFile: "StudentAnswer.cs",      // ברירת מחדל
+        studentNamespace: "",                 // ברירת מחדל
+        studentClassName: "StudentAnswer",    // ברירת מחדל
+        teacherNamespace: "",                 // ברירת מחדל
+        teacherClassName: "TeacherAnswer",    // ברירת מחדל
+        timeoutMilliseconds: 500               // זמן מקס' לכל Case_... (Runner)
+    );
+
+    // ShowDetails = true מציג יותר פירוט (מומלץ לפיתוח מקומי).
+    // ב-PeTel/VPL לרוב עדיף להשאיר false כדי לא להציף פלט.
+    tester.ShowDetails = false;
+
     return tester;
 }
 ```
+
+**פירוט הפרמטרים:**
+
+| פרמטר | תיאור | מתי צריך לשנות? |
+| :--- | :--- | :--- |
+| `studentMethodName` | שם המתודה של התלמיד שנבדקת. | תמיד בהתאם לדרישת המטלה. |
+| `teacherMethodName` | שם המתודה של המורה להשוואה. אם לא מוגדר — ברירת המחדל היא אותו שם כמו `studentMethodName`. | אם רוצים להשוות מול מתודה בשם שונה במורה, או לבדוק מספר מתודות שונות. |
+| `studentFile` | שם קובץ התלמיד. ב-VPL בדרך כלל `StudentAnswer.cs`. | אם דרשתם מהתלמיד שם קובץ אחר. |
+| `studentNamespace` | מרחב השמות של מחלקת התלמיד. ברירת מחדל ריק. | אם התלמיד נדרש להכניס `namespace`. |
+| `studentClassName` | שם מחלקת התלמיד. ברירת מחדל `StudentAnswer`. | אם הדרישה היא מחלקה בשם אחר. |
+| `teacherNamespace` | מרחב השמות של מחלקת המורה. ברירת מחדל ריק. | אם פתרון המורה נמצא בתוך `namespace`. |
+| `teacherClassName` | שם מחלקת המורה. ברירת מחדל `TeacherAnswer`. | אם פתרון המורה הוא במחלקה בשם אחר. |
+| `timeoutMilliseconds` | זמן מקסימלי להרצת **כל Case_...** בתהליך ה-Runner (למניעת תקיעות). | אם רוצים להאריך/לקצר זמן למטלות כבדות/קלות. |
+
+**מאפיין נוסף חשוב:**
+
+| מאפיין | תיאור | הערה |
+| :--- | :--- | :--- |
+| `ShowDetails` | אם `true` — המערכת תנסה להדפיס פירוט רחב יותר על ההשוואות/כשלונות. | טוב לדיבוג מקומי; ב-VPL עדיף לרוב `false`. |
+
+בנוסף, אפשר לשנות את אותם ערכים גם דרך מאפיינים (Properties) של `tester` בתוך הטסטים (למשל שינוי זמני של `tester.StudentMethodName` לבדיקת כמה מתודות, ואז החזרה לערך המקורי).
 
 ### כתיבת בדיקות (Case_...)
 כל בדיקה פונקציונלית היא מתודה סטטית בשם `Case_...` עם חתימה:
@@ -338,7 +382,12 @@ public static void Case_1_CopyQueue(VPLTester tester)
 
 ### הוספת הודעת שגיאה מותאמת אישית
 
-באפשרותנו להוסיף להודעות השגיאה של המערכת הודעות שגיאה מותאמת אישית.
+ב-V2 קיימים **שני סוגים** של הודעות שגיאה מותאמות אישית:
+
+1. **הודעות שגיאה רגילות (Exceptions מנוהלים)** — באמצעות `exceptionComments` בתוך `tester.TestMethod(...)`.
+2. **הודעות ריצה מיוחדות** עבור `timeout` (לולאה אינסופית/תקיעה) או `stack overflow` — באמצעות משתנים סטטיים ב-`TestCases` (מוסבר מיד).
+
+> חשוב: במקרי `timeout`/`stack overflow` ייתכן שהתהליך של הבדיקה קרס/נתקע ולא הפיק פלט בכלל. לכן ההודעה שמוצגת לתלמיד מגיעה מהתהליך הראשי (MainTesterHost) ולא מתוך `exceptionComments`.
 
 ```csharp
  public static void Case_Exceptions_WithCustomMessage(VPLTester tester)
@@ -360,6 +409,25 @@ public static void Case_1_CopyQueue(VPLTester tester)
      );
  }
 ```
+
+### הודעות timeout / stack overflow (מיוחד ל-V2)
+
+כדי להציג הודעה מותאמת במקרה של `timeout` או `stack overflow`, יש להגדיר ב-`TestCases.cs` שני משתנים סטטיים (בדומה למה שמופיע בדוגמה `TestCases1`):
+
+```csharp
+public static class TestCases
+{
+    public static string TimeoutComment =
+        "Runtime error: timeout (possible infinite loop).";
+
+    public static string StackOverflowComment =
+        "Runtime error: stack overflow.";
+
+    // ... CreateTester + tests ...
+}
+```
+
+אלו ההודעות שמערכת V2 תציג כאשר בדיקת `Case_...` לא הסתיימה בזמן או כאשר תהליך הריצה קרס מ-StackOverflow.
 
 * לדוגמה הודעת השגיאה המקורית:
 <p align="center">
