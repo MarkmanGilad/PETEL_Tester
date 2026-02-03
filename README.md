@@ -102,7 +102,9 @@
 2. שנה גם את שם המחלקה (למשל `public static class TestCases_CopyStack`).
 3. עדכן את `TestCasesTypeName` בקובץ `PETEL_MainTester_V2/Program.cs` כך שיצביע למחלקה החדשה (לדוגמה: `PETEL_VPL.TestCases_CopyStack`).
 
-ב-PeTel/VPL מעלים תמיד קובץ אחד בשם `TestCases.cs` שמכיל מחלקה בשם `PETEL_VPL.TestCases`.
+ב-PeTel/VPL **מומלץ** להעלות קובץ `TestCases.cs` שמכיל מחלקה בשם `PETEL_VPL.TestCases` (זהו ברירת המחדל שהטסטר מחפש).
+
+עם זאת, **לא חובה** שהמחלקה תיקרא דווקא `TestCases`: כל שם מחלקה יעבוד, כל עוד התוכנית הראשית של הטסטר מוגדרת לחפש את אותו שם (לדוגמה ע"י שינוי `TestCasesTypeName` ב-`PETEL_MainTester_V2/Program.cs` ובנייה/העלאה של גרסת טסטר תואמת).
 
 ---
 ---
