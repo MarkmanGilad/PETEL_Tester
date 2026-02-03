@@ -64,6 +64,8 @@
 
 **כתובת המאגר:** `https://github.com/MarkmanGilad/PETEL_Tester`
 
+**חשוב (V2):** יש לעבוד מהענף (branch) `Version2` ב-GitHub. הענף `master` מיועד לגרסת V1.
+
 ### אפשרות 1: Cloning דרך Visual Studio
 במסך הפתיחה בחר ב-**Clone a repository**, הזן את הכתובת הנ"ל ולחץ על **Clone**.
 <p align="center">
