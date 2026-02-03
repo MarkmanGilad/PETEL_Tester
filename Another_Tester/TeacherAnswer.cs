@@ -25,4 +25,17 @@ public static class TeacherAnswer
         }
         return rHead.GetNext();
     }
+
+    public static Node<int> CreateList(int[] arr)
+    {
+        Node<int> head = new Node<int>(0);
+        Node<int> tail = head;
+        for (int i = 0; i < arr.Length; i++)
+        {
+            Node<int> node = new Node<int>(arr[i]);
+            tail.SetNext(node);
+            tail = tail.GetNext();
+        }
+        return head.GetNext();
+    }
 }

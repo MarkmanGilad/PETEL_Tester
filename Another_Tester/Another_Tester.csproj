@@ -79,6 +79,7 @@
     <Compile Include="RangeNode.cs" />
     <Compile Include="StudentAnswer.cs" />
     <Compile Include="TeacherAnswer.cs" />
+    <Compile Include="TestCases_CreateList.cs" />
     <Compile Include="TestCases_RangeList.cs" />
   </ItemGroup>
   <ItemGroup>
