@@ -21,28 +21,32 @@ namespace PETEL_VPL
         public static void Case_1(VPLTester tester)
         {
             var s1 = Unit4Helper.BuildStack(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
-
             tester.TestMethod(
-                testName: "Test 1: check the correct return",
+               testName: "Test 1: check the correct return and don't compare objects",
+               points: 10,
+               parameters: new object[] { s1 },
+               compareParams: false,
+               exceptionComments: CommonExceptionComments
+           );
+            s1 = Unit4Helper.BuildStack(new int[] { 3, 5, -9, 3, 5, 5, 2, 1, 2 });
+            tester.TestMethod(
+                testName: "Test 2: check the correct return and compare objects after the run",
                 points: 10,
                 parameters: new object[] { s1 },
                 compareParams: true,
                 exceptionComments: CommonExceptionComments
             );
-        }
 
-        // Test 2: Empty stack
-        public static void Case_2(VPLTester tester)
-        {
             var s2 = Unit4Helper.BuildStack(new int[] { });
 
             tester.TestMethod(
-                testName: "Test 2: Empty array",
+                testName: "Test 3: Empty array",
                 points: 10,
                 parameters: new object[] { s2 },
                 compareParams: true,
                 exceptionComments: CommonExceptionComments
             );
         }
+        
     }
 }

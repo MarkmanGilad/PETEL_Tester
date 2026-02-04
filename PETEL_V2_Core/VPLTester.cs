@@ -301,11 +301,15 @@ namespace PETEL_VPL
                 InvokeMethod(TeacherNamespace, TeacherClassName, TeacherMethodName, teacherParams, config.ConsoleInput));
 
             if (!comparer.AreEqual(teacherOutput.Trim(), studentOutput.Trim()))
+            {
+                var expected = teacherOutput.TrimEnd();
+                var actual = studentOutput.TrimEnd();
                 throw new TestAssertionException(
                     "Stdout check:\n" +
-                    "Expected output:\n" + teacherOutput + "\n\n" +
-                    "Actual output:\n" + studentOutput + "\n" +
+                    "Expected output:\n" + expected + "\n" +
+                    "Actual output:\n" + actual + "\n" +
                     "Explanation: Printed output does not match the expected text/format.");
+            }
 
             if (config.CompareParams)
                 EnsureParamsUnchanged(teacherParams, config.Parameters);

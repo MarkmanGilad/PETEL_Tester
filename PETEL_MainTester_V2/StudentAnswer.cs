@@ -52,18 +52,28 @@ public static class StudentAnswer
         Stack<int> stack = new Stack<int>();
         Stack<int> temp = new Stack<int>();
 
-        while (true)
+        while (!s.IsEmpty())
         {
             int value = s.Pop();
             temp.Push(value);
         }
-        //while (!temp.IsEmpty())
-        //{
-        //    int value = temp.Pop();
-        //    s.Push(value);
-        //    stack.Push(value);
-        //}
+        while (!temp.IsEmpty())
+        {
+            int value = temp.Pop();
+            //s.Push(value);
+            stack.Push(value);
+        }
         return stack;
+    }
+
+    public static void PrintList(Node<int> head)
+    {
+        while (head != null)
+        {
+            Console.Write(head + "  ");
+            head = head.GetNext();
+        }
+        Console.WriteLine();
     }
 }
 

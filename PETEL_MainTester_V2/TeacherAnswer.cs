@@ -3,12 +3,6 @@ using Unit4;
 
 public static class TeacherAnswer
 {
-    /// <summary>
-    /// Counts how many times a value appears in a linked list using recursion
-    /// </summary>
-    /// <param name="head">Head of the linked list</param>
-    /// <param name="value">Value to count</param>
-    /// <returns>Number of occurrences</returns>
     public static int CountValues(Node<int> head, int value)
     {
         // Base case: empty list
@@ -47,5 +41,15 @@ public static class TeacherAnswer
             stack.Push(value);
         }
         return stack;
+    }
+
+    public static void PrintList(Node<int> head)
+    {
+        while (head != null)
+        {
+            Console.Write(head + " ");
+            head = head.GetNext();
+        }
+        Console.WriteLine();
     }
 }
