@@ -6,15 +6,6 @@ namespace PETEL_VPL
 {
     public static class TestCases
     {
-        // Teacher-settable runtime messages
-        public static string TimeoutComment =
-            "Runtime error: timeout (possible infinite loop). If you used recursion, verify the stop condition and that each call moves toward it (e.g., head = head.GetNext()).";
-
-        public static string StackOverflowComment =
-            "Runtime error: stack overflow. Your recursion did not stop (stop condition failed) or the recursive call did not advance toward the stop condition (e.g., you called CountValues(head, ...) instead of CountValues(head.GetNext(), ...)).";
-
-
-
         public static VPLTester CreateTester()
         {
             var tester = new VPLTester(studentMethodName: "CountValues");
@@ -23,7 +14,7 @@ namespace PETEL_VPL
         
 
         // Test 1: Empty list
-        public static void Case_2_EmptyList(VPLTester tester)
+        public static void Case_1(VPLTester tester)
         {
             Node<int> list = null;
 
@@ -32,11 +23,6 @@ namespace PETEL_VPL
                 points: 10,
                 parameters: new object[] { list, 5 }
             );
-        }
-
-        // Test 2: Single element - found
-        public static void Case_1_SingleElementFound(VPLTester tester)
-        {
             int[] arr = { 5 };
             Node<int> list = Unit4Helper.BuildNodeList(arr);
 
@@ -46,12 +32,12 @@ namespace PETEL_VPL
                 parameters: new object[] { list, 5 }
             );
         }
-        
-        // Test 6: All elements match
-        public static void Case_3_AllMatch(VPLTester tester)
+
+        // Test 2: All elements match
+        public static void Case_2_AllMatch(VPLTester tester)
         {
             int[] arr = { 5, 5, 5, 5 };
-            Node<int> list = Unit4Helper.BuildNodeList(arr);
+            list = Unit4Helper.BuildNodeList(arr);
 
             tester.TestMethod(
                 testName: "Count 5 in list [5,5,5,5]",
@@ -70,11 +56,6 @@ namespace PETEL_VPL
                 shouldPass: true,
                 failureMessage: "Your solution must use recursion to traverse the list"
             );
-        }
-
-        // Check that solution does NOT use loops
-        public static void Code_2_NoForLoop(VPLTester tester)
-        {
             tester.TestCodeStructure(
                 testName: "Solution must not use for loop",
                 points: 5,
@@ -83,12 +64,7 @@ namespace PETEL_VPL
                 shouldPass: true,  // Changed from false - now checking if count equals 0
                 failureMessage: "Your solution should use recursion, not a for loop"
             );
-        }
-
-        // Check parameter count
-        public static void Code_3_CorrectParameters(VPLTester tester)
-        {
-            tester.TestCodeStructure(
+                tester.TestCodeStructure(
                 testName: "Method must have exactly 2 parameters",
                 points: 5,
                 checkType: CodeStructureCheck.CheckParams,  // Changed from ParameterCount

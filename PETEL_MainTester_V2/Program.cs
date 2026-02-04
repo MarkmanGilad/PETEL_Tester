@@ -7,7 +7,7 @@ namespace PETEL_MainTester_V2
 {
     internal static class Program
     {
-        private const string TestCasesTypeName = "PETEL_VPL.TestCases_CopyStack";
+        private const string TestCasesTypeName = "PETEL_VPL.TestCases";
 
         private static int Main(string[] args)
         {
