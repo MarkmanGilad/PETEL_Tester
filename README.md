@@ -273,11 +273,11 @@ public static void Case_1_SomeTest(VPLTester tester)
 | **testName** | `string` | שם הבדיקה והסבר קצר שיוצג לתלמיד. |
 | **points** | `int` | ניקוד שיינתן במידה והבדיקה עברה. |
 | **parameters** | `object[]` | מערך הפרמטרים שיישלחו לפונקציה הנבדקת. |
+| **consoleInput** | `object` | קלט למסוף. נתמך: `string` (שורה אחת) או `string[]` / `List<string>` (כמה שורות). המערכת מוסיפה ירידות שורה אוטומטית. |
+| **captureConsoleOutput** | `bool` | האם להשוות את הפלט שהודפס למסוף (Console.WriteLine)? (ברירת מחדל: `false`). |
 | **compareParams** | `bool` | האם לבדוק שינויים בפרמטרים המקוריים (Side Effects)? (ברירת מחדל: `true`). |
+| **exceptionComments** | `Dictionary<Type, string>` | מילון הממיר שגיאות (Exceptions) להודעות מותאמות אישית. |
 | **compareReturn** | `bool` | האם לבדוק את ערך ההחזרה? (ברירת מחדל: `true`). |
-| **consoleInput** | `object` | קלט למסוף (אם הפונקציה מבקשת קלט מהמשתמש). |
-| **captureConsoleOutput** | `bool` | האם להשוות את הפלט שהודפס למסוף (Console.WriteLine)? |
-| **exceptionComments** | `Dictionary` | מילון הממיר שגיאות (Exceptions) להודעות מותאמות אישית. |
 
 #### דוגמה לתרגיל:
 

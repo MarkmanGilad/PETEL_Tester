@@ -393,29 +393,29 @@
 <td style="text-align:left">מערך הפרמטרים שיישלחו לפונקציה הנבדקת.</td>
 </tr>
 <tr>
+<td style="text-align:left"><strong>consoleInput</strong></td>
+<td style="text-align:left"><code>object</code></td>
+<td style="text-align:left">קלט למסוף. נתמך: <code>string</code> (שורה אחת) או <code>string[]</code> / <code>List&lt;string&gt;</code> (כמה שורות). המערכת מוסיפה ירידות שורה אוטומטית.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>captureConsoleOutput</strong></td>
+<td style="text-align:left"><code>bool</code></td>
+<td style="text-align:left">האם להשוות את הפלט שהודפס למסוף (Console.WriteLine)? (ברירת מחדל: <code>false</code>).</td>
+</tr>
+<tr>
 <td style="text-align:left"><strong>compareParams</strong></td>
 <td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left">האם לבדוק שינויים בפרמטרים המקוריים (Side Effects)? (ברירת מחדל: <code>true</code>).</td>
 </tr>
 <tr>
+<td style="text-align:left"><strong>exceptionComments</strong></td>
+<td style="text-align:left"><code>Dictionary&lt;Type, string&gt;</code></td>
+<td style="text-align:left">מילון הממיר שגיאות (Exceptions) להודעות מותאמות אישית.</td>
+</tr>
+<tr>
 <td style="text-align:left"><strong>compareReturn</strong></td>
 <td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left">האם לבדוק את ערך ההחזרה? (ברירת מחדל: <code>true</code>).</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>consoleInput</strong></td>
-<td style="text-align:left"><code>object</code></td>
-<td style="text-align:left">קלט למסוף (אם הפונקציה מבקשת קלט מהמשתמש).</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>captureConsoleOutput</strong></td>
-<td style="text-align:left"><code>bool</code></td>
-<td style="text-align:left">האם להשוות את הפלט שהודפס למסוף (Console.WriteLine)?</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>exceptionComments</strong></td>
-<td style="text-align:left"><code>Dictionary</code></td>
-<td style="text-align:left">מילון הממיר שגיאות (Exceptions) להודעות מותאמות אישית.</td>
 </tr>
 </tbody>
 </table>
