@@ -609,15 +609,18 @@ tester.TestCodeStructure(
 
 #### ב. קבצי המשימה הספציפית
 
-בשלב הבא נעלה את הקבצים של המשימה הספציפית (המורה):
+בשלב הבא נעלה את הקבצים של המשימה הספציפית (המורה). **יש להעלות בדיוק 3 קבצים**:
 * `TeacherAnswer.cs`
-* `TestCases.cs`
+* `TestCases.cs` (או קובץ בשם אחר שמכיל את מחלקת ה-TestCases שלכם)
+* `Program.cs` (התוכנית הראשית של הטסטר)
+
+ב-`Program.cs` נקבע שם המחלקה של ה-TestCases שהטסטר יריץ (באמצעות הקבוע `TestCasesTypeName`, לדוגמה: `PETEL_VPL.TestCases`).
 
 בזמן פיתוח מקומי בדרך כלל עובדים עליהם מתוך הפרויקט `PETEL_MainTester_V2`.
 
-לפני העלאה ל-PeTel/VPL, מעלים לשאלה את קבצי המשימה אחרי שהתאמתם אותם (אפשר פשוט להעתיק אותם לתיקייה `Upload_V2_Net472` כדי שיהיה קל לאתר אותם בעת ההעלאה).
+לפני העלאה ל-PeTel/VPL, מעלים לשאלה את קבצי המשימה אחרי שהתאמתם אותם (אפשר פשוט להעתיק את שלושת הקבצים לתיקייה `Upload_V2_Net472` כדי שיהיה קל לאתר אותם בעת ההעלאה).
 
-**הערה:** שמות הקבצים עצמם לא חייבים להיות דווקא `TeacherAnswer.cs`/`TestCases.cs` (VPL מקמפל את כל קבצי ה-`.cs` שנמצאים בשאלה). אם שיניתם שמות קבצים/מחלקות/מרחבי שמות — יש לעדכן את ההגדרות בקוד בהתאם (בעיקר `CreateTester()` ובמידת הצורך גם `TestCasesTypeName` בטסטר).
+**הערה:** שמות הקבצים עצמם לא חייבים להיות דווקא `TeacherAnswer.cs`/`TestCases.cs`/`Program.cs` (VPL מקמפל את כל קבצי ה-`.cs` שנמצאים בשאלה). אם שיניתם שמות קבצים/מחלקות/מרחבי שמות — יש לעדכן את ההגדרות בקוד בהתאם (בעיקר `CreateTester()` ובמידת הצורך גם `TestCasesTypeName` ב-`Program.cs`).
 
 **שים לב:** אין להעלות את `StudentAnswer.cs` (זהו קובץ שהתלמיד מגיש) ואין להעלות קבצים נוספים שלא צוינו.
 
@@ -626,7 +629,7 @@ tester.TestCodeStructure(
 **העלאת הקבצים**
 
 <p align="center">
-   <img src="images\Upload4.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
+   <img src="images\Upload5.png" alt="..." height="250" style="vertical-align: top; margin-right: 8px;">
 </p>
 
 ### שלב 3: אימות (Verification)
