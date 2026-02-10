@@ -17,6 +17,7 @@ namespace PETEL_VPL
             return Run(createTester, null);
         }
 
+
         public static int Run(Func<VPLTester> createTester, string? testCasesTypeName)
         {
             var testCasesType = ResolveTestCasesType(testCasesTypeName);
