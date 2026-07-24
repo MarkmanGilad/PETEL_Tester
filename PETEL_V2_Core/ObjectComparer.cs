@@ -171,7 +171,9 @@ namespace PETEL_VPL
             return true;
         }
 
-        private static bool IsNodeType(Type type) => type.IsGenericType && type.Name.StartsWith("Node`");
+        private static bool IsNodeType(Type type) =>
+            (type.IsGenericType && type.Name.StartsWith("Node`")) ||
+            type == typeof(Unit4.NodeInteger);
         private static bool IsBinNodeType(Type type) => type.IsGenericType && type.Name.StartsWith("BinNode`");
         private static bool IsStackType(Type type) => type.IsGenericType && type.Name.StartsWith("Stack`");
         private static bool IsQueueType(Type type) => type.IsGenericType && type.Name.StartsWith("Queue`");

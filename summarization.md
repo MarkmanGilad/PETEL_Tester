@@ -79,9 +79,29 @@ Thus the teacher is normally protected from mutation of the input object by the 
 
 ### Cloning — `ObjectCloning`
 
-The cloner handles value types/strings, Unit4 `Node<T>`, `Queue<T>`, `Stack<T>`, `BinNode<T>`, arrays, and arbitrary objects through reflection over instance fields. Queue and stack cloning temporarily drains and restores the source while building the clone.
+The cloner handles value types/strings, Unit4 `Node<T>`, `Queue<T>`, `Stack<T>`, `BinNode<T>`, `Unit4.NodeInteger`, arrays, and arbitrary objects through reflection over instance fields. Queue and stack cloning temporarily drains and restores the source while building the clone.
 
-`DeepCloneArray` currently calls `DeepClone` separately for each parameter. This protects the teacher from basic student mutation, but it does **not preserve aliases between parameters**. For example, if parameters contain a list head and a pointer to a node inside that list, the pointer is separately cloned and no longer points inside the cloned list. A future graph-aware implementation should share one original-to-clone reference map across all parameters and register clones before cloning their child references.
+`DeepCloneArray` now uses one shared graph-aware clone context for the entire parameter array. The context maps each original object reference to its clone using reference identity, so aliases between parameters and nested structures are retained. All reference-type clone paths (`Node<T>`, `Queue<T>`, `Stack<T>`, `BinNode<T>`, arrays, and reflection fallback) reuse a previously registered clone when they encounter the same source object.
+
+New clones are registered before their child links, fields, or elements are recursively cloned. This preserves shared references and supports cycles through Unit4 node/tree links. Value types and strings retain their existing value/immutable behavior.
+
+**Implemented behavior:**
+
+```text
+Input parameters:   [ listHead, nodeInsideList ]
+Teacher parameters: [ clonedListHead, matchingNodeInsideClonedList ]
+```
+
+The teacher's objects are separate from the student's originals, while aliases in the original parameter graph remain aliases in the teacher graph. If the same original object is passed in two parameter slots, both teacher parameter slots refer to the same cloned object.
+
+**Verification performed:**
+
+- Passed: `Node<int> head` and `Node<int> target = head.GetNext()`; the cloned target is `clonedHead.GetNext()` and is not the original target.
+- Passed: repeated parameter slots containing the same Unit4 object reference the same clone, not the original object.
+- Passed: an array-contained queue and the same queue passed separately resolve to one shared cloned queue.
+- Future automated test coverage should retain return-value and `compareParams` checks to confirm the teacher input remains insulated from student mutation.
+
+**Non-goal:** do not add a `teacherParameters` override for this issue. A separate override may be useful in the future for genuinely different teacher/student representations, but graph-aware cloning is the correct general solution for related parameters from the same input graph.
 
 ### Equality and display — `ObjectComparer`
 
@@ -89,7 +109,7 @@ The cloner handles value types/strings, Unit4 `Node<T>`, `Queue<T>`, `Stack<T>`,
 
 ### Unit4 support — `Unit4` and helpers
 
-`Unit4.cs` contains the Unit4 data structures used in school tasks (`Node<T>`, `Queue<T>`, `Stack<T>`, `BinNode<T>`) and helper operations. The `Unit4Helper` APIs build structures from arrays/files and convert/print structures for test authoring and diagnostics. The tester's cloning and snapshot code explicitly recognizes these structures.
+`Unit4.cs` contains the Unit4 data structures used in school tasks (`Node<T>`, `Queue<T>`, `Stack<T>`, `BinNode<T>`) and helper operations. It also defines the non-generic `Unit4.NodeInteger` linked-list type. The `Unit4Helper` APIs build structures from arrays/files and convert/print structures for test authoring and diagnostics, including `BuildNodeIntegerList(int[])`. The tester's cloning, comparison, and snapshot code explicitly recognizes these structures.
 
 ### Static analysis — `CodeAnalyzer`
 
@@ -136,7 +156,9 @@ PETEL_Runner_V2.exe.config
 PETEL_V2_Core.dll
 ```
 
-The payload must contain the runner, core library, and every required runtime dependency for the built version of the tester. In environments where Roslyn or other dependencies are not installed by the VPL host, those DLLs must be supplied by the payload or copied from the server location used by `vpl_run.sh`. Rebuild/repack the payload whenever the runner/core or their deployment dependencies change.
+The payload must contain the runner, core library, and every required runtime dependency for the built version of the tester. In environments where Roslyn or other dependencies are not installed by the VPL host, those DLLs must be supplied by the payload or copied from the server location used by `vpl_run.sh`.
+
+**Maintenance responsibility:** rebuilding/repacking `tester_payload.tar` is a tester-maintainer release step, not part of the teacher/task-author workflow. Repack it whenever `PETEL_Runner_V2`, `PETEL_V2_Core`, or their deployment dependencies change (including graph-aware cloning changes). Task authors should only upload the provided common files and their task-specific `Program.cs`, `TeacherAnswer.cs`, and `TestCases.cs` files.
 
 ### `vpl_evaluate.sh`
 

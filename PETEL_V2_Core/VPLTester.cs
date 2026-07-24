@@ -507,7 +507,8 @@ namespace PETEL_VPL
             if (value == null) return "null";
             var t = value.GetType();
 
-            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Node<>))
+            if ((t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Node<>)) ||
+                t == typeof(Unit4.NodeInteger))
                 return "[" + TraverseNodeList(value, 256) + "]";
 
             if (value is Array arr)

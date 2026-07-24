@@ -70,8 +70,6 @@ public static class TeacherAnswer
         return CountIndexEqualsValue(a, i + 1);
     }
 
-
-
     public static int MaxArray(int[] a)
     {
         return MaxArray(a, 0);
@@ -231,6 +229,43 @@ public static class TeacherAnswer
             return false;
 
         return IsPalindrome(str.Substring(1, str.Length - 2));
+    }
+
+
+    public static Node<int> DelNode(Node<int> lst, Node<int> node)
+    {
+
+        lst = new Node<int>(0, lst);
+        Node<int> p = lst;
+        while (p.HasNext())
+        {
+            if (p.GetNext() == node)
+            {
+                p.SetNext(p.GetNext().GetNext());
+                return lst.GetNext();
+            }
+            p = p.GetNext();
+        }
+        return lst.GetNext();
+
+    }
+
+    public static NodeInteger DelNodeInt(NodeInteger lst, NodeInteger node)
+    {
+
+        lst = new NodeInteger(0, lst);
+        NodeInteger p = lst;
+        while (p.HasNext())
+        {
+            if (p.GetNext() == node)
+            {
+                p.SetNext(p.GetNext().GetNext());
+                return lst.GetNext();
+            }
+            p = p.GetNext();
+        }
+        return lst.GetNext();
+
     }
 
 }

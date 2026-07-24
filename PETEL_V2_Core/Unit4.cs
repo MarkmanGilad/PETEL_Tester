@@ -30,6 +30,36 @@ namespace Unit4
         public override string ToString() { return "" + this.value; }
     }
 
+    public class NodeInteger
+    {
+        private int value;
+        private NodeInteger next;
+
+        public NodeInteger(int value)
+        {
+            this.value = value;
+            this.next = null;
+        }
+
+        public NodeInteger(int value, NodeInteger next)
+        {
+            this.value = value;
+            this.next = next;
+        }
+
+        public int GetValue() => this.value;
+
+        public void SetValue(int value) => this.value = value;
+
+        public NodeInteger GetNext() => this.next;
+
+        public void SetNext(NodeInteger next) => this.next = next;
+
+        public bool HasNext() => this.next != null;
+
+        public override string ToString() => this.value.ToString();
+    }
+
     [Serializable]
     public class Queue<T>
     {
@@ -151,6 +181,24 @@ namespace Unit4
             for (int i = 1; i < array.Length; i++)
             {
                 Node<T> newNode = new Node<T>(array[i]);
+                current.SetNext(newNode);
+                current = newNode;
+            }
+
+            return head;
+        }
+
+        public static NodeInteger? BuildNodeIntegerList(int[] array)
+        {
+            if (array == null || array.Length == 0)
+                return null;
+
+            NodeInteger head = new NodeInteger(array[0]);
+            NodeInteger current = head;
+
+            for (int i = 1; i < array.Length; i++)
+            {
+                NodeInteger newNode = new NodeInteger(array[i]);
                 current.SetNext(newNode);
                 current = newNode;
             }

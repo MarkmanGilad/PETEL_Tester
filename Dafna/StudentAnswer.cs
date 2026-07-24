@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Unit4;
 
 public static class StudentAnswer
@@ -70,8 +71,6 @@ public static class StudentAnswer
             return CountIndexEqualsValue(a, i + 1) + 1;
         return CountIndexEqualsValue(a, i + 1);
     }
-
-
 
     public static int MaxArray(int[] a)
     {
@@ -232,6 +231,42 @@ public static class StudentAnswer
             return false;
 
         return IsPalindrome(str.Substring(1, str.Length - 2));
+    }
+
+    public static Node<int> DelNode (Node<int> lst, Node<int> node)
+    {
+
+        lst = new Node<int>(0, lst);
+        Node<int> p = lst;
+        while (p.HasNext())
+        {
+            if (p.GetNext() == node)
+            {
+                p.SetNext(p.GetNext().GetNext());
+                return lst;
+            }
+            p = p.GetNext();
+        }
+        return lst;
+
+    }
+
+    public static NodeInteger DelNodeInt(NodeInteger lst, NodeInteger node)
+    {
+
+        lst = new NodeInteger(0, lst);
+        NodeInteger p = lst;
+        while (p.HasNext())
+        {
+            if (p.GetNext() == node)
+            {
+                p.SetNext(p.GetNext().GetNext());
+                return lst.GetNext();
+            }
+            p = p.GetNext();
+        }
+        return lst.GetNext();
+
     }
 
 }
