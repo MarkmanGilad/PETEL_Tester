@@ -21,12 +21,13 @@
 1. [כללי](#כללי)
 2. [הכנת סביבת הפיתוח](#הכנת-סביבת-הפיתוח)
 3. [הורדת והתקנת הממשק](#הורדת-והתקנת-הממשק)
-4. [יצירת משימה חדשה](#יצירת-משימה-חדשה)
-5. [בניית Tester - קבצי בסיס](#בניית-tester---קבצי-בסיס)
-6. [עבודה עם Unit4Helper](#עבודה-עם-unit4helper)
-7. [בניית בדיקות פונקציונליות (Case Tester)](#בניית-בדיקות-פונקציונליות-case-tester)
-8. [בניית בדיקות מבנה ותחביר (Code Tester)](#בניית-בדיקות-מבנה-ותחביר-code-tester)
-9. [העלאת הבדיקה ל-PeTel VPL](#העלאת-הבדיקה-ל-petel-vpl)
+4. [פתיחת פרויקט בדיקה חדש](#פתיחת-פרויקט-בדיקה-חדש)
+5. [יצירת משימה חדשה](#יצירת-משימה-חדשה)
+6. [בניית Tester - קבצי בסיס](#בניית-tester---קבצי-בסיס)
+7. [עבודה עם Unit4Helper](#עבודה-עם-unit4helper)
+8. [בניית בדיקות פונקציונליות (Case Tester)](#בניית-בדיקות-פונקציונליות-case-tester)
+9. [בניית בדיקות מבנה ותחביר (Code Tester)](#בניית-בדיקות-מבנה-ותחביר-code-tester)
+10. [העלאת הבדיקה ל-PeTel VPL](#העלאת-הבדיקה-ל-petel-vpl)
 
 ---
 
@@ -78,6 +79,35 @@
 <p align="center">
 <img src="images/zip_download_repo.png" alt="..." width="450" height="300">
 </p>
+---
+
+## פתיחת פרויקט בדיקה חדש
+
+כדי ליצור פרויקט מקומי חדש עבור בדיקות, פתחו את הקובץ `PETEL_Tester.slnx` ב-Visual Studio.
+בתיקייה `Scripts` שב-Solution Explorer נמצאים הקבצים `CreateNewV2Tester.cmd` ו-`CreateNewV2Tester.ps1`.
+
+הדרך הפשוטה היא לפתוח את ה-Terminal של Visual Studio (View > Terminal) ולהריץ:
+
+```powershell
+.\CreateNewV2Tester.cmd
+```
+
+הסקריפט יבקש שם לפרויקט. לאחר בחירת השם הוא יוצר את הפרויקט בתוך `LocalTesters`, מוסיף אותו
+ל-Solution, ויוצר קבצי התחלה מוכנים לעבודה:
+
+- `Program.cs`
+- `TeacherAnswer.cs`
+- `StudentAnswer.cs`
+- `TestCases.cs` עם דוגמת בדיקה
+
+הפרויקט החדש מכוון ל-.NET Framework 4.7.2 ומשתמש בפרויקטי V2 הקיימים. אם רכיב ה-targeting pack
+של .NET Framework 4.7.2 חסר, הסקריפט מציע לפתוח את Visual Studio Installer כדי להתקין אותו.
+בסיום, פתחו או הרחיבו את התיקייה `LocalTesters` ב-Solution Explorer. אם הפרויקט עדיין לא מופיע,
+בצעו Reload ל-Solution.
+
+**חשוב:** כל התוכן של `LocalTesters` מיועד לבדיקות מקומיות ומוגדר כ-ignored ב-Git, לכן פרויקטים
+אלה לא ייכללו ב-push ל-GitHub.
+
 ---
 
 ## יצירת משימה חדשה

@@ -1,8 +1,15 @@
 <Solution>
-  <Project Path="Another_Tester/Another_Tester.csproj" Id="af0f0485-79c9-4438-8176-57bb7b46f846" />
-  <Project Path="Complement_Queue/Complement_Queue.csproj" Id="e924e9a4-ae15-44d2-9c48-9cd41769d373" />
-  <Project Path="Dafna/Dafna.csproj" Id="4691cb46-bac1-46b7-a7fd-f0c0eed276df" />
   <Project Path="PETEL_MainTester_V2/PETEL_MainTester_V2.csproj" />
   <Project Path="PETEL_Runner_V2/PETEL_Runner_V2.csproj" />
   <Project Path="PETEL_V2_Core/PETEL_V2_Core.csproj" />
+  <Folder Name="/LocalTesters/">
+    <Project Path="LocalTesters/Another_Tester/Another_Tester.csproj" Id="af0f0485-79c9-4438-8176-57bb7b46f846" />
+    <Project Path="LocalTesters/Complement_Queue/Complement_Queue.csproj" Id="e924e9a4-ae15-44d2-9c48-9cd41769d373" />
+    <Project Path="LocalTesters/Dafna/Dafna.csproj" Id="4691cb46-bac1-46b7-a7fd-f0c0eed276df" />
+    <Project Path="LocalTesters/TestProject/TestProject.csproj" />
+  </Folder>
+  <Folder Name="/Scripts/">
+    <File Path="CreateNewV2Tester.cmd" />
+    <File Path="CreateNewV2Tester.ps1" />
+  </Folder>
 </Solution>
