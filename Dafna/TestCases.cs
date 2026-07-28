@@ -65,6 +65,26 @@ namespace PETEL_VPL
         //    );
         //}
 
+        public static void Code_1_New(VPLTester tester)
+        {
+            tester.TestCodeTokenExists(
+                testName: "Solution uses new",
+                points: 5,
+                tokenText: "new",
+                failureMessage: "Use the new keyword to create the required node."
+            );
+        }
+
+        public static void Code_2_UsesNewStack(VPLTester tester)
+        {
+            tester.TestCodeStructure(
+                testName: "Solution creates a Stack",
+                points: 5,
+                checkType: CodeStructureCheck.CountNewStack,
+                failureMessage: "Create at least one new Stack in your solution."
+            );
+        }
+
         //public static void Code_1_MustUseRecursion(VPLTester tester)
         //{
         //    tester.TestCodeStructure(

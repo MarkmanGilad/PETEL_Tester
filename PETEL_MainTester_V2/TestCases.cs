@@ -81,5 +81,23 @@ namespace PETEL_VPL
             );
         }
 
+        public static void Code_2_CheckCodeTokens(VPLTester tester)
+        {
+            tester.TestCodeTokenExists(
+                testName: "Solution uses return",
+                points: 5,
+                tokenText: "return",
+                failureMessage: "Use return to send the count back to the caller."
+            );
+
+            tester.TestCodeTokenExists(
+                testName: "Solution does not use while",
+                points: 5,
+                tokenText: "while",
+                shouldExist: false,
+                failureMessage: "Use recursion, not a while loop."
+            );
+        }
+
     }
 }

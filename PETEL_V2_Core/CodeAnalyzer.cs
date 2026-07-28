@@ -34,7 +34,8 @@ namespace PETEL_VPL
         IsProtected,
         IsInternal,
         CheckParams,
-        CheckReturnType
+        CheckReturnType,
+        ContainsToken
     }
 
     /// <summary>
@@ -130,9 +131,38 @@ namespace PETEL_VPL
         }
 
         /// <summary>
+        /// Perform a token-presence structure check on a method.
+        /// </summary>
+        public CodeCheckResult CheckMethodStructure(string methodName, CodeStructureCheck checkType, string tokenText)
+        {
+            var methodAnalyzer = GetMethodAnalyzer(methodName);
+            return PerformCheck(methodAnalyzer, checkType, tokenText: tokenText);
+        }
+
+        /// <summary>
+        /// Check whether a method contains an exact C# syntax token.
+        /// </summary>
+        public bool ContainsToken(string methodName, string tokenText)
+        {
+            return GetMethodAnalyzer(methodName).ContainsToken(tokenText);
+        }
+
+        /// <summary>
+        /// Count exact C# syntax tokens in a method.
+        /// </summary>
+        public int CountTokens(string methodName, string tokenText)
+        {
+            return GetMethodAnalyzer(methodName).CountTokens(tokenText);
+        }
+
+        /// <summary>
         /// Route the enum check to the appropriate method analyzer function
         /// </summary>
-        private CodeCheckResult PerformCheck(MethodAnalyzer analyzer, CodeStructureCheck checkType, int? expectedCount = null)
+        private CodeCheckResult PerformCheck(
+            MethodAnalyzer analyzer,
+            CodeStructureCheck checkType,
+            int? expectedCount = null,
+            string? tokenText = null)
         {
             switch (checkType)
             {
@@ -254,6 +284,10 @@ namespace PETEL_VPL
 
                     return new CodeCheckResult(returnMatches, returnMatches ? 1 : 0,
                         returnMatches ? $"Return type matches: {actualRet}" : $"Wrong return type. Expected: {expectedRet}. Actual: {actualRet}.");
+
+                case CodeStructureCheck.ContainsToken:
+                    int tokenCount = analyzer.CountTokens(tokenText);
+                    return new CodeCheckResult(tokenCount > 0, tokenCount, $"Token '{tokenText}' count: {tokenCount}");
 
                 default:
                     throw new ArgumentException($"Unknown check type: {checkType}");
@@ -557,6 +591,27 @@ namespace PETEL_VPL
         public int CountReturnStatements()
         {
             return method.DescendantNodes().OfType<ReturnStatementSyntax>().Count();
+        }
+
+        /// <summary>
+        /// Check whether the method contains an exact C# syntax token.
+        /// Comments and literal contents are not matched.
+        /// </summary>
+        public bool ContainsToken(string tokenText)
+        {
+            return CountTokens(tokenText) > 0;
+        }
+
+        /// <summary>
+        /// Count exact C# syntax tokens in the method.
+        /// </summary>
+        public int CountTokens(string tokenText)
+        {
+            if (string.IsNullOrWhiteSpace(tokenText))
+                throw new ArgumentException("Token text must not be empty.", nameof(tokenText));
+
+            return method.DescendantTokens(descendIntoTrivia: false)
+                         .Count(token => string.Equals(token.Text, tokenText, StringComparison.Ordinal));
         }
 
         /// <summary>

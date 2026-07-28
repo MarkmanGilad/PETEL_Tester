@@ -183,6 +183,54 @@ namespace PETEL_VPL
             testResults.Add(FormatResult(config, exception));
         }
 
+        /// <summary>
+        /// Award points when the selected student method contains (or does not contain)
+        /// an exact C# token. Matching is performed by Roslyn, not by text search.
+        /// </summary>
+        public void TestCodeTokenExists(
+            string testName,
+            int points,
+            string tokenText,
+            bool shouldExist = true,
+            string? failureMessage = null)
+        {
+            TestAssertionException? exception = null;
+
+            try
+            {
+                if (studentCodeAnalyzer == null)
+                    throw new TestAssertionException("Code analyzer not initialized. Call InitializeCodeAnalyzer() first.");
+
+                int count = studentCodeAnalyzer.CountTokens(StudentMethodName, tokenText);
+                bool exists = count > 0;
+
+                if (exists != shouldExist)
+                {
+                    string requirement = shouldExist
+                        ? $"The method must contain the '{tokenText}' token."
+                        : $"The method must not contain the '{tokenText}' token.";
+                    string message = string.IsNullOrEmpty(failureMessage)
+                        ? requirement
+                        : failureMessage;
+
+                    throw new TestAssertionException($"{message} Actual occurrences: {count}.");
+                }
+
+                grade += points;
+            }
+            catch (TestAssertionException e)
+            {
+                exception = e;
+            }
+            catch (Exception e)
+            {
+                exception = new TestAssertionException($"Error during code token analysis: {e.Message}", e);
+            }
+
+            var config = new TestExecutionConfig(testName, points);
+            testResults.Add(FormatResult(config, exception));
+        }
+
         public MethodAnalyzer GetStudentMethodAnalyzer()
         {
             if (studentCodeAnalyzer == null)

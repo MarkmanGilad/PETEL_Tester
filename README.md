@@ -452,6 +452,51 @@ public static class TestCases
 * סוג הבדיקה לפי רשימה קבועה מראש (ראו במהשך).
 * פרמטרים נוספים אופציונאליים: כגון הודעת שגיאה.
 
+### בדיקה של מילת קוד
+
+כדי לבדוק אם הפעולה של התלמיד משתמשת במילת קוד מסוימת, משתמשים ב-
+`TestCodeTokenExists`. הבדיקה משתמשת ב-Roslyn כדי לזהות token מדויק, ולא
+בחיפוש טקסט: `for` לא יתאים ל-`before`, ומילים בתוך הערה או מחרוזת אינן
+נספרות.
+
+```csharp
+public static void Code_2_CheckKeywords(VPLTester tester)
+{
+    tester.TestCodeTokenExists(
+        testName: "Creates a new object",
+        points: 5,
+        tokenText: "new",
+        shouldExist: true,
+        failureMessage: "Use the new keyword to create the required object."
+    );
+
+    tester.TestCodeTokenExists(
+        testName: "Does not use while",
+        points: 5,
+        tokenText: "while",
+        shouldExist: false,
+        failureMessage: "Do not use a while loop in this solution."
+    );
+}
+```
+
+הפרמטר `shouldExist` הוא `true` כברירת מחדל: הוא מחייב שהמילה תופיע.
+כאשר הוא `false`, הבדיקה מחייבת שהמילה לא תופיע. אפשר להשתמש גם במילים כמו
+`for`, `return` ו-`if`.
+
+#### פרמטרים של `TestCodeTokenExists`
+
+| פרמטר | סוג | הסבר |
+| :--- | :--- | :--- |
+| `testName` | `string` | שם הבדיקה שמוצג לתלמיד. |
+| `points` | `int` | מספר הנקודות שמתווסף אם הבדיקה עוברת. |
+| `tokenText` | `string` | מילת הקוד המדויקת לחיפוש, לדוגמה `new`, `for` או `while`. |
+| `shouldExist` | `bool` | `true` מחייב שהמילה תופיע (ברירת המחדל); `false` מחייב שהיא לא תופיע. |
+| `failureMessage` | `string?` | הודעה אופציונלית לתלמיד במקרה שהבדיקה נכשלת. |
+
+הבדיקה פועלת רק על המתודה שהוגדרה ב-`CreateTester()` כ-`studentMethodName`.
+אם המילה מופיעה במקום אחר בקובץ התלמיד, היא לא תשפיע על התוצאה.
+
 **לדוגמה:**
 ```csharp
 public static void Code_1_CheckSignature(VPLTester tester)
@@ -497,6 +542,26 @@ public static void Code_1_CheckSignature(VPLTester tester)
 | **shouldPass** | `Bool` | האם תוצאת הבדיקה המצופה היא חיובית או שלילית (ברירת מחדל: `true`). | אופציונלי |
 | **expectedCount** | `Int?` | בבדיקות כמותיות: המספר המצופה (לדוגמה: מספר הלולאות). ברירת מחדל: `null`. | אופציונלי |
 | **failureMessage** | `String` | הודעת שגיאה שתוצג לתלמיד אם הבדיקה נכשלת. ברירת מחדל: `null`. | אופציונלי |
+
+#### בדיקות כמותיות ללא `expectedCount`
+
+בבדיקות מסוג ספירה, `expectedCount` **אינו חובה**. אם מציינים אותו, הבדיקה
+דורשת את המספר המדויק. אם לא מציינים אותו, הבדיקה עוברת כאשר הספירה חיובית
+(אחת או יותר).
+
+לדוגמה, הבדיקה הבאה עוברת אם התלמיד יצר `Stack` אחד או יותר באמצעות
+`new Stack...`:
+
+```csharp
+tester.TestCodeStructure(
+    testName: "Solution creates a Stack",
+    points: 5,
+    checkType: CodeStructureCheck.CountNewStack,
+    failureMessage: "Create at least one new Stack in your solution."
+);
+```
+
+כדי לדרוש בדיוק שני מופעים, יש להוסיף `expectedCount: 2`.
 
 ---
 

@@ -115,6 +115,10 @@ The teacher's objects are separate from the student's originals, while aliases i
 
 `CodeAnalyzer` uses Roslyn (`Microsoft.CodeAnalysis.Common` and `Microsoft.CodeAnalysis.CSharp`, version 4.10.0) to parse the student source. It exposes method-level checks through `MethodAnalyzer` and `CodeStructureCheck`, including recursion, loops, signature/parameter counts, and related syntax/structure requirements. It analyzes source only; it does not execute the student method.
 
+`MethodAnalyzer.ContainsToken(string)` and `CountTokens(string)` enumerate Roslyn tokens from the selected `MethodDeclarationSyntax`, using ordinal exact-token matching. Therefore `for` matches a `for` keyword but not identifiers such as `before`; token text in comments and string/character literals is not counted. `CodeAnalyzer` also exposes method-name overloads for the same checks and `CodeStructureCheck.ContainsToken` for internal structured results.
+
+`VPLTester.TestCodeTokenExists(testName, points, tokenText, shouldExist, failureMessage)` is the teacher-facing API. It checks `StudentMethodName` only, awards points when the token exists if `shouldExist` is `true` (the default), or when it is absent if `shouldExist` is `false`, and returns standard VPL feedback including the actual occurrence count when the check fails.
+
 ## Local example — `PETEL_MainTester_V2`
 
 This project is the local executable and an example task.
@@ -130,6 +134,7 @@ The example defines `PETEL_VPL.TestCases`:
 - `CreateTester()` creates a `VPLTester` for `StudentAnswer.CountValues` and, by default, compares it against `TeacherAnswer.CountValues`.
 - `Case_2_EmptyList` and `Case_2_AllMatch` build `Node<int>` inputs using `Unit4Helper.BuildNodeList` and call `TestMethod` with points and parameters.
 - `Code_1_MustUseRecursion` calls `TestCodeStructure` to require recursion, forbid `for` loops, and validate the two-parameter signature.
+- `Code_2_CheckCodeTokens` demonstrates `TestCodeTokenExists` by requiring `return` and forbidding `while` in `CountValues`.
 - `TimeoutComment` and `StackOverflowComment` provide task-specific messages used by the host after runner failures.
 
 Other `TestCases*.cs` files are alternative local examples. Only the class named by `Program.cs` is selected.
@@ -156,7 +161,7 @@ PETEL_Runner_V2.exe.config
 PETEL_V2_Core.dll
 ```
 
-The payload must contain the runner, core library, and every required runtime dependency for the built version of the tester. In environments where Roslyn or other dependencies are not installed by the VPL host, those DLLs must be supplied by the payload or copied from the server location used by `vpl_run.sh`.
+The payload contains the runner and core library. Roslyn and its support DLLs are installed on the VPL host and are copied/referenced by `vpl_run.sh`, so they are intentionally not included in this archive.
 
 **Maintenance responsibility:** rebuilding/repacking `tester_payload.tar` is a tester-maintainer release step, not part of the teacher/task-author workflow. Repack it whenever `PETEL_Runner_V2`, `PETEL_V2_Core`, or their deployment dependencies change (including graph-aware cloning changes). Task authors should only upload the provided common files and their task-specific `Program.cs`, `TeacherAnswer.cs`, and `TestCases.cs` files.
 
