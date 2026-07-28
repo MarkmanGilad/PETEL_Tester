@@ -377,6 +377,12 @@ FodyWeavers.xsd
 /Tester/
 /Tester_Net_core/
 /Tests/
+/DLL/
+/TextFiles/
+/StudentAnswer.cs
+/TeacherAnswer.cs
+/Tester.pdf
+/VPLTester.cs
 
 # Legacy VPL upload staging folders. Keep the active V2 .NET Framework payload.
 /Upload/
