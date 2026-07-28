@@ -361,3 +361,27 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Local test and legacy projects. The V2 deliverables remain tracked:
+# PETEL_MainTester_V2, PETEL_Runner_V2, PETEL_V2_Core, Upload_V2_Net472,
+# and the root README.md.
+/Another_Tester/
+/Complement_Queue/
+/ConsoleApp1/
+/ConsoleApp2/
+/CopyQueue/
+/Dafna/
+/InputOutput/
+/NewTester/
+/PETEL_Tester/
+/Tester/
+/Tester_Net_core/
+/Tests/
+
+# Legacy VPL upload staging folders. Keep the active V2 .NET Framework payload.
+/Upload/
+/Upload_Dafna/
+/Upload_V2/
+/‏‏Upload_core/
+!/Upload_V2_Net472/
+!/README.md
